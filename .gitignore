@@ -1,11 +1,13 @@
 # IDEs and editors
 /.idea
 .project
+.gitignore
 .classpath
 .c9/
 *.launch
 .settings/
 *.sublime-workspace
+/venv
 
 # System Files
 .DS_Store
