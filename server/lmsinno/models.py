@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.validators import MaxLengthValidator, MinLengthValidator
+
+import datetime
 
 
 class Document(models.Model):
@@ -10,12 +13,14 @@ class Document(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, default=None)
     publisher = models.CharField(max_length=255, default=None)
-    year = models.DateField()                                 # TODO read about max_length
+    year = models.IntegerField(
+        default=None,
+        validators=[MinLengthValidator(0), MaxLengthValidator(datetime.datetime.now().year)]
+    )
     type = models.IntegerField(choices=DOCUMENT_TYPE_CHOICES, default=0)
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)
     copies_available = models.IntegerField(default=0)
-    # cover = models.ImageField()                             # TODO read about imageField
 
 
 class User(models.Model):
@@ -31,7 +36,11 @@ class User(models.Model):
     first_name = models.CharField(max_length=20, default=None)
     last_name = models.CharField(max_length=20, default=None)
     address = models.CharField(max_length=100)
-    phone = models.IntegerField(unique=True)
+    phone = models.IntegerField(unique=True,
+                                default=0,
+                                validators=[MinLengthValidator(10000000000),
+                                            MaxLengthValidator(99999999999)])
+    # TODO read about imageField
 
 
 class Author(models.Model):
@@ -43,5 +52,5 @@ class DocumentsOfAuthor(models.Model):
     class Meta:
         db_table = 'lmsinno_documents_of_author'
 
-    document = models.ForeignKey(Document, primary_key=True, on_delete=models.DO_NOTHING)
-    author = models.ForeignKey(Author, on_delete=models.DO_NOTHING)
+    document_id = models.ForeignKey(Document, on_delete=models.DO_NOTHING)
+    author_id = models.ForeignKey(Author, on_delete=models.DO_NOTHING)

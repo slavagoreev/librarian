@@ -1,12 +1,11 @@
 from rest_framework import serializers
-from .models import Document, User, Author
+from .models import Document, User, Author, DocumentsOfAuthor
 
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = ('document_id',
-                  'authors',
                   'title',
                   'description',
                   'publisher',
@@ -21,4 +20,26 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('user_id',
-                  '')
+                  'email',
+                  'password',
+                  'password_salt',
+                  'role',
+                  'first_name',
+                  'last_name',
+                  'address',
+                  'phone')
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ('author_id',
+                  'name')
+
+
+class DocumentsOfAuthor(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentsOfAuthor
+        fields = ('id',
+                  'document_id',
+                  'author_id')
