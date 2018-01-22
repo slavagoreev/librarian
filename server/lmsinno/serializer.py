@@ -15,3 +15,10 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'price',
                   'is_reference',
                   'copies_available')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('user_id',
+                  '')
