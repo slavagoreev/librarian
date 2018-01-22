@@ -8,6 +8,7 @@
 .settings/
 *.sublime-workspace
 /venv
+/server/lmsinno/test_scripts.py
 
 # System Files
 .DS_Store
