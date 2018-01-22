@@ -11,6 +11,7 @@ USER_TYPE_CHOICES = [(i, i) for i in range(2)]
 
 class Document(models.Model):
     document_id = models.AutoField(primary_key=True, unique=True)
+    authors = models.CharField(max_length=50)                           # THINK ABOUT IT
     title = models.CharField(unique=True, max_length=100)
     description = models.TextField(max_length=200)
     publisher = models.CharField(max_length=100)
@@ -31,3 +32,8 @@ class User(models.Model):
     last_name = models.CharField(max_length=20, default=None)
     address = models.CharField(max_length=100)
     phone = models.IntegerField(unique=True)
+
+
+class Author(models.Model):
+    author_id = models.AutoField(primary_key=True, unique=True)
+    name = models.CharField(unique=True, max_length=100)
