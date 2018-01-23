@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Document, User, Author, DocumentsOfAuthor
+from .models import Document, User, Author, DocumentOfAuthor
 
 
 class DocumentSerializer(serializers.ModelSerializer):
