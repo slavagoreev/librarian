@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'lmsinno.apps.LmsinnoConfig',
+    'lmsinno',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',

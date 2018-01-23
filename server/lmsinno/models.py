@@ -1,22 +1,17 @@
 from django.db import models
-from django.core.validators import MaxLengthValidator, MinLengthValidator
-
-import datetime
+from django.core.validators import validate_email
 
 
 class Document(models.Model):
     # Type of Documents:
     # 0 - Book; 1 - Journal article; 2 - AV
-    DOCUMENT_TYPE_CHOICES = [(i, i) for i in range(2)]
+    DOCUMENT_TYPE_CHOICES = [(0, 'Book'), (1, 'Journal article'), (2, 'AV')]
 
     document_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, default=None)
     publisher = models.CharField(max_length=255, default=None)
-    year = models.IntegerField(
-        default=None,
-        validators=[MinLengthValidator(0), MaxLengthValidator(datetime.datetime.now().year)]
-    )
+    year = models.PositiveIntegerField(default=None)
     type = models.IntegerField(choices=DOCUMENT_TYPE_CHOICES, default=0)
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)
@@ -26,20 +21,17 @@ class Document(models.Model):
 class User(models.Model):
     # Type of User:
     # 0 - basic user; 1 - Faculty; 2 - Librarian
-    USER_TYPE_CHOICES = [(i, i) for i in range(2)]
+    USER_TYPE_CHOICES = [(0, 'Basic user'), (1, 'Faculty'), (2, 'Librarian')]
 
     user_id = models.AutoField(primary_key=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, validators=[validate_email])
     password = models.CharField(default=None, max_length=32)
     password_salt = models.CharField(default=None, max_length=32)
     role = models.IntegerField(default=0, choices=USER_TYPE_CHOICES)
     first_name = models.CharField(max_length=20, default=None)
     last_name = models.CharField(max_length=20, default=None)
     address = models.CharField(max_length=100)
-    phone = models.IntegerField(unique=True,
-                                default=0,
-                                validators=[MinLengthValidator(10000000000),
-                                            MaxLengthValidator(99999999999)])
+    phone = models.IntegerField(unique=True, default=0)
     # TODO read about imageField
 
 
@@ -59,7 +51,7 @@ class DocumentOfAuthor(models.Model):
 class Order(models.Model):
     # Type of Status:
     # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed
-    STATUS_TYPE_CHOICES = [(i, i) for i in range(4)]
+    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed')]
 
     order_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
@@ -72,14 +64,12 @@ class Order(models.Model):
 class Copy(models.Model):
     # Type of Order Status
     # 0 - not ordered; 1 - ordered
-    ORDER_STATUS_TYPE_CHOICES = [(i, i) for i in range(1)]
+    ORDER_STATUS_TYPE_CHOICES = [(i, i) for i in range(2)]
 
     copy_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     status = models.IntegerField(choices=ORDER_STATUS_TYPE_CHOICES, default=0)
-    place_hall_number = models.IntegerField(default=0,
-                                            validators=[MinLengthValidator(0),
-                                                        MaxLengthValidator(9999)])
+    place_hall_number = models.IntegerField(default=0)
     place_shelf_letter = models.CharField(max_length=1, default='A')
 
 
