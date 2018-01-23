@@ -1,21 +1,26 @@
 from django.db import models
 from django.core.validators import validate_email
 
+import datetime
+
 
 class Document(models.Model):
     # Type of Documents:
     # 0 - Book; 1 - Journal article; 2 - AV
     DOCUMENT_TYPE_CHOICES = [(0, 'Book'), (1, 'Journal article'), (2, 'AV')]
 
-    document_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
+    document_id = models.AutoField(primary_key=True, verbose_name=title)
     description = models.TextField(max_length=1000, default=None)
     publisher = models.CharField(max_length=255, default=None)
-    year = models.PositiveIntegerField(default=None)
+    year = models.DecimalField(max_digits=4, decimal_places=0, default=datetime.datetime.now().year)
     type = models.IntegerField(choices=DOCUMENT_TYPE_CHOICES, default=0)
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)
     copies_available = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title
 
 
 class User(models.Model):
@@ -31,8 +36,12 @@ class User(models.Model):
     first_name = models.CharField(max_length=20, default=None)
     last_name = models.CharField(max_length=20, default=None)
     address = models.CharField(max_length=100)
-    phone = models.IntegerField(unique=True, default=0)
+    phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
+
     # TODO read about imageField
+
+    def __str__(self):
+        return str(self.user_id) + '. ' + self.first_name + ' ' + self.last_name
 
 
 class Author(models.Model):
@@ -86,7 +95,7 @@ class Tag(models.Model):
 
 class TagOfDocument(models.Model):
     class Meta:
-        db_table = 'tag_of_document'
+        db_table = 'lmsinno_tag_of_document'
 
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
