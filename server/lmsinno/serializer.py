@@ -37,7 +37,7 @@ class AuthorSerializer(serializers.ModelSerializer):
                   'name')
 
 
-class DocumentsOfAuthor(serializers.ModelSerializer):
+class DocumentsOfAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentsOfAuthor
         fields = ('id',

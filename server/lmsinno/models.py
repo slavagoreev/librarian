@@ -48,9 +48,42 @@ class Author(models.Model):
     name = models.CharField(unique=True, max_length=100)
 
 
-class DocumentsOfAuthor(models.Model):
+class DocumentOfAuthor(models.Model):
     class Meta:
-        db_table = 'lmsinno_documents_of_author'
+        db_table = 'lmsinno_document_of_author'
 
+    document = models.ForeignKey(Document, on_delete=models.DO_NOTHING)
+    author = models.ForeignKey(Author, on_delete=models.DO_NOTHING)
+
+
+class Order(models.Model):
+    # Type of Status:
+    # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed
+    STATUS_TYPE_CHOICES = [(i, i) for i in range(4)]
+
+    order_id = models.AutoField(primary_key=True)
+    document = models.ForeignKey(Document, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    data_created = models.DateTimeField(auto_now_add=True)
+    date_accepted = models.DateTimeField()
+    status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
+
+
+class Copy(models.Model):
+    # Type of Order Status
+    # 0 - not ordered; 1 - ordered
+    ORDER_STATUS_TYPE_CHOICES = [(i, i) for i in range(1)]
+
+    copy_id = models.AutoField(primary_key=True)
     document_id = models.ForeignKey(Document, on_delete=models.DO_NOTHING)
-    author_id = models.ForeignKey(Author, on_delete=models.DO_NOTHING)
+    status = models.IntegerField(choices=ORDER_STATUS_TYPE_CHOICES, default=0)
+    place_hall_number = models.IntegerField(default=0,
+                                            validators=[MinLengthValidator(0),
+                                                        MaxLengthValidator(9999)])
+    place_shelf_letter = models.CharField(max_length=1, default='A')
+
+
+class Bestseller(models.Model):
+    bestseller_id = models.AutoField(primary_key=True)
+    document_id = models.ForeignKey(Document, on_delete=models.CASCADE)
+    background_color = models.CharField(max_length=7, default='#000000')
