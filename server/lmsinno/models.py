@@ -95,5 +95,8 @@ class Tag(models.Model):
 
 
 class TagOfDocument(models.Model):
+    class Meta:
+        db_table = 'tag_of_document'
+
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
