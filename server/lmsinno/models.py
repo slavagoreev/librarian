@@ -64,8 +64,8 @@ class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    data_created = models.DateTimeField(auto_now_add=True)
-    date_accepted = models.DateTimeField()
+    date_created = models.DateField(auto_now_add=True)
+    date_accepted = models.DateField(default=None)
     status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
 
 

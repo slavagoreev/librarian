@@ -9,7 +9,7 @@
 *.sublime-workspace
 /venv
 /server/lmsinno/test_scripts.py
-/server/test_data_sey.py
+/server/tests.py
 
 # System Files
 .DS_Store

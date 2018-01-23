@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Document, User, Author, DocumentOfAuthor, Order
+from .models import Document, User, Author, DocumentOfAuthor, Order, Copy, Tag, TagOfDocument
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -51,6 +51,30 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('order_id',
                   'document',
                   'user',
-                  'data_created',
-                  'data_accepted',
+                  'date_created',
+                  'date_accepted',
                   'status')
+
+
+class CopySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Copy
+        fields = ('copy_id',
+                  'document',
+                  'status',
+                  'place_hall_number',
+                  'place_shelf_letter')
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('tag_id',
+                  'name')
+
+
+class TagOfDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TagOfDocument
+        fields = ('document',
+                  'tag')
