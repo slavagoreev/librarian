@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Document, User, Author, DocumentOfAuthor
+from .models import Document, User, Author, DocumentOfAuthor, Order
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -37,9 +37,20 @@ class AuthorSerializer(serializers.ModelSerializer):
                   'name')
 
 
-class DocumentsOfAuthorSerializer(serializers.ModelSerializer):
+class DocumentOfAuthorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DocumentsOfAuthor
+        model = DocumentOfAuthor
         fields = ('id',
                   'document_id',
                   'author_id')
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ('order_id',
+                  'document',
+                  'user',
+                  'data_created',
+                  'data_accepted',
+                  'status')

@@ -75,7 +75,7 @@ class Copy(models.Model):
     ORDER_STATUS_TYPE_CHOICES = [(i, i) for i in range(1)]
 
     copy_id = models.AutoField(primary_key=True)
-    document_id = models.ForeignKey(Document, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
     status = models.IntegerField(choices=ORDER_STATUS_TYPE_CHOICES, default=0)
     place_hall_number = models.IntegerField(default=0,
                                             validators=[MinLengthValidator(0),
@@ -85,7 +85,7 @@ class Copy(models.Model):
 
 class Bestseller(models.Model):
     bestseller_id = models.AutoField(primary_key=True)
-    document_id = models.ForeignKey(Document, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
     background_color = models.CharField(max_length=7, default='#000000')
 
 
@@ -95,5 +95,5 @@ class Tag(models.Model):
 
 
 class TagOfDocument(models.Model):
-    document_id = models.ForeignKey(Document, on_delete=models.CASCADE)
-    tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
