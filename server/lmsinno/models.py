@@ -41,12 +41,15 @@ class User(models.Model):
     # TODO read about imageField
 
     def __str__(self):
-        return str(self.user_id) + '. ' + self.first_name + ' ' + self.last_name
+        return '{0} {1}'.format(self.first_name, self.last_name)
 
 
 class Author(models.Model):
     author_id = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class DocumentOfAuthor(models.Model):
@@ -55,6 +58,9 @@ class DocumentOfAuthor(models.Model):
 
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     author = models.ForeignKey(Author, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return '{0}: {1}'.format(self.document, self.author)
 
 
 class Order(models.Model):
@@ -69,6 +75,9 @@ class Order(models.Model):
     date_accepted = models.DateField(default=None)
     status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
 
+    def __str__(self):
+        return '{0}: {1}'.format(self.user, self.document)
+
 
 class Copy(models.Model):
     # Type of Order Status
@@ -81,16 +90,25 @@ class Copy(models.Model):
     place_hall_number = models.IntegerField(default=0)
     place_shelf_letter = models.CharField(max_length=1, default='A')
 
+    def __str__(self):
+        return '{0}: {1}'.format(str(self.copy_id), self.document)
+
 
 class Bestseller(models.Model):
     bestseller_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     background_color = models.CharField(max_length=7, default='#000000')
 
+    def __str__(self):
+        return self.document
+
 
 class Tag(models.Model):
     tag_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=32)
+
+    def __str__(self):
+        return self.name
 
 
 class TagOfDocument(models.Model):
@@ -99,3 +117,6 @@ class TagOfDocument(models.Model):
 
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{0}: {1}'.format(self.document, self.tag)

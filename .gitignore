@@ -10,6 +10,7 @@
 /venv
 /server/lmsinno/test_scripts.py
 /server/tests.py
+/server/log.txt
 
 # System Files
 .DS_Store
