@@ -126,7 +126,7 @@ class Registration(APIView):
             return Response(status=status.HTTP_201_CREATED)
 
         except IntegrityError:
-            return Response(status=status.HTTP_304_NOT_MODIFIED)
+            return Response(status=status.HTTP_304_NOT_MODIFIED) #if alredy exist or some problems with fields
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
