@@ -1,8 +1,11 @@
 from .models import Document, Author, DocumentOfAuthor
 from .serializer import DocumentSerializer
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND
 
 
 class DocumentDetail(APIView):
@@ -28,7 +31,7 @@ class DocumentsByCriteria(APIView):
     @staticmethod
     def get(request):
         """
-
+        GET request to get set of document by criteria
         :param request:
         :return: JSON-Documents and 200 if Documents with such criteria exists
                  otherwise empty JSON and 404
@@ -40,21 +43,28 @@ class DocumentsByCriteria(APIView):
         size = request.GET.get('size', None)
         offset = request.GET.get('offset', None)
 
-        data = Document.objects
+        data_query_set = Document.objects
 
         if author_name is not None:
-            data = data.filter(documentofauthor__author__name__icontains=author_name)
+            data_query_set = data_query_set.filter(documentofauthor__author__name__icontains=author_name)
         if title is not None:
-            data = data.filter(title__icontains=title)
+            data_query_set = data_query_set.filter(title__icontains=title)
         if year is not None:
-            data = data.filter(year=year)
+            data_query_set = data_query_set.filter(year=year)
         if tag_ids is not None:
-            data = data.filter(tagofdocument__tag_id__in=tag_ids)
+            data_query_set = data_query_set.filter(tagofdocument__tag_id__in=tag_ids)
         if size is not None and offset is not None:
-            data = data.filter()[int(offset):int(offset) + int(size)]
+            data_query_set = data_query_set.filter()[int(offset):int(offset) + int(size)]
 
-        serializer = DocumentSerializer(data, many=True)
+        serializer = DocumentSerializer(data_query_set, many=True)
+
+        print(tag_ids, file=open('log.txt', 'w'))
+
+        result = {'status': '', 'data': serializer.data}
 
         if serializer.data:
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
+            result['status'] = HTTP_200_OK
+            return Response(result, status=status.HTTP_200_OK)
+
+        result['status'] = HTTP_404_NOT_FOUND
+        return Response(result, status=status.HTTP_404_NOT_FOUND)
