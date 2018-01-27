@@ -73,10 +73,13 @@ class DocumentsByCriteria(APIView):
     
 class Authorization(APIView):
 
-    #GET /CORE/authorization/?email=test@inno.ru&password=8888
+    # GET http://127.0.0.1:8000/CORE/authorization/?email=test@inno.ru&password=8888
 
     @staticmethod
     def get(request):
+
+        result = {'status': '', 'data': ''}
+
         try:
             # get information from request
             email = request.GET.get('email', None)
@@ -86,23 +89,28 @@ class Authorization(APIView):
             users = users.filter(email=email, password=password)
 
             if users.exists():                                                          # if exists all good
-                return Response(status=status.HTTP_202_ACCEPTED)
-            elif User.objects.filter(email=email).exists():
-                return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)   # if exists but password incorrect
+                result['status'] = status.HTTP_202_ACCEPTED
+                return Response(result, status=status.HTTP_202_ACCEPTED)
+            elif User.objects.filter(result, email=email).exists():
+                result['status'] = status.HTTP_203_NON_AUTHORITATIVE_INFORMATION
+                return Response(result, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)   # if exists but password incorrect
+
         except TypeError:
             pass
-        except UnicodeError:
-            pass
 
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        result['status'] = status.HTTP_404_NOT_FOUND
+        return Response(result, status=status.HTTP_404_NOT_FOUND)
 
 
 class Registration(APIView):
 
-    # POST /CORE/registration/?email=test@inno.ru&password=1234&role=1&first_name=PaVel&last_name=Nik&address=msk&phone=8800
+    # POST http://127.0.0.1:8000/CORE/registration/?email=test@inno.ru&password=1234&role=1&first_name=PaVel&last_name=Nik&address=msk&phone=8800
 
     @staticmethod
     def post(request):
+
+        result = {'status': '', 'data': ''}
+
         try:
             # get information from request
             email = request.GET.get('email', None)
@@ -123,10 +131,13 @@ class Registration(APIView):
                             phone=phone)
             new_user.save()
 
-            return Response(status=status.HTTP_201_CREATED)
+            result['status'] = status.HTTP_201_CREATED
+            return Response(result, status=status.HTTP_201_CREATED)
 
         except IntegrityError:
-            return Response(status=status.HTTP_304_NOT_MODIFIED) #if alredy exist or some problems with fields
 
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            result['status'] = status.HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+        # TODO role can be not only allowed
 
