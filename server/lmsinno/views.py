@@ -78,7 +78,7 @@ class Authorization(APIView):
     @staticmethod
     def get(request):
 
-        result = {'status': '', 'data': ''}
+        result = {'status': '', 'data': {}}
 
         try:
             # get information from request
@@ -89,16 +89,16 @@ class Authorization(APIView):
             users = users.filter(email=email, password=password)
 
             if users.exists():                                                          # if exists all good
-                result['status'] = status.HTTP_202_ACCEPTED
+                result['status'] = 'HTTP_202_ACCEPTED'
                 return Response(result, status=status.HTTP_202_ACCEPTED)
             elif User.objects.filter(result, email=email).exists():
-                result['status'] = status.HTTP_203_NON_AUTHORITATIVE_INFORMATION
+                result['status'] = 'HTTP_203_NON_AUTHORITATIVE_INFORMATION'
                 return Response(result, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)   # if exists but password incorrect
 
         except TypeError:
             pass
 
-        result['status'] = status.HTTP_404_NOT_FOUND
+        result['status'] = 'HTTP_404_NOT_FOUND'
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -109,7 +109,7 @@ class Registration(APIView):
     @staticmethod
     def post(request):
 
-        result = {'status': '', 'data': ''}
+        result = {'status': '', 'data': {}}
 
         try:
             # get information from request
@@ -131,13 +131,15 @@ class Registration(APIView):
                             phone=phone)
             new_user.save()
 
-            result['status'] = status.HTTP_201_CREATED
+            result['data'] = {
+                'user_id': new_user.user_id
+            }
+            result['status'] = 'HTTP_201_CREATED'
             return Response(result, status=status.HTTP_201_CREATED)
 
         except IntegrityError:
 
-            result['status'] = status.HTTP_400_BAD_REQUEST
+            result['status'] = 'HTTP_400_BAD_REQUEST'
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         # TODO role can be not only allowed
-
