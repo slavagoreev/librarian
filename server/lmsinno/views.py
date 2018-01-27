@@ -18,18 +18,26 @@ class DocumentDetail(APIView):
         :param document_id:
         :return: JSON-Document and 200 if Document exists otherwise empty JSON and 404
         """
+        result = {'status': '', 'data': {}}
+
         try:
             data = Document.objects.get(pk=document_id)
         except Document.DoesNotExist:
-            return Response({}, status=status.HTTP_404_NOT_FOUND)
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
         serializer = DocumentSerializer(data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        result['status'] = HTTP_200_OK
+        result['data'] = serializer.data
+
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class DocumentsByCriteria(APIView):
     # TODO AUTHORIZATION
     @staticmethod
     def get(request):
+        print(request.data, file=open('log.txt', 'w'))
         """
         GET request to get set of document by criteria
         :param request:
@@ -71,7 +79,7 @@ class DocumentsByCriteria(APIView):
 
     @staticmethod
     def post(request):
-        print(request.data, file=open('log.txt', 'w'))
+        print(request, file=open('log.txt', 'w'))
 
         author_name = request.GET.get('author_name')
         title = request.GET.get('title')
