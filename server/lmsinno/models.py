@@ -18,7 +18,7 @@ class Document(models.Model):
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)
     copies_available = models.IntegerField(default=0)
-    cover = models.FilePathField(default='../covers_for_documents/empty.jpg')
+    cover = models.FilePathField(default='empty')
 
     def __str__(self):
         return self.title
@@ -36,7 +36,7 @@ class User(models.Model):
     role = models.IntegerField(default=0, choices=USER_TYPE_CHOICES)
     first_name = models.CharField(max_length=20, default=None)
     last_name = models.CharField(max_length=20, default=None)
-    address = models.CharField(max_length=100)
+    address = models.CharField(max_length=100, default=None)
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
 
     def __str__(self):
