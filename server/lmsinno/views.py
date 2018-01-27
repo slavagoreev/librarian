@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND
+from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED
 
 
 class DocumentDetail(APIView):
@@ -68,3 +68,29 @@ class DocumentsByCriteria(APIView):
 
         result['status'] = HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+    @staticmethod
+    def post(request):
+        print(request.data, file=open('log.txt', 'w'))
+
+        author_name = request.GET.get('author_name')
+        title = request.GET.get('title')
+        year = request.GET.get('year')
+        tag_ids = request.GET.get('tag_ids')
+        description = request.GET.get('description')
+        document_type = request.GET.get('type')
+        price = request.GET.get('price')
+        is_reference = request.GET.get('is_reference')
+        copies_available = request.GET.get('copies_available')
+
+        # document = Document(author_name, title, year, tag_ids, description,
+        #                    document_type, price, is_reference, copies_available)
+
+        serializer = DocumentSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            result = {'status': HTTP_201_CREATED, 'data': serializer.data}
+            return Response(request, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

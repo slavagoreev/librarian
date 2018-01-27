@@ -11,6 +11,8 @@
 /server/lmsinno/test_scripts.py
 /server/tests.py
 /server/log.txt
+/server/lmsinno/__pycache__
+/server/lmsinno/migrations/__pycache__/*
 
 # System Files
 .DS_Store

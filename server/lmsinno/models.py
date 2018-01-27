@@ -18,6 +18,7 @@ class Document(models.Model):
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)
     copies_available = models.IntegerField(default=0)
+    cover = models.FilePathField(default='../covers_for_documents/empty.jpg')
 
     def __str__(self):
         return self.title
@@ -37,8 +38,6 @@ class User(models.Model):
     last_name = models.CharField(max_length=20, default=None)
     address = models.CharField(max_length=100)
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
-
-    # TODO read about imageField
 
     def __str__(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
