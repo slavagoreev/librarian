@@ -13,7 +13,8 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'type',
                   'price',
                   'is_reference',
-                  'copies_available')
+                  'copies_available',
+                  'cover')
 
 
 class UserSerializer(serializers.ModelSerializer):
