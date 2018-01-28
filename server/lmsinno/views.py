@@ -12,7 +12,7 @@ import re
 
 class DocumentDetail(APIView):
     # TODO AUTHORIZATION
-    def get(self, request, document_id):
+    def get(self, request, document_id, format=None):
         """
         GET request to get one particular document
         :param request:
@@ -37,7 +37,7 @@ class DocumentDetail(APIView):
 
 class DocumentsByCriteria(APIView):
     # TODO AUTHORIZATION
-    def get(self, request):
+    def get(self, request, format=None):
         """
         GET request to get set of document by criteria
         :param request:
@@ -88,19 +88,21 @@ class DocumentsByCriteria(APIView):
         result['status'] = HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request):
+    def post(self, request, format=None):
         """
         POST request: add one particular document
         :param request: input params
         :return: 202 if everything is OK, otherwise JSON-errors and 400
         """
 
-        doc_serializer = DocumentSerializer(data=request.query_params)
+        doc_serializer = DocumentSerializer(data=request.data)
 
-        if doc_serializer.is_valid() and request.GET.get('authors'):
+        print(request, file=open('log.txt', 'w'))
+
+        if doc_serializer.is_valid() and request.POST.get('authors'):
             doc_obj = doc_serializer.save()
 
-            authors_list = re.sub('[\[\],\']', '', request.GET.get('authors')).split(', ')
+            authors_list = re.sub('[\[\],\']', '', request.POST.get('authors')).split(', ')
 
             for author in authors_list:
                 author_obj = Author.objects.filter(name=author).first()
