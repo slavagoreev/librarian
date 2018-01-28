@@ -11,7 +11,7 @@ class Document(models.Model):
 
     title = models.CharField(max_length=255)
     document_id = models.AutoField(primary_key=True, verbose_name=title)
-    description = models.TextField(max_length=1000)
+    description = models.TextField(blank=True, max_length=10000)
     publisher = models.CharField(max_length=255)
     year = models.DecimalField(max_digits=4, decimal_places=0, default=datetime.datetime.now().year)
     type = models.IntegerField(choices=DOCUMENT_TYPE_CHOICES)
