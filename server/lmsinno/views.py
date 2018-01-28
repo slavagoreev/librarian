@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED
 
+import re
+
 
 class DocumentDetail(APIView):
     # TODO AUTHORIZATION
@@ -87,12 +89,19 @@ class DocumentsByCriteria(APIView):
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
+        """
+        POST request: add one particular document
+        :param request: input params
+        :return: 202 if everything is OK, otherwise JSON-errors and 400
+        """
+
         doc_serializer = DocumentSerializer(data=request.query_params)
 
         if doc_serializer.is_valid() and request.GET.get('authors'):
             doc_obj = doc_serializer.save()
 
-            authors_list = request.GET.get('authors').replace('[', '').replace(']', '').replace('\'', '').split(', ')
+            authors_list = re.sub('[\[\],\']', '', request.GET.get('authors')).split(', ')
+
             for author in authors_list:
                 author_obj = Author.objects.filter(name=author).first()
                 if not author_obj:
