@@ -58,11 +58,13 @@ class DocumentsByCriteria(APIView):
         author_name = request.GET.get('author_name', None)
         title = request.GET.get('title', None)
         year = request.GET.get('year', None)
-        tag_ids = request.GET.get('tag_ids', None)
+        tag_ids = re.sub('[ \[\]\']', '', request.GET.get('tag_ids')).split(',')
         size = request.GET.get('size', None)
         offset = request.GET.get('offset', None)
 
         data_query_set = Document.objects
+
+        print(tag_ids, file=open('log.txt', 'w'))
 
         if author_name is not None:
             data_query_set = data_query_set.filter(documentofauthor__author__name__icontains=author_name)
@@ -96,8 +98,6 @@ class DocumentsByCriteria(APIView):
         """
 
         doc_serializer = DocumentSerializer(data=request.data)
-
-        print(request, file=open('log.txt', 'w'))
 
         if doc_serializer.is_valid() and request.POST.get('authors'):
             doc_obj = doc_serializer.save()
