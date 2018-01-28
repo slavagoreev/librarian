@@ -7,10 +7,12 @@ from rest_framework.views import APIView
 
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED
 
+import re
+
 
 class DocumentDetail(APIView):
     # TODO AUTHORIZATION
-    def get(self, request, document_id):
+    def get(self, request, document_id, format=None):
         """
         GET request to get one particular document
         :param request:
@@ -35,7 +37,7 @@ class DocumentDetail(APIView):
 
 class DocumentsByCriteria(APIView):
     # TODO AUTHORIZATION
-    def get(self, request):
+    def get(self, request, format=None):
         """
         GET request to get set of document by criteria
         :param request:
@@ -56,11 +58,13 @@ class DocumentsByCriteria(APIView):
         author_name = request.GET.get('author_name', None)
         title = request.GET.get('title', None)
         year = request.GET.get('year', None)
-        tag_ids = request.GET.get('tag_ids', None)
+        tag_ids = re.sub('[ \[\]\']', '', request.GET.get('tag_ids')).split(',')
         size = request.GET.get('size', None)
         offset = request.GET.get('offset', None)
 
         data_query_set = Document.objects
+
+        print(tag_ids, file=open('log.txt', 'w'))
 
         if author_name is not None:
             data_query_set = data_query_set.filter(documentofauthor__author__name__icontains=author_name)
@@ -86,13 +90,20 @@ class DocumentsByCriteria(APIView):
         result['status'] = HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request):
-        doc_serializer = DocumentSerializer(data=request.query_params)
+    def post(self, request, format=None):
+        """
+        POST request: add one particular document
+        :param request: input params
+        :return: 202 if everything is OK, otherwise JSON-errors and 400
+        """
 
-        if doc_serializer.is_valid() and request.GET.get('authors'):
+        doc_serializer = DocumentSerializer(data=request.data)
+
+        if doc_serializer.is_valid() and request.POST.get('authors'):
             doc_obj = doc_serializer.save()
 
-            authors_list = request.GET.get('authors').replace('[', '').replace(']', '').replace('\'', '').split(', ')
+            authors_list = re.sub('[\[\],\']', '', request.POST.get('authors')).split(', ')
+
             for author in authors_list:
                 author_obj = Author.objects.filter(name=author).first()
                 if not author_obj:

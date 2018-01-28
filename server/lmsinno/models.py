@@ -18,7 +18,7 @@ class Document(models.Model):
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)
     copies_available = models.IntegerField(default=0)
-    cover = models.FilePathField(default='empty', max_length=255)
+    cover = models.CharField(default='empty', max_length=255)
 
     def __str__(self):
         return self.title
