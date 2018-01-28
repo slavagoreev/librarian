@@ -1,11 +1,11 @@
 from .models import Document, Author, DocumentOfAuthor
-from .serializer import DocumentSerializer
+from .serializer import DocumentSerializer, AuthorSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED
 
 
 class DocumentDetail(APIView):
@@ -86,5 +86,18 @@ class DocumentsByCriteria(APIView):
         result['status'] = HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-    def put(self, request):
-        pass
+    def post(self, request):
+        doc_serializer = DocumentSerializer(data=request.query_params)
+
+        if doc_serializer.is_valid():
+            doc_obj = doc_serializer.save()
+
+            authors_list = request.GET.get('authors').replace('[', '').replace(']', '').replace('\'', '').split(', ')
+            for author in authors_list:
+                author_obj = Author.objects.filter(name=author).first()
+                if not author_obj:
+                    author_obj = Author.objects.create(name=author)
+                DocumentOfAuthor.objects.create(document_id=doc_obj.document_id, author_id=author_obj.author_id)
+            return Response({'status': HTTP_202_ACCEPTED, 'data': {}}, status=status.HTTP_202_ACCEPTED)
+
+        return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
