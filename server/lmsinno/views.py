@@ -75,8 +75,10 @@ class DocumentsByCriteria(APIView):
         if year is not None:
             data_query_set = data_query_set.filter(year=year)
         if tag_ids is not None:
-            tag_ids = tag_ids.replace(' ', '').split(',')
-            data_query_set = data_query_set.filter(tagofdocument__tag_id__in=tag_ids).distinct()
+            tag_ids = re.sub('[ \[\]]', '', tag_ids).split(',')
+            data_query_set = data_query_set.filter(tagofdocument__tag_id=tag_ids[0])
+            for index in range(1, len(tag_ids)):
+                data_query_set = data_query_set & data_query_set.filter(tagofdocument__tag_id=tag_ids[index])
         if size is not None or offset is not None:
             size = size if size else DEFAULT_SIZE
             offset = offset if offset else DEFAULT_OFFSET
