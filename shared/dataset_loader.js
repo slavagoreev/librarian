@@ -49,7 +49,7 @@ fs.readFile('./dataset.json', 'utf-8', function (err, data) {
             books[i].description = books[i].description ? books[i].description : "";
             post(books[i]);
             i++;
-        }, 200)
+        }, 150)
     }
     else {
         console.log("No data to post");
