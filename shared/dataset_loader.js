@@ -14,7 +14,7 @@ function post(dataset) {
     // An object of options to indicate where to post to
     var post_options = {
         host: 'localhost',
-        port: '8000',
+        port: '80',
         path: '/document/',
         method: 'POST',
         headers: {
@@ -42,17 +42,14 @@ fs.readFile('./dataset.json', 'utf-8', function (err, data) {
     }
     if (data) {
         let books = JSON.parse(data).items;
-        for (let book of books) {
-            book.authors = book.authors.join(",");
-            book.description = book.description ? book.description : "";
-            post(book);
-        }
-
-        /*for (let i = 0; i < 3; i++) {
-            books[i].authors = books[i].authors.join(",");
+        let i = 0;
+        setInterval(function () {
+            books[i].publisher = (books[i].publisher) ? books[i].publisher : "Innopolis library";
+            books[i].authors = (books[i].authors) ? books[i].authors.join(",") : "";
             books[i].description = books[i].description ? books[i].description : "";
             post(books[i]);
-        }*/
+            i++;
+        }, 200)
     }
     else {
         console.log("No data to post");

@@ -105,7 +105,8 @@ class DocumentsByCriteria(APIView):
         if doc_serializer.is_valid() and request.POST.get('authors'):
             doc_obj = doc_serializer.save()
 
-            authors_list = request.POST.get('authors').split(',')
+            authors_list = re.sub('[\[\]]', '', request.POST.get('authors'))
+            authors_list = authors_list.split(',')
 
             for author in authors_list:
                 author = author.strip()
