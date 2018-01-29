@@ -17,7 +17,8 @@ class DocumentDetail(APIView):
         GET request to get one particular document
         :param request:
         :param document_id:
-        :return: JSON-Document and 200 if Document exists otherwise empty JSON and 404
+        :return: HTTP_200_OK and JSON-Documents: if documents with such id exists
+                 HTTP_404_NOT_FOUND: if document with such id doesn`t exist
         """
 
         result = {'status': '', 'data': {}}
@@ -41,8 +42,8 @@ class DocumentsByCriteria(APIView):
         """
         GET request to get set of document by criteria
         :param request:
-        :return: JSON-Documents and 200 if Documents with such criteria exists
-                 otherwise empty JSON and 404
+        :return: HTTP_200_OK and JSON-Documents: if documents with such criteria exists
+                 HTTP_404_NOT_FOUND: if documents with such criteria doesn`t exists
         """
 
         DEFAULT_SIZE = 50
@@ -99,7 +100,8 @@ class DocumentsByCriteria(APIView):
         """
         POST request: add one particular document
         :param request: input params
-        :return: 202 if everything is OK, otherwise JSON-errors and 400
+        :return: HTTP_202_ACCEPTED: if document was added successful
+                 HTTP_400_BAD_REQUEST and JSON-errors: if wrong format of input data
         """
 
         doc_serializer = DocumentSerializer(data=request.data)
@@ -119,3 +121,24 @@ class DocumentsByCriteria(APIView):
             return Response({'status': HTTP_202_ACCEPTED, 'data': {}}, status=status.HTTP_202_ACCEPTED)
 
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        DELETE request: delete one particular document by id
+        :param request:
+        :return: HTTP_200_OK: if document was deleted success
+                 HTTP_404_NOT_FOUND: if document with such id not found
+                 HTTP_400_BAD_REQUEST: if wrong format of input data
+        """
+        document_id = request.query_params.get('id')
+
+        if document_id:
+            try:
+                document = Document.objects.get(pk=document_id)
+            except Document.DoesNotExist:
+                return Response({'status': HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
+            serializer = DocumentSerializer(document)
+            document.delete()
+            return Response({'status': HTTP_200_OK, 'data': serializer.data})
+
+        return Response({'status': HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
