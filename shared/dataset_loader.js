@@ -14,7 +14,7 @@ function post(dataset) {
     // An object of options to indicate where to post to
     var post_options = {
         host: 'localhost',
-        port: '8000',
+        port: '80',
         path: '/document/',
         method: 'POST',
         headers: {

@@ -58,7 +58,7 @@ class DocumentsByCriteria(APIView):
         author_name = request.GET.get('author_name', None)
         title = request.GET.get('title', None)
         year = request.GET.get('year', None)
-        tag_ids = re.sub('[ \[\]\']', '', request.GET.get('tag_ids')).split(',')
+        tag_ids = request.GET.get('tag_ids', None)
         size = request.GET.get('size', None)
         offset = request.GET.get('offset', None)
 
@@ -67,13 +67,18 @@ class DocumentsByCriteria(APIView):
         print(tag_ids, file=open('log.txt', 'w'))
 
         if author_name is not None:
+            author_name = author_name.strip()
             data_query_set = data_query_set.filter(documentofauthor__author__name__icontains=author_name)
         if title is not None:
+            title = title.strip()
             data_query_set = data_query_set.filter(title__icontains=title)
         if year is not None:
             data_query_set = data_query_set.filter(year=year)
         if tag_ids is not None:
-            data_query_set = data_query_set.filter(tagofdocument__tag_id__in=tag_ids)
+            tag_ids = re.sub('[ \[\]]', '', tag_ids).split(',')
+            data_query_set = data_query_set.filter(tagofdocument__tag_id=tag_ids[0])
+            for index in range(1, len(tag_ids)):
+                data_query_set = data_query_set & data_query_set.filter(tagofdocument__tag_id=tag_ids[index])
         if size is not None or offset is not None:
             size = size if size else DEFAULT_SIZE
             offset = offset if offset else DEFAULT_OFFSET
@@ -102,11 +107,11 @@ class DocumentsByCriteria(APIView):
         if doc_serializer.is_valid() and request.POST.get('authors'):
             doc_obj = doc_serializer.save()
 
-            #authors_list = re.sub('[\[\],\']', '', request.POST.get('authors')).split(',')
-            authors_list = request.POST.get('authors').split(',')
+            authors_list = re.sub('[\[\]]', '', request.POST.get('authors'))
+            authors_list = authors_list.split(',')
 
             for author in authors_list:
-                #author = author.strip()
+                author = author.strip()
                 author_obj = Author.objects.filter(name=author).first()
                 if not author_obj:
                     author_obj = Author.objects.create(name=author)
