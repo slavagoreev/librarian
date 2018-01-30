@@ -58,11 +58,7 @@ class DocumentsByCriteria(APIView):
         DEFAULT_OFFSET = 0
 
         result = {'status': '', 'data': {}}
-
-        # If params are empty
-        if not request.GET:
-            result['status'] = HTTP_400_BAD_REQUEST
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+        data_query_set = Document.objects
 
         author_name = request.GET.get('author_name', None)
         title = request.GET.get('title', None)
@@ -70,8 +66,6 @@ class DocumentsByCriteria(APIView):
         tag_ids = request.GET.get('tag_ids', None)
         size = request.GET.get('size', None)
         offset = request.GET.get('offset', None)
-
-        data_query_set = Document.objects
 
         if author_name is not None:
             author_name = author_name.strip()
@@ -86,10 +80,12 @@ class DocumentsByCriteria(APIView):
             data_query_set = data_query_set.filter(tagofdocument__tag_id=tag_ids[0])
             for index in range(1, len(tag_ids)):
                 data_query_set = data_query_set & data_query_set.filter(tagofdocument__tag_id=tag_ids[index])
-        if size is not None or offset is not None:
+        if size or offset:
             size = size if size else DEFAULT_SIZE
             offset = offset if offset else DEFAULT_OFFSET
-            data_query_set = data_query_set.filter()[int(offset):int(offset) + int(size)]
+            data_query_set = data_query_set.filter().order_by('-year')[int(offset):int(offset) + int(size)]
+        else:
+            data_query_set = data_query_set.filter().order_by('-year')
 
         serializer = DocumentSerializer(data_query_set, many=True)
 
@@ -155,6 +151,7 @@ class TagDetail(APIView):
     """
     Class to get one particular tag by ID
     """
+
     def get(self, request, tag_id, format=None):
         """
         Get one particular tag by ID
@@ -175,6 +172,44 @@ class TagDetail(APIView):
 
         tag_serializer = TagSerializer(tag)
         result['data'] = tag_serializer.data
+        result['status'] = HTTP_200_OK
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class TagAll(APIView):
+    """
+    Class to get all tags
+    """
+
+    def get(self, request, format=None):
+        """
+        Get set of tag with limited size
+        :param request:
+        :param format:
+        :return: HTTP_200_OK and JSON-tags
+        """
+
+        DEFAULT_SIZE = 50
+        DEFAULT_OFFSET = 0
+
+        result = {'status': '', 'data': {}}
+
+        size = request.GET.get('size', None)
+        offset = request.GET.get('offset', None)
+
+        tags_query_set = Tag.objects.all()
+
+        size = size if size else DEFAULT_SIZE
+        offset = offset if offset else DEFAULT_OFFSET
+        tags_query_set = tags_query_set.filter().order_by('name')[int(offset): int(offset) + int(size)]
+
+        if not tags_query_set:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        tags_serializer = TagSerializer(tags_query_set, many=True)
+        result['data'] = tags_serializer.data
         result['status'] = HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
