@@ -1,5 +1,5 @@
-from .models import Document, Author, DocumentOfAuthor
-from .serializer import DocumentSerializer, AuthorSerializer
+from .models import Document, Author, DocumentOfAuthor, Tag
+from .serializer import DocumentSerializer, AuthorSerializer, TagSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,6 +11,10 @@ import re
 
 
 class DocumentDetail(APIView):
+    """
+    Class to get one particular document by id
+    """
+
     # TODO AUTHORIZATION
     def get(self, request, document_id, format=None):
         """
@@ -24,12 +28,12 @@ class DocumentDetail(APIView):
         result = {'status': '', 'data': {}}
 
         try:
-            data = Document.objects.get(pk=document_id)
+            document = Document.objects.get(pk=document_id)
         except Document.DoesNotExist:
             result['status'] = HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = DocumentSerializer(data)
+        serializer = DocumentSerializer(document)
         result['status'] = HTTP_200_OK
         result['data'] = serializer.data
 
@@ -37,6 +41,10 @@ class DocumentDetail(APIView):
 
 
 class DocumentsByCriteria(APIView):
+    """
+    Class to work with document using some criteria
+    """
+
     # TODO AUTHORIZATION
     def get(self, request, format=None):
         """
@@ -64,8 +72,6 @@ class DocumentsByCriteria(APIView):
         offset = request.GET.get('offset', None)
 
         data_query_set = Document.objects
-
-        print(tag_ids, file=open('log.txt', 'w'))
 
         if author_name is not None:
             author_name = author_name.strip()
@@ -123,6 +129,7 @@ class DocumentsByCriteria(APIView):
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
+        # TODO AUTHORIZATION
         """
         DELETE request: delete one particular document by id
         :param request:
@@ -142,3 +149,32 @@ class DocumentsByCriteria(APIView):
             return Response({'status': HTTP_200_OK, 'data': serializer.data})
 
         return Response({'status': HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TagDetail(APIView):
+    """
+    Class to get one particular tag by ID
+    """
+    def get(self, request, tag_id, format=None):
+        """
+        Get one particular tag by ID
+        :param request:
+        :param tag_id:
+        :param format:
+        :return: HTTP_200_OK and JSON-tag: if tag with such ID exists
+                 HTTP_404_NOT_FOUND and JSON: if tag with such doesn`t exist
+        """
+
+        result = {'status': '', 'data': {}}
+
+        try:
+            tag = Tag.objects.get(pk=tag_id)
+        except Tag.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        tag_serializer = TagSerializer(tag)
+        result['data'] = tag_serializer.data
+        result['status'] = HTTP_200_OK
+
+        return Response(result, status=status.HTTP_200_OK)
