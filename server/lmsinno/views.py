@@ -241,7 +241,7 @@ class TagByCriteria(APIView):
             return Response(result, status=status.HTTP_409_CONFLICT)
 
         tag = Tag.objects.create(name=name)
-        result['status'] = HTTP_200_OK
+        result['status'] = HTTP_201_CREATED
         result['data']['tag_id'] = tag.tag_id
 
-        return Response(result, status=status.HTTP_202_ACCEPTED)
+        return Response(result, status=status.HTTP_201_CREATED)
