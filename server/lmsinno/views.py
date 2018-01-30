@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED
+from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
+    HTTP_409_CONFLICT
 
 import re
 
@@ -120,7 +121,8 @@ class DocumentsByCriteria(APIView):
                 if not author_obj:
                     author_obj = Author.objects.create(name=author)
                 DocumentOfAuthor.objects.create(document_id=doc_obj.document_id, author_id=author_obj.author_id)
-            return Response({'status': HTTP_202_ACCEPTED, 'data': {}}, status=status.HTTP_202_ACCEPTED)
+            return Response({'status': HTTP_202_ACCEPTED, 'data': {'document_id': doc_obj.document_id}},
+                            status=status.HTTP_202_ACCEPTED)
 
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -177,9 +179,9 @@ class TagDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
-class TagAll(APIView):
+class TagByCriteria(APIView):
     """
-    Class to get all tags
+    Class to get all tags with size limit
     """
 
     def get(self, request, format=None):
@@ -213,3 +215,33 @@ class TagAll(APIView):
         result['status'] = HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+        """
+        Add one particular tag
+        :param request:
+        :param format:
+        :return: HTTP_202_ACCEPTED and JSON-tag: if tag was added successfully
+                 HTTP_409_CONFLICT and JSON: if tag with such name already exists
+                 HTTP_400_BAD_REQUEST: if format of input is wrong
+        """
+
+        result = {'status': '', 'data': {}}
+
+        name = request.POST.get('name', None)
+
+        if not name:
+            result['status'] = HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+        tag_query_set = Tag.objects.filter(name__iexact=name)
+
+        if tag_query_set:
+            result['status'] = HTTP_409_CONFLICT
+            return Response(result, status=status.HTTP_409_CONFLICT)
+
+        tag = Tag.objects.create(name=name)
+        result['status'] = HTTP_200_OK
+        result['data']['tag_id'] = tag.tag_id
+
+        return Response(result, status=status.HTTP_202_ACCEPTED)
