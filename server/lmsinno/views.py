@@ -1,4 +1,4 @@
-from .models import Document, Author, DocumentOfAuthor, Tag
+from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument
 from .serializer import DocumentSerializer, AuthorSerializer, TagSerializer
 
 from rest_framework.response import Response
@@ -107,20 +107,31 @@ class DocumentsByCriteria(APIView):
                  HTTP_400_BAD_REQUEST and JSON-errors: if wrong format of input data
         """
 
+        tags_list = request.POST.get('tags', None)
+        authors_list = request.POST.get('authors', None)
+
         doc_serializer = DocumentSerializer(data=request.data)
 
-        if doc_serializer.is_valid() and request.POST.get('authors'):
+        if doc_serializer.is_valid() and authors_list:
             doc_obj = doc_serializer.save()
 
-            authors_list = re.sub('[\[\]]', '', request.POST.get('authors'))
-            authors_list = authors_list.split(',')
+            if tags_list:
+                tags_list = re.sub('[\[\]]', '', tags_list).split(',')
+                for tag in tags_list:
+                    tag = tag.strip()
+                    tag_obj = Tag.objects.filter(name__iexact=tag).first()
+                    if not tag_obj:
+                        tag_obj = Tag.objects.create(name=tag)
+                    TagOfDocument.objects.create(document_id=doc_obj.document_id, tag_id=tag_obj.tag_id)
 
+            authors_list = re.sub('[\[\]]', '', authors_list).split(',')
             for author in authors_list:
                 author = author.strip()
-                author_obj = Author.objects.filter(name=author).first()
+                author_obj = Author.objects.filter(name__iexact=author).first()
                 if not author_obj:
                     author_obj = Author.objects.create(name=author)
                 DocumentOfAuthor.objects.create(document_id=doc_obj.document_id, author_id=author_obj.author_id)
+
             return Response({'status': HTTP_202_ACCEPTED, 'data': {'document_id': doc_obj.document_id}},
                             status=status.HTTP_202_ACCEPTED)
 
