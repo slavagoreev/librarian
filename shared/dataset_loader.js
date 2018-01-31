@@ -47,6 +47,7 @@ fs.readFile('./dataset.json', 'utf-8', function (err, data) {
             books[i].publisher = (books[i].publisher) ? books[i].publisher : "Innopolis library";
             books[i].authors = (books[i].authors) ? books[i].authors.join(",") : "";
             books[i].description = books[i].description ? books[i].description : "";
+            books[i].tag_ids = "";
             post(books[i]);
             i++;
         }, 150)
