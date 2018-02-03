@@ -1,14 +1,13 @@
-from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument
-from .serializer import DocumentSerializer, AuthorSerializer, TagSerializer
+import re
 
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
     HTTP_409_CONFLICT
-
-import re
+from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument
+from .serializer import DocumentSerializer, TagSerializer
 
 
 class DocumentDetail(APIView):
@@ -16,8 +15,8 @@ class DocumentDetail(APIView):
     Class to get one particular document by id
     """
 
-    # TODO AUTHORIZATION
-    def get(self, request, document_id, format=None):
+    @staticmethod
+    def get(request, document_id):
         """
         GET request to get one particular document
         :param request:
@@ -46,8 +45,8 @@ class DocumentsByCriteria(APIView):
     Class to work with document using some criteria
     """
 
-    # TODO AUTHORIZATION
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request):
         """
         GET request to get set of document by criteria
         :param request:
@@ -55,8 +54,8 @@ class DocumentsByCriteria(APIView):
                  HTTP_404_NOT_FOUND: if documents with such criteria doesn`t exists
         """
 
-        DEFAULT_SIZE = 50
-        DEFAULT_OFFSET = 0
+        default_size = 50
+        default_offset = 0
 
         result = {'status': '', 'data': {}}
         data_query_set = Document.objects
@@ -82,8 +81,8 @@ class DocumentsByCriteria(APIView):
             for index in range(1, len(tag_ids)):
                 data_query_set = data_query_set & data_query_set.filter(tagofdocument__tag_id=tag_ids[index])
         if size or offset:
-            size = size if size else DEFAULT_SIZE
-            offset = offset if offset else DEFAULT_OFFSET
+            size = size if size else default_size
+            offset = offset if offset else default_offset
             data_query_set = data_query_set.filter().order_by('-year')[int(offset):int(offset) + int(size)]
         else:
             data_query_set = data_query_set.filter().order_by('-year')
@@ -99,7 +98,8 @@ class DocumentsByCriteria(APIView):
         result['status'] = HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request, format=None):
+    @staticmethod
+    def post(request):
         """
         POST request: add one particular document
         :param request: input params
@@ -137,7 +137,8 @@ class DocumentsByCriteria(APIView):
 
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
         # TODO AUTHORIZATION
         """
         DELETE request: delete one particular document by ID
@@ -159,7 +160,8 @@ class DocumentsByCriteria(APIView):
         else:
             return Response({'status': HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
-    def patch(self, request):
+    @staticmethod
+    def patch(request):
         """
         PATCH one particular document by ID
         :param request:
@@ -218,12 +220,12 @@ class TagDetail(APIView):
     Class to get one particular tag by ID
     """
 
-    def get(self, request, tag_id, format=None):
+    @staticmethod
+    def get(request, tag_id):
         """
         Get one particular tag by ID
         :param request:
         :param tag_id:
-        :param format:
         :return: HTTP_200_OK and JSON-tag: if tag with such ID exists
                  HTTP_404_NOT_FOUND and JSON: if tag with such doesn`t exist
         """
@@ -248,16 +250,16 @@ class TagByCriteria(APIView):
     Class to get all tags with size limit
     """
 
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request):
         """
         Get set of tag with limited size
         :param request:
-        :param format:
         :return: HTTP_200_OK and JSON-tags
         """
 
-        DEFAULT_SIZE = 50
-        DEFAULT_OFFSET = 0
+        default_size = 50
+        default_offset = 0
 
         result = {'status': '', 'data': {}}
 
@@ -266,8 +268,8 @@ class TagByCriteria(APIView):
 
         tags_query_set = Tag.objects.all()
 
-        size = size if size else DEFAULT_SIZE
-        offset = offset if offset else DEFAULT_OFFSET
+        size = size if size else default_size
+        offset = offset if offset else default_offset
         tags_query_set = tags_query_set.filter().order_by('name')[int(offset): int(offset) + int(size)]
 
         if not tags_query_set:
@@ -280,11 +282,11 @@ class TagByCriteria(APIView):
 
         return Response(result, status=status.HTTP_200_OK)
 
-    def post(self, request, format=None):
+    @staticmethod
+    def post(request):
         """
         Add one particular tag
         :param request:
-        :param format:
         :return: HTTP_202_ACCEPTED and JSON-tag: if tag was added successfully
                  HTTP_409_CONFLICT and JSON: if tag with such name already exists
                  HTTP_400_BAD_REQUEST: if format of input is wrong
