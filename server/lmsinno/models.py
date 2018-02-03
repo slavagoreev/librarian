@@ -19,7 +19,7 @@ class Document(models.Model):
     is_reference = models.BooleanField(default=False)
     copies_available = models.IntegerField(default=0)
     cover = models.CharField(default='empty', max_length=255)
-    date_added = models.DateField(auto_now=True)
+    date_added = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.title
