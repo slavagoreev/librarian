@@ -140,7 +140,7 @@ class DocumentsByCriteria(APIView):
     def delete(self, request):
         # TODO AUTHORIZATION
         """
-        DELETE request: delete one particular document by id
+        DELETE request: delete one particular document by ID
         :param request:
         :return: HTTP_200_OK: if document was deleted success
                  HTTP_404_NOT_FOUND: if document with such id not found
@@ -156,8 +156,61 @@ class DocumentsByCriteria(APIView):
             serializer = DocumentSerializer(document)
             document.delete()
             return Response({'status': HTTP_200_OK, 'data': serializer.data})
+        else:
+            return Response({'status': HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({'status': HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request):
+        """
+        PATCH one particular document by ID
+        :param request:
+        :return: HTTP_202_ACCEPTED: if document was changed successfully
+                 HTTP_404_NOT_FOUND: if document with such ID doesn`t exist
+                 HTTP_400_BAD_REQUEST: if format of input data is wrong
+        """
+
+        result = {'status': '', 'data': {}}
+
+        document_id = request.data.get('id', None)
+
+        if document_id:
+            try:
+                document = Document.objects.get(pk=document_id)
+            except Document.DoesNotExist:
+                result['status'] = HTTP_404_NOT_FOUND
+                return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+            document_serializer = DocumentSerializer(document, data=request.data, partial=True)
+            if document_serializer.is_valid():
+                document_serializer.save()
+
+            authors = request.data.get('authors', None)
+            if authors:
+                DocumentOfAuthor.objects.filter(document_id=document_id).delete()
+                authors = re.sub('[\[\]]', '', authors).split(',')
+                for author in authors:
+                    author = author.strip()
+                    author_obj = Author.objects.filter(name__iexact=author).first()
+                    if not author_obj:
+                        author_obj = Author.objects.create(name=author)
+                    DocumentOfAuthor.objects.create(document_id=document.document_id, author_id=author_obj.author_id)
+
+            tags = request.data.get('tags', None)
+            if tags:
+                TagOfDocument.objects.filter(document_id=document_id).delete()
+                tags = re.sub('[\[\]]', '', tags).split(',')
+                for tag in tags:
+                    tag = tag.strip()
+                    tag_obj = Tag.objects.filter(name__iexact=tag).first()
+                    if not tag_obj:
+                        tag_obj = Tag.objects.create(name=tag)
+                    TagOfDocument.objects.create(document_id=document.document_id, tag_id=tag_obj.tag_id)
+
+            result['status'] = HTTP_202_ACCEPTED
+            result['data'] = document_serializer.data
+            return Response(result, status=status.HTTP_202_ACCEPTED)
+
+        result['status'] = HTTP_400_BAD_REQUEST
+        return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagDetail(APIView):
