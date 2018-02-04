@@ -11,8 +11,8 @@ First of all, you should download and unpack repository from here: https://githu
 ### Installing
 1. Install Python 3.x: https://www.python.org/ftp/python/3.6.4/python-3.6.4.exe
   (Make sure you`ve installed pip (including in the Python Installer))
-  (Also make sure that python and pip were added in system variable 'Path')
-2. Install Node.JS: https://nodejs.org/en/download/
+  (Make sure that python and pip were added in system variable 'Path')
+2. Install Node.JS: https://nodejs.org/en/download/ (Make sure that node was added in system variable 'Path')
 3. Now let`s necessery libraries and frameworks - open console and type:
       ```
       pip install django
@@ -45,3 +45,12 @@ Finally, let`s run our server on local machine:
       python manage.py runserver localhost:80
       ```
 3. Go to [localhost/admin](http://localhost/admin) and enter username and password from previous step
+
+### Test DataSet
+Moreover you can upload test dataset (about 500 books) (You server should have been runned)
+1. Go to ```project_path/librarian-master/shared```
+2. Open console here and type:
+      ```
+      node dataset_loader.js
+      ```
+3. It will take about 5 minutes
