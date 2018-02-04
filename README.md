@@ -50,7 +50,4 @@ Finally, let`s run our server on local machine:
 Moreover you can upload test dataset (about 500 books) (You server should have been runned)
 1. Go to ```project_path/librarian-master/shared```
 2. Open console here and type:
-      ```
-      node dataset_loader.js
-      ```
 3. It will take about 5 minutes
