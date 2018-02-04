@@ -1,3 +1,10 @@
-<main>
-  <app-loader></app-loader>
-</main>
+<section (keydown)="imageShow($event)">
+  <app-header></app-header>
+  <!--<app-notification></app-notification>-->
+
+  <main class="body container">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer></app-footer>
+  <div [ngClass]="{show: imageShow}" class="overlay-image"></div>
+</section>

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+//import { Http, URLSearchParams } from '@angular/http';
 
 @Component({
   selector: 'app-root',
@@ -8,13 +8,18 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent implements OnInit {
   title = 'app';
+  imageShow = false;
 
-  constructor(private http: HttpClient) {
+  constructor() {
 
   }
   ngOnInit(): void {
-    this.http.get('http://127.0.0.1:8000/document/500').subscribe(data => {
-      console.log(data);
-    });
+
+  }
+  @HostListener('document:keypress', ['$event'])
+  handleKeyboardEvent($event: KeyboardEvent) {
+    if ($event.ctrlKey && $event.key.toLocaleLowerCase() === 't') {
+      this.imageShow = !this.imageShow;
+    }
   }
 }

@@ -1,11 +1,8 @@
 @import
-  '~bootstrap/scss/functions',
-  '~bootstrap/scss/variables',
-  '~bootstrap/scss/mixins',
-  '~bootstrap/scss/print',
-  '~bootstrap/scss/reboot',
-  '~bootstrap/scss/type';
+  '~bootstrap/scss/bootstrap';
 
 @import './variables';
 @import './mixins';
 
+body {
+}

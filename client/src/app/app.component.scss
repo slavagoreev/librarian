@@ -3,3 +3,19 @@
 main {
   height: 100%;
 }
+.overlay-image {
+  width: 100%;
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  display: none;
+  background: url("/assets/attachment.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 2000px;
+  &.show {
+    display: block;
+    opacity: 0.3;
+  }
+}

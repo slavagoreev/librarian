@@ -1,0 +1,25 @@
+<section>
+  <ul class="documents">
+    <p *ngIf="!documents || documents.length === 0">No documents found for this category</p>
+    <li *ngFor="let document of documents" class="document" itemscope
+        itemtype="https://schema.org/CreativeWork">
+      <a itemprop="url" [routerLink]="['/document/', document.document_id]">
+        <img itemprop="image"
+             class="document-thumb"
+             alt="{{document.title}}"
+             [src]="document.cover">
+        <div class="document-MetaInfo">
+          <div itemprop="headline" class="document-title">{{ document.title }}</div>
+          <div itemprop="author" class="document-author">
+            by {{ document.authors.join(", ") }}
+          </div>
+          <div *ngIf="document.publisher" itemprop="publisher" class="document-publisher">{{ document.publisher }}</div>
+          <div itemprop="dateCreated" class="document-year">{{ document.year }}</div>
+          <div *ngIf="document.description.length > 0" itemprop="description" class="document-description">
+            {{ document.description.substr(0,120)+'...' }}
+          </div>
+        </div>
+      </a>
+    </li>
+  </ul>
+</section>
