@@ -52,5 +52,5 @@ Moreover you can upload test dataset (about 500 books) (You server should have b
 2. Open console here and type:
       ```
       node dataset_loader.js
-      ```
+      ```
 3. It will take about 5 minutes
