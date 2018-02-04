@@ -41,7 +41,7 @@ Let`s create local super user
 Finally, let`s run our server on local machine:
 1. Go to project_path/librarian-master/server
 2. Open console here and type:
-      '''
+      ```
       python manage.py runserver localhost:80
-      '''
+      ```
 3. Go to [localhost/admin](http://localhost/admin) and enter username and password from previous step
