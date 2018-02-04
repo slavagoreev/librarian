@@ -21,7 +21,7 @@ First of all, you should download and unpack repository from here: https://githu
 
 ### Migrations
 Let`s make begining preparation for Data Base (make migrations)
-1. Go to project_path/librarian-master/server
+1. Go to ```project_path/librarian-master/server```
 2. Open console here and type:
       ```
       python manage.py makemigrations lmsinno
@@ -30,7 +30,7 @@ Let`s make begining preparation for Data Base (make migrations)
       
 ### Admin
 Let`s create local super user
-1. Go to project_path/librarian-master/server
+1. Go to ```project_path/librarian-master/server```
 2. Open console here and type:
       ```
       python manage.py createsuperuser
@@ -39,7 +39,7 @@ Let`s create local super user
       
 ### Running
 Finally, let`s run our server on local machine:
-1. Go to project_path/librarian-master/server
+1. Go to ```project_path/librarian-master/server```
 2. Open console here and type:
       ```
       python manage.py runserver localhost:80
