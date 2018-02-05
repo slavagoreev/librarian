@@ -1,7 +1,14 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import validate_email
 
 import datetime
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
+from server import settings
 
 
 class Document(models.Model):
@@ -25,23 +32,23 @@ class Document(models.Model):
         return self.title
 
 
-class User(models.Model):
+class User(AbstractUser):
     # Type of User:
     # 0 - basic user; 1 - Faculty; 2 - Librarian
     USER_TYPE_CHOICES = [(0, 'Basic user'), (1, 'Faculty'), (2, 'Librarian')]
 
-    user_id = models.AutoField(primary_key=True)
-    email = models.EmailField(unique=True, validators=[validate_email])
-    password = models.CharField(default=None, max_length=32)
-    password_salt = models.CharField(default=None, max_length=32)
     role = models.IntegerField(default=0, choices=USER_TYPE_CHOICES)
-    first_name = models.CharField(max_length=20, default=None)
-    last_name = models.CharField(max_length=20, default=None)
-    address = models.CharField(max_length=100, default=None)
+    address = models.CharField(max_length=100, default='innopolis')
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
 
     def __str__(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
 
 
 class Author(models.Model):

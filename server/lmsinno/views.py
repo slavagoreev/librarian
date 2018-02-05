@@ -1,5 +1,9 @@
-from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument
-from .serializer import DocumentSerializer, TagSerializer
+from django.db import IntegrityError
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
+
+from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User
+from .serializer import DocumentSerializer, TagSerializer, UserSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -315,3 +319,58 @@ class TagByCriteria(APIView):
         result['data']['tag_id'] = tag.tag_id
 
         return Response(result, status=status.HTTP_201_CREATED)
+
+
+class Authorization(APIView):
+    permission_classes = (AllowAny,)
+
+    @staticmethod
+    def get(request):
+
+        result = {'status': '', 'data': {}}
+        try:
+            email = request.META['HTTP_EMAIL']
+            password = request.META['HTTP_PASSWORD']
+            users = User.objects
+            user = users.filter(email=email, password=password)
+
+            if user.exists():  # if exists all good
+
+                result['status'] = 'HTTP_202_ACCEPTED'
+                result['data'] = {'token': Token.objects.get(user=user.get()).key}
+                return Response(result, status=status.HTTP_202_ACCEPTED)
+
+        except KeyError:
+            pass
+
+        result['status'] = 'HTTP_404_NOT_FOUND'
+        return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+
+class Registration(APIView):
+    permission_classes = (AllowAny,)
+
+    @staticmethod
+    def post(request):
+
+        result = {'status': '', 'data': {}}
+
+        try:
+            serialized = UserSerializer(data=request.data)
+
+            if serialized.is_valid():
+                serialized.save()
+                new_user = serialized.instance
+
+                result['status'] = 'HTTP_201_CREATED'
+                result['data'] = {
+                    'user_id': new_user.pk,
+                    'token': Token.objects.get(user=new_user).key
+                }
+
+                return Response(result, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            pass
+
+        result['status'] = 'HTTP_400_BAD_REQUEST'
+        return Response(result, status=status.HTTP_400_BAD_REQUEST)

@@ -53,7 +53,7 @@ class DocumentOfAuthorSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('user_id',
+        fields = ('id',
                   'email',
                   'password',
                   'password_salt',
