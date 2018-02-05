@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from .models import Document, User, Author, DocumentOfAuthor, Order, Copy, Tag, TagOfDocument
+from rest_framework.relations import PrimaryKeyRelatedField
 
+from .models import Document, User, Author, DocumentOfAuthor, Order, Copy, Tag, TagOfDocument
 
 class DocumentSerializer(serializers.ModelSerializer):
     authors = serializers.SerializerMethodField()
-
+    
     class Meta:
         model = Document
         fields = ('document_id',
@@ -18,6 +19,7 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'copies_available',
                   'cover',
                   'authors')
+
 
     @staticmethod
     def get_authors(obj):
@@ -41,6 +43,15 @@ class UserSerializer(serializers.ModelSerializer):
                   'last_name',
                   'address',
                   'phone',)
+        
+    def get_authors(self, obj):
+        "obj is a Author instance. Returns list of dicts"""
+        documentsOfAuthor = DocumentOfAuthor.objects.filter(document_id=obj.document_id)
+        authors = []
+        for author in documentsOfAuthor:
+            author_obj = Author.objects.filter(author_id=author.author_id).first()
+            authors.append(author_obj)
+        return [AuthorSerializer(m).data for m in authors]
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -50,12 +61,26 @@ class AuthorSerializer(serializers.ModelSerializer):
                   'name')
 
 
-class DocumentOfAuthorSerializer(serializers.ModelSerializer):
+class DocumentOfAuthorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = DocumentOfAuthor
         fields = ('id',
                   'document_id',
                   'author_id')
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('user_id',
+                  'email',
+                  'password',
+                  'password_salt',
+                  'role',
+                  'first_name',
+                  'last_name',
+                  'address',
+                  'phone')
+
 
 
 class OrderSerializer(serializers.ModelSerializer):
