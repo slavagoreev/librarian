@@ -1,7 +1,5 @@
-from rest_framework.viewsets import ModelViewSet
-
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument
-from .serializer import DocumentSerializer, AuthorSerializer, TagSerializer
+from .serializer import DocumentSerializer, TagSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -19,7 +17,8 @@ class DocumentDetail(APIView):
     """
 
     # TODO AUTHORIZATION
-    def get(self, request, document_id, format=None):
+    @staticmethod
+    def get(request, document_id):
         """
         GET request to get one particular document
         :param request:
@@ -43,21 +42,14 @@ class DocumentDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
-# class AuthorViewSet(ModelViewSet):
-#     queryset = Author.objects.all()
-#     serializer_class = AuthorSerializer
-#
-# class DocumentViewSet(ModelViewSet):
-#     queryset = Document.objects.all()
-#     serializer_class = DocumentSerializer
-
 class DocumentsByCriteria(APIView):
     """
     Class to work with document using some criteria
     """
 
     # TODO AUTHORIZATION
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request):
         """
         GET request to get set of document by criteria
         :param request:
@@ -109,7 +101,8 @@ class DocumentsByCriteria(APIView):
         result['status'] = HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request, format=None):
+    @staticmethod
+    def post(request):
         """
         POST request: add one particular document
         :param request: input params
@@ -147,7 +140,8 @@ class DocumentsByCriteria(APIView):
 
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
         # TODO AUTHORIZATION
         """
         DELETE request: delete one particular document by ID
@@ -169,7 +163,8 @@ class DocumentsByCriteria(APIView):
         else:
             return Response({'status': HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
-    def patch(self, request):
+    @staticmethod
+    def patch(request):
         """
         PATCH one particular document by ID
         :param request:
@@ -228,7 +223,8 @@ class TagDetail(APIView):
     Class to get one particular tag by ID
     """
 
-    def get(self, request, tag_id, format=None):
+    @staticmethod
+    def get(request, tag_id):
         """
         Get one particular tag by ID
         :param request:
@@ -258,11 +254,11 @@ class TagByCriteria(APIView):
     Class to get all tags with size limit
     """
 
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request):
         """
         Get set of tag with limited size
         :param request:
-        :param format:
         :return: HTTP_200_OK and JSON-tags
         """
 
@@ -290,11 +286,11 @@ class TagByCriteria(APIView):
 
         return Response(result, status=status.HTTP_200_OK)
 
-    def post(self, request, format=None):
+    @staticmethod
+    def post(request):
         """
         Add one particular tag
         :param request:
-        :param format:
         :return: HTTP_202_ACCEPTED and JSON-tag: if tag was added successfully
                  HTTP_409_CONFLICT and JSON: if tag with such name already exists
                  HTTP_400_BAD_REQUEST: if format of input is wrong
