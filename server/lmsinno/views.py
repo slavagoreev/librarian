@@ -98,6 +98,7 @@ class DocumentsByCriteria(APIView):
         result['status'] = HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
+
     @staticmethod
     def post(request):
         """
@@ -229,10 +230,11 @@ class TagDetail(APIView):
         :return: HTTP_200_OK and JSON-tag: if tag with such ID exists
                  HTTP_404_NOT_FOUND and JSON: if tag with such doesn`t exist
         """
+=======
+    
+    
+    
 
-        result = {'status': '', 'data': {}}
-
-        try:
             tag = Tag.objects.get(pk=tag_id)
         except Tag.DoesNotExist:
             result['status'] = HTTP_404_NOT_FOUND
@@ -311,3 +313,4 @@ class TagByCriteria(APIView):
         result['data']['tag_id'] = tag.tag_id
 
         return Response(result, status=status.HTTP_201_CREATED)
+
