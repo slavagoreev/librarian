@@ -14,7 +14,7 @@ settings.py# IDEs and editors
 /server/lmsinno/__pycache__/*
 /server/lmsinno/migrations/__pycache__/*
 /server/.idea/
-/server/server/settings.py
+/server/settings.py
 settings.py
 new.txt
 
