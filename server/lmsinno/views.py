@@ -2,6 +2,7 @@ from django.db import IntegrityError
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 
+from lmsinno.permissions import DocumentPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer
 
@@ -50,6 +51,8 @@ class DocumentsByCriteria(APIView):
     """
     Class to work with document using some criteria
     """
+
+    permission_classes = (DocumentPermission,)
 
     # TODO AUTHORIZATION
     @staticmethod

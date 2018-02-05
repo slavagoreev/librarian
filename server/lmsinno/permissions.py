@@ -1,4 +1,35 @@
+import re
+
+from rest_framework import permissions
+from rest_framework.authtoken.models import Token
 from rest_framework.views import exception_handler
+
+
+class DocumentPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        try:
+
+            token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
+
+            user = Token.objects.get(key=token).user
+
+            if request.method == 'GET':
+                result = True
+            elif request.method == 'POST' and user.role == 2:
+                result = True
+            elif request.method == 'DELETE' and user.role == 2:
+                result = True
+            elif request.method == 'PATCH' and user.role == 2:
+                result = True
+            else:
+                result = False
+
+            return result
+        except Token.DoesNotExist:
+            return False
+        except KeyError:
+            return False
 
 
 def custom_exception_handler(exc, context):
