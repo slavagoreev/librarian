@@ -56,12 +56,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'email',
                   'password',
-                  'password_salt',
                   'role',
                   'first_name',
                   'last_name',
                   'address',
-                  'phone')
+                  'phone',)
+
+        def create(self, validated_data, instance=None):
+            user = super(UserSerializer, self).create(validated_data)
+            user.save()
+            return user
 
 
 class OrderSerializer(serializers.ModelSerializer):
