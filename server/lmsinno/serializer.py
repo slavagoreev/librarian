@@ -3,6 +3,8 @@ from .models import Document, User, Author, DocumentOfAuthor, Order, Copy, Tag, 
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    authors = serializers.SerializerMethodField()
+
     class Meta:
         model = Document
         fields = ('document_id',
@@ -14,7 +16,17 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'price',
                   'is_reference',
                   'copies_available',
-                  'cover')
+                  'cover',
+                  'authors')
+
+    @staticmethod
+    def get_authors(obj):
+        documents_of_author = DocumentOfAuthor.objects.filter(document_id=obj.document_id)
+        authors = []
+        for author in documents_of_author:
+            author_obj = Author.objects.filter(author_id=author.author_id).first()
+            authors.append(author_obj)
+        return [AuthorSerializer(author).data for author in authors]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -28,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'first_name',
                   'last_name',
                   'address',
-                  'phone')
+                  'phone',)
 
 
 class AuthorSerializer(serializers.ModelSerializer):
