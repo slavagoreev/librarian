@@ -13,7 +13,7 @@ class Document(models.Model):
     document_id = models.AutoField(primary_key=True, verbose_name=title)
     description = models.TextField(blank=True, max_length=10000)
     publisher = models.CharField(max_length=255)
-    year = models.DecimalField(max_digits=4, decimal_places=0, default=datetime.datetime.now().year)
+    year = models.IntegerField(default=datetime.datetime.now().year)
     type = models.IntegerField(choices=DOCUMENT_TYPE_CHOICES)
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)

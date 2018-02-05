@@ -12,7 +12,8 @@ export function getDocumentState(state: AppState): DocumentState {
 // ******************** Individual selectors ***************************
 export function fetchDocuments(state: DocumentState) {
   const ids = state.documentIds.toJS();
-  const documentEntities = state.documentEntities.toJS();
+  const documentEntities = state.documentEntities.toJS()//forEach(doc => doc as Document);
+  console.log (documentEntities);
   return ids.map(id => documentEntities[id]);
 }
 

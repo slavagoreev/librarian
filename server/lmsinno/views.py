@@ -1,3 +1,5 @@
+from rest_framework.viewsets import ModelViewSet
+
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument
 from .serializer import DocumentSerializer, AuthorSerializer, TagSerializer
 
@@ -40,6 +42,14 @@ class DocumentDetail(APIView):
 
         return Response(result, status=status.HTTP_200_OK)
 
+
+# class AuthorViewSet(ModelViewSet):
+#     queryset = Author.objects.all()
+#     serializer_class = AuthorSerializer
+#
+# class DocumentViewSet(ModelViewSet):
+#     queryset = Document.objects.all()
+#     serializer_class = DocumentSerializer
 
 class DocumentsByCriteria(APIView):
     """
