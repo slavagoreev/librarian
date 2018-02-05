@@ -1,10 +1,12 @@
 from rest_framework import serializers
-from rest_framework.relations import PrimaryKeyRelatedField
 
 from .models import Document, User, Author, DocumentOfAuthor, Order, Copy, Tag, TagOfDocument
 
+
 class DocumentSerializer(serializers.ModelSerializer):
     authors = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
+
     class Meta:
         model = Document
         fields = ('document_id',
@@ -17,18 +19,20 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'is_reference',
                   'copies_available',
                   'cover',
-                  'authors')
+                  'authors',
+                  'tags')
 
-    def get_authors(self, obj):
-        "obj is a Author instance. Returns list of dicts"""
-        documentsOfAuthor = DocumentOfAuthor.objects.filter(document_id=obj.document_id)
-        authors = []
-        for author in documentsOfAuthor:
-            author_obj = Author.objects.filter(author_id=author.author_id).first()
-            authors.append(author_obj)
-        return [AuthorSerializer(m).data for m in authors]
+    @staticmethod
+    def get_authors(obj):
+        document_of_authors = Author.objects.filter(documentofauthor__document_id=obj.document_id)
+        serializer = AuthorSerializer(document_of_authors, many=True)
+        return serializer.data
 
-
+    @staticmethod
+    def get_tags(obj):
+        tags_of_book = Tag.objects.filter(tagofdocument__document_id=obj.document_id)
+        serializer = TagSerializer(tags_of_book, many=True)
+        return serializer.data
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -45,6 +49,7 @@ class DocumentOfAuthorSerializer(serializers.HyperlinkedModelSerializer):
                   'document_id',
                   'author_id')
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -57,7 +62,6 @@ class UserSerializer(serializers.ModelSerializer):
                   'last_name',
                   'address',
                   'phone')
-
 
 
 class OrderSerializer(serializers.ModelSerializer):
