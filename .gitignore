@@ -1,4 +1,4 @@
-# IDEs and editors
+settings.py# IDEs and editors
 /.idea
 .project
 .gitignore
@@ -13,6 +13,10 @@
 /server/log.txt
 /server/lmsinno/__pycache__/*
 /server/lmsinno/migrations/__pycache__/*
+/server/.idea/
+/server/settings.py
+settings.py
+new.txt
 
 # System Files
 .DS_Store
