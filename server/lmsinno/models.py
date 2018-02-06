@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
@@ -7,6 +8,12 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 import datetime
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
+from server import settings
 
 
 class Document(models.Model):
@@ -42,6 +49,18 @@ class User(AbstractUser):
     def __str__(self):
         return '{0}'.format(self.username)
 
+    def get_instance(request):
+        token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
+        user = Token.objects.get(key=token).user
+        return user
+
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
 
 class Author(models.Model):
     author_id = models.AutoField(primary_key=True)
@@ -71,7 +90,8 @@ class Order(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateField(auto_now_add=True)
-    date_accepted = models.DateField(default=None)
+    date_accepted = models.DateField(default=None, null=True)
+    date_return = models.DateField(default=None, null=True)
     status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
 
     def __str__(self):

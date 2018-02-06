@@ -55,14 +55,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id',
-                  'username',
                   'email',
                   'password',
                   'role',
                   'first_name',
                   'last_name',
                   'address',
-                  'phone')
+                  'phone',
+                  'username')
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -73,6 +73,7 @@ class OrderSerializer(serializers.ModelSerializer):
                   'user',
                   'date_created',
                   'date_accepted',
+                  'date_return',
                   'status')
 
 

@@ -15,7 +15,7 @@ function post(dataset) {
     var post_options = {
         host: 'localhost',
         port: '80',
-        path: '/document/',
+        path: '/documents/',
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
