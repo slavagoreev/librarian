@@ -9,6 +9,10 @@ urlpatterns = [
     url(r'tags/$', views.TagByCriteria.as_view()),
     url(r'signin/', views.SignIn.as_view()),
     url(r'signup/', views.SignUp.as_view())
+    url(r'^booking/(?P<document_id>[0-9]+)[/]?', views.Booking.as_view()),
+    url(r'^orders/(?P<order_id>[0-9]+)[/]?', views.OrderDetail.as_view()),
+    url(r'^orders/', views.Orders.as_view()),
+    url(r'^myorders/$', views.MyOrders.as_view()),
 ]
 
 

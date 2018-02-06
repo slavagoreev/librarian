@@ -1,5 +1,11 @@
-from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User
-from .serializer import DocumentSerializer, TagSerializer, UserSerializer
+import datetime
+from django.db import IntegrityError
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
+
+from lmsinno.permissions import DocumentPermission, OrderPermission
+from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
+from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -50,6 +56,8 @@ class DocumentsByCriteria(APIView):
     """
     Class to work with document using some criteria
     """
+
+    permission_classes = (DocumentPermission,)
 
     # TODO AUTHORIZATION
     @staticmethod
@@ -378,3 +386,144 @@ class SignUp(APIView):
         result['data'] = serializer.errors
 
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
+      
+class Orders(APIView):
+    permission_classes = (OrderPermission,)
+    """
+        Class to get all orders
+    """
+
+    @staticmethod
+    def get(request):
+        result = {'status': '', 'data': {}}
+
+        orders = OrderSerializer(Order.objects.all(), many=True)
+
+        result['data'] = orders.data
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class OrderDetail(APIView):
+    permission_classes = (OrderPermission,)
+    """
+        Class to react with orders
+    """
+
+    @staticmethod
+    def get(request, order_id):
+        result = {'status': '', 'data': {}}
+
+        try:
+            orders = OrderSerializer(Order.objects.get(order_id=order_id))
+
+            result['data'] = orders.data
+
+            return Response(result, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+    @staticmethod
+    def patch(request, order_id):
+        result = {'status': '', 'data': {}}
+
+        try:
+            order = Order.objects.get(order_id=order_id)
+
+            order.status = int(request.META['HTTP_STATUS'])
+
+            print(order.status)
+            if order.status == 1:
+                order.date_accepted = datetime.date.today()
+                if order.user.role == 0:
+                    delta = datetime.timedelta(days=14)
+                    order.date_return = datetime.date.today() + delta
+
+                if order.user.role >= 1:
+                    delta = datetime.timedelta(days=30)
+                    order.date_return = datetime.date.today() + delta
+
+            order.save()
+
+            result['status'] = HTTP_200_OK
+            return Response(result, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+        except KeyError:
+            result['status'] = HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyOrders(APIView):
+    permission_classes = (OrderPermission,)
+    """
+        Class to see users orders
+    """
+
+    @staticmethod
+    def get(request):
+        result = {'status': '', 'data': {}}
+
+        user = User.get_instance(request=request)
+
+        orders = OrderSerializer(Order.objects.filter(user=user), many=True)
+
+        result['data'] = orders.data
+        result['status'] = HTTP_200_OK
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class Booking(APIView):
+    """
+    Class to book one particular document by ID
+    """
+
+    @staticmethod
+    def get(request, document_id):
+        """
+        Book one particular document by ID
+        :param request:
+        :param document_id:
+        :param format:
+        :return: HTTP_200_OK and JSON-order: if tag with such ID exists
+                 HTTP_400_BAD_REQUEST and JSON: 'details': 'document is not available'
+                 HTTP_400_BAD_REQUEST and JSON: 'details': 'reference document cannot be checked out'
+                 HTTP_404_NOT_FOUND and JSON: if document with such id doesn`t exist
+        """
+
+        result = {'status': '', 'data': {}}
+
+        try:
+            document = Document.objects.get(pk=document_id)
+
+            if document.copies_available == 0:
+                result['status'] = HTTP_400_BAD_REQUEST
+                result['data'] = {'details': 'document is not available'}
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            elif document.is_reference:
+                result['status'] = HTTP_400_BAD_REQUEST
+                result['data'] = {'details': 'reference document cannot be checked out'}
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+            user = User.get_instance(request=request)
+
+            order = Order.objects.create(
+                document=document,
+                user=user,
+                status=0,
+            )
+
+        except Document.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        document.copies_available -= 1
+        document.save()
+
+        order_serializer = OrderSerializer(order)
+        result['data'] = order_serializer.data
+        result['status'] = HTTP_200_OK
+
+        return Response(result, status=status.HTTP_200_OK)
