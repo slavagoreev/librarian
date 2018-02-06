@@ -1,8 +1,11 @@
 import re
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.validators import validate_email
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from rest_framework.authtoken.models import Token
 
 import datetime
 
@@ -44,7 +47,7 @@ class User(AbstractUser):
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
 
     def __str__(self):
-        return '{0} {1}'.format(self.first_name, self.last_name)
+        return '{0}'.format(self.username)
 
     def get_instance(request):
         token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
@@ -136,3 +139,10 @@ class TagOfDocument(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(self.document, self.tag)
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
