@@ -1,10 +1,11 @@
+import datetime
 from django.db import IntegrityError
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 
 from lmsinno.permissions import DocumentPermission
-from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User
-from .serializer import DocumentSerializer, TagSerializer, UserSerializer
+from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
+from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -322,6 +323,59 @@ class TagByCriteria(APIView):
         result['data']['tag_id'] = tag.tag_id
 
         return Response(result, status=status.HTTP_201_CREATED)
+
+
+class Booking(APIView):
+    """
+    Class to book one particular document by ID
+    """
+
+    @staticmethod
+    def get(request, document_id):
+        """
+        Book one particular document by ID
+        :param request:
+        :param document_id:
+        :param format:
+        :return: HTTP_200_OK and JSON-tag: if tag with such ID exists
+                 HTTP_404_NOT_FOUND and JSON: if tag with such doesn`t exist
+        """
+
+        result = {'status': '', 'data': {}}
+
+        try:
+            document = Document.objects.get(pk=document_id)
+
+            if document.copies_available == 0:
+                result['status'] = HTTP_400_BAD_REQUEST
+                result['data'] = {'details': 'document is not available'}
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            elif document.is_reference:
+                result['status'] = HTTP_400_BAD_REQUEST
+                result['data'] = {'details': 'reference document cannot be checked out.'}
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+            token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
+            user = Token.objects.get(key=token).user
+
+            order = Order.objects.create(
+                document=document,
+                user=user,
+                status=1,
+            )
+
+        except Document.DoesNotExist:
+            result['status'] = HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+        document.copies_available -= 1
+        document.save()
+
+        order_serializer = OrderSerializer(order)
+        result['data'] = order_serializer.data
+        result['status'] = HTTP_200_OK
+
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class Authorization(APIView):

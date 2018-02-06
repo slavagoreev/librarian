@@ -79,7 +79,7 @@ class Order(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateField(auto_now_add=True)
-    date_accepted = models.DateField(default=None)
+    date_accepted = models.DateField(default=None, null=True)
     status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
 
     def __str__(self):
