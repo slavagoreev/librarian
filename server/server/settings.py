@@ -116,6 +116,8 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'lmsinno.permissions.custom_exception_handler'
 }
 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 

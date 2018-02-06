@@ -337,8 +337,10 @@ class Booking(APIView):
         :param request:
         :param document_id:
         :param format:
-        :return: HTTP_200_OK and JSON-tag: if tag with such ID exists
-                 HTTP_404_NOT_FOUND and JSON: if tag with such doesn`t exist
+        :return: HTTP_200_OK and JSON-order: if tag with such ID exists
+                 HTTP_400_BAD_REQUEST and JSON: 'details': 'document is not available'
+                 HTTP_400_BAD_REQUEST and JSON: 'details': 'reference document cannot be checked out'
+                 HTTP_404_NOT_FOUND and JSON: if document with such doesn`t exist
         """
 
         result = {'status': '', 'data': {}}
@@ -352,7 +354,7 @@ class Booking(APIView):
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
             elif document.is_reference:
                 result['status'] = HTTP_400_BAD_REQUEST
-                result['data'] = {'details': 'reference document cannot be checked out.'}
+                result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
@@ -366,6 +368,7 @@ class Booking(APIView):
 
         except Document.DoesNotExist:
             result['status'] = HTTP_400_BAD_REQUEST
+            result['data'] = {'details': 'document is not available'}
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         document.copies_available -= 1
