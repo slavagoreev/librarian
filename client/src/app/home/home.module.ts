@@ -9,15 +9,26 @@ import { DocumentActions } from '../document/reducers/document.actions';
 import { EffectsModule } from '@ngrx/effects';
 import { DocumentEffects } from '../document/reducers/document.effects';
 import { StoreModule } from '@ngrx/store';
+import { GenreNavComponent } from './genre-nav/genre-nav.component';
+import { LoaderComponent } from '../shared/loader/loader.component';
+import { SharedModule } from '../shared/shared.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
     RouterModule.forChild(HomeRoutes),
-    CommonModule
+    CommonModule,
+    SharedModule,
+    NgbModule
   ],
   providers: [
     DocumentActions,
   ],
-  declarations: [HomeComponent, DocumentListComponent, DocumentItemComponent]
+  declarations: [
+    HomeComponent,
+    DocumentListComponent,
+    DocumentItemComponent,
+    GenreNavComponent
+  ]
 })
 export class HomeModule { }

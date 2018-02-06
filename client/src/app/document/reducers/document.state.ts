@@ -8,7 +8,7 @@ export interface DocumentState extends Map<string, any> {
   selectedDocument: Document;
 }
 
-export const DocumentStateRecord = Record({
+export const InitialDocumentState = Record({
   documentIds: List([]),
   documentEntities: Map({}),
   selectedDocumentId: null,

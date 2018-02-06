@@ -26,18 +26,27 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/finally';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/delay';
 import { DocumentEffects } from './document/reducers/document.effects';
+import { LoaderComponent } from './shared/loader/loader.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     StoreModule.forRoot(reducers, { metaReducers }),
-    //!environment.production ? StoreDevtoolsModule.instrument() : [],
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production // Restrict extension to log-only mode
+    }),
 
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
     EffectsModule.forRoot([DocumentEffects]),
+    NgbModule.forRoot(),
+
     BrowserModule,
     FormsModule,
     HttpModule,
@@ -47,7 +56,8 @@ import { DocumentEffects } from './document/reducers/document.effects';
     CoreModule,
     SharedModule
   ],
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

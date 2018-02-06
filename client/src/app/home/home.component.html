@@ -1,14 +1,21 @@
-<div class="documents">
-  <div class="container">
-    <div class="row">
-      <aside class="col-12 col-lg-3">
+<div class="header-slider">
 
-      </aside>
-      <div class="content col-12 col-lg-9">
-        <app-document-list
-          [documents]="documents$ | async">
-        </app-document-list>
+</div>
+<main class="body">
+  <div class="documents">
+    <div class="container-fluid px-lg-1 pr-lg-5">
+      <div class="row">
+        <aside class="col-12 col-lg-3">
+
+        </aside>
+        <div class="content col-12 col-lg-9">
+          <app-genre-nav></app-genre-nav>
+          <app-document-list
+            [documents]="documents$ | async">
+          </app-document-list>
+        </div>
       </div>
+      <app-loader [hidden]="(loading$ | async)?.loading === false || (loading$ | async)?.hasError === true"></app-loader>
     </div>
   </div>
-</div>
+</main>

@@ -1,187 +1,59 @@
-/*.loader {
+@import "../../../sass/variables";
+.image-loader{
+  padding: 12.5px 0;
   position: absolute;
-  left: 50%;
-  margin-left: -30px;
-  top: 50%;
-  margin-top: -30px;
+  top: 46.5%;
+  left: 46.5%;
+  -webkit-filter: url("#goo");
+  filter: url("#goo");
 }
-div {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin: -12px 0 0 0;
-  position: absolute;
-  background: #18FFFF;
-  -webkit-transform-origin: 0px 50px;
-  -ms-transform-origin: 0px 50px;
-  transform-origin: 0px 50px;
-  opacity: 0;
-  z-index: 1;
-  -webkit-animation: spin 1.5s ease-in-out infinite;
-  animation: spin 1.5s ease-in-out infinite;
-}
-
-div:nth-child(1) {
-  -webkit-animation-delay: 0.1s;
-  animation-delay: 0.1s
-}
-
-div:nth-child(2) {
-  -webkit-animation-delay: 0.2s;
-  animation-delay: 0.2s
-}
-
-div:nth-child(3) {
-  -webkit-animation-delay: 0.3s;
-  animation-delay: 0.3s
-}
-
-div:nth-child(4) {
-  -webkit-animation-delay: 0.4s;
-  animation-delay: 0.4s
-}
-
-div:nth-child(5) {
-  -webkit-animation-delay: 0.5s;
-  animation-delay: 0.5s
-}
-
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: translate(0%, -100%) rotate(0deg);
-    transform: translate(0%, -100%) rotate(0deg)
-  }
-  10% {
-    opacity: 0
-  }
-  30% {
-    width: 5px;
-    height: 5px;
-    border-radius: 5px;
-    margin: -5px 0 0 0;
-    background: #18FFFF
-  }
-  50% {
-    width: 22px;
-    height: 22px;
-    border-radius: 22px;
-    margin: -50px 0 0 0;
-    background: #D500F9;
-    opacity: 1;
-    z-index: 999;
-  }
-  70% {
-    width: 5px;
-    height: 5px;
-    border-radius: 5px;
-    margin: -5px 0 0 0;
-    background: #18FFFF
-  }
-  90% {
-    opacity: 0
-  }
-  100% {
-    -webkit-transform: translate(0%, -100%) rotate(-360deg);
-    transform: translate(0%, -100%) rotate(-360deg)
-  }
-}
-
-@keyframes spin {
-  0% {
-    -webkit-transform: translate(0%, -100%) rotate(0deg);
-    transform: translate(0%, -100%) rotate(0deg)
-  }
-  10% {
-    opacity: 0
-  }
-  30% {
-    width: 5px;
-    height: 5px;
-    border-radius: 5px;
-    margin: -5px 0 0 0;
-    background: #18FFFF
-  }
-  50% {
-    width: 22px;
-    height: 22px;
-    border-radius: 22px;
-    margin: -50px 0 0 0;
-    background: #D500F9;
-    opacity: 1;
-    z-index: 999;
-  }
-  70% {
-    width: 5px;
-    height: 5px;
-    border-radius: 5px;
-    margin: -5px 0 0 0;
-    background: #18FFFF
-  }
-  90% {
-    opacity: 0
-  }
-  100% {
-    -webkit-transform: translate(0%, -100%) rotate(-360deg);
-    transform: translate(0%, -100%) rotate(-360deg)
-  }
-}*/
-$blue: #2E86FF;
-$red: #FC3164;
-
-$animtime: 2s;
-$easing: ease-in-out;
-
-.background {
-  filter:url('#goo');
-  width: 100vw;
-  height: 100vh;
+.image-loader .rect{
   position: relative;
+  height: 80px;
+  width: 80px;
+  animation: rotating 1.7s linear infinite;
 }
-.loader {
-  filter:url('#goo');
-  width: 4rem;
-  height: 4rem;
+
+@keyframes rotating{
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.image-loader .rect .dot{
   position: absolute;
-  top: calc(50% - 4rem / 2);
-  left: calc(50% - 4rem / 2);
-  background: $blue;
-  border-radius: 2rem;
+  left: 28px;
+  top: 28px;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  background-color: $primary;
 }
-.loader-left {
-  animation: rotateLeft $animtime $easing infinite, color $animtime $easing infinite;
+.image-loader .rect .dot.d_i{
+  animation: dot_i 1.5s ease-in-out infinite;
 }
-.loader-right {
-  animation: rotateRight $animtime $easing infinite, color $animtime $easing infinite;
-}
-
-@keyframes rotateLeft {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-    transform-origin: -50% -50%;
-  }
+.image-loader .rect .dot.d_ii{
+  animation: dot_ii 1.5s ease-in-out infinite;
 }
 
-@keyframes rotateRight {
-  0% {
-    transform: rotate(0deg);
+@keyframes dot_i{
+  0%, 100%{
+    transform: translateY(0) scale(1);
   }
-  100% {
-    transform: rotate(360deg);
-    transform-origin: 150% 150%;
+  50%{
+    transform: translateY(20px) scale(0.8);
   }
 }
 
-@keyframes color {
-  0% {
-    background: $blue;
+@keyframes dot_ii{
+  0%, 100%{
+    transform: translateY(0) scale(1);
   }
-  50% {
-    background: $red;
-  }
-  100% {
-    background: $blue;
+  50%{
+    transform: translateY(-20px) scale(0.8);
   }
 }

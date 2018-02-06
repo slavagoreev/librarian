@@ -1,6 +1,25 @@
-<nav class="navbar navbar-light">
-  <a class="navbar-brand mb-0 h1 mx-auto" href="#">
+<nav class="navbar navbar-expand-md navbar-light" [class.fixed]="navIsFixed" [class.open]="searchOpen">
+  <a class="navbar-brand mb-0 h1" href="#">
     <img src="/assets/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
     Librarian
   </a>
+  <div id="morphsearch" class="morphsearch">
+    <form class="morphsearch-form">
+      <input class="morphsearch-input" (focus)="setSearchState(true)" type="search" placeholder="Search..."/>
+      <button class="morphsearch-submit" type="submit">Search</button>
+    </form>
+    <div class="morphsearch-content">
+    </div>
+    <span class="morphsearch-close" (click)="setSearchState(false)"></span>
+  </div>
+  <div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav float-right">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Sign in</a>
+      </li>
+      <!--<li class="nav-item">
+        <a class="nav-link" href="#">Features</a>
+      </li>-->
+    </ul>
+  </div>
 </nav>

@@ -22,6 +22,12 @@ export class HttpService extends Http {
     defaultOptions: RequestOptions,
   ) {
     super(backend, defaultOptions);
+
+
+    this.loading.next({
+      loading: true, hasError: false, hasMsg: ''
+    });
+    console.log (this.loading.subscribe(res => console.log (res)))
   }
 
   /**
@@ -31,7 +37,7 @@ export class HttpService extends Http {
    * @returns {Observable<Response>}
    */
   request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
-    return super.request(url, options);
+    return super.request(url, options)
   }
 
   /**
@@ -43,6 +49,7 @@ export class HttpService extends Http {
   get(url: string, options?: RequestOptionsArgs): Observable<any> {
     this.requestInterceptor();
     return super.get(this.getFullUrl(url), this.requestOptions(options))
+      //.delay(1000)
       .catch(this.onCatch.bind(this))
       .do((res: Response) => {
         this.onSubscribeSuccess(res);
@@ -176,8 +183,7 @@ export class HttpService extends Http {
    * @returns {ErrorObservable}
    */
   private onCatch(error: any, caught: Observable<any>): Observable<any> {
-    console.log('Something went terrible wrong and error is', error);
-    // this.loaderService.popError();
+    console.error(error);
     return Observable.of(error);
   }
 

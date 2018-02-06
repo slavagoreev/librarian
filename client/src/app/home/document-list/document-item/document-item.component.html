@@ -1,0 +1,40 @@
+<li class="document card" id="{{document.document_id}}" itemscope
+    itemtype="https://schema.org/CreativeWork">
+  <div class="card-body">
+    <div class="document-thumb image-shadow">
+      <img itemprop="image"
+           class="document-thumb-image"
+           alt="{{document.title}}"
+           [src]="document.cover">
+    </div>
+    <div class="document-MetaInfo">
+      <div itemprop="headline" class="document-title card-title">
+        <a itemprop="url" [routerLink]="['/document/', document.document_id]">
+          {{ document.title }}
+        </a>
+      </div>
+      <ul class="document-authors">
+        <li *ngFor="let author of document.authors"
+            itemprop="author" class="document-author">{{ author.name }}</li>
+      </ul>
+      <div *ngIf="document.description.length > 0" itemprop="description"
+           class="document-description card-text">
+        {{ document.description }}
+      </div>
+    </div>
+    <div ngbDropdown class="document-menu">
+      <div ngbDropdownToggle class="document-options"></div>
+      <div ngbDropdownMenu class="dropdown-menu-right">
+        <button class="dropdown-item" (click)="deleteDocument(document.document_id)">Delete document</button>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer bg-transparent">
+    <div class="text-muted">
+      Publisher:
+      <span *ngIf="document.publisher" itemprop="publisher"
+            class="document-publisher font-weight-bold">{{ document.publisher }}</span>
+      (<span itemprop="dateCreated" class="document-year">{{ document.year }}</span>)
+    </div>
+  </div>
+</li>

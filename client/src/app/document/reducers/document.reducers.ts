@@ -1,8 +1,8 @@
-import { DocumentState, DocumentStateRecord } from './document.state';
+import { DocumentState, InitialDocumentState } from './document.state';
 import { DocumentActions } from './document.actions';
 import { Document } from '../../shared/models/documents.model';
 
-export const initialState: DocumentState = new DocumentStateRecord() as DocumentState;
+export const initialState: DocumentState = new InitialDocumentState() as DocumentState;
 
 export function reducer(state = initialState, { type, payload }: any): DocumentState {
   switch (type) {
@@ -12,8 +12,7 @@ export function reducer(state = initialState, { type, payload }: any): DocumentS
       }) as DocumentState;
 
     case DocumentActions.GET_ALL_DOCUMENTS_SUCCESS:
-      console.log (payload)
-      const _documents: Document[] = payload.documents.data;
+      const _documents: Document[] = payload.data;
       const documentIds: number[] = _documents.map(document => document.document_id);
       const documentEntities = _documents.reduce((documents: { [id: number]: Document }, document: Document) => {
         return Object.assign(documents, {
@@ -25,6 +24,14 @@ export function reducer(state = initialState, { type, payload }: any): DocumentS
         documentEntities: documentEntities
       }) as DocumentState;
 
+    case DocumentActions.REMOVE_DOCUMENT_SUCCESS:
+      const documentId = payload;
+      const index = state.documentIds.indexOf(documentId);
+
+      return state.merge({
+        documentIds: state.documentIds.splice(index, 1),
+        documentEntities: state.documentEntities.delete(documentId),
+      }) as DocumentState;
     default:
       return state;
   }

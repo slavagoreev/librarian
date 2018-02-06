@@ -5,15 +5,13 @@ import { Document } from '../../shared/models/documents.model';
 
 // Base document state selector function
 export function getDocumentState(state: AppState): DocumentState {
-  console.log (state.documents);
   return state.documents;
 }
 
 // ******************** Individual selectors ***************************
 export function fetchDocuments(state: DocumentState) {
   const ids = state.documentIds.toJS();
-  const documentEntities = state.documentEntities.toJS()//forEach(doc => doc as Document);
-  console.log (documentEntities);
+  const documentEntities = state.documentEntities.toJS();
   return ids.map(id => documentEntities[id]);
 }
 

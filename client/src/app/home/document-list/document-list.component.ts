@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../interfaces';
 
 @Component({
   selector: 'app-document-list',
@@ -10,11 +8,10 @@ import { AppState } from '../../interfaces';
 export class DocumentListComponent implements OnInit {
   @Input() documents;
 
-  constructor(
-    private store: Store<AppState>,
-  ) { }
+  constructor(){}
 
   ngOnInit() {
+
   }
 
 }

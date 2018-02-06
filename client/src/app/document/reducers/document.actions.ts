@@ -7,10 +7,9 @@ export class DocumentActions {
   static GET_DOCUMENT_DETAIL = 'GET_DOCUMENT_DETAIL';
   static GET_DOCUMENT_DETAIL_SUCCESS = 'GET_DOCUMENT_DETAIL_SUCCESS';
   static CLEAR_SELECTED_DOCUMENT = 'CLEAR_SELECTED_DOCUMENT';
+  static REMOVE_DOCUMENT = 'REMOVE_DOCUMENT';
+  static REMOVE_DOCUMENT_SUCCESS = 'REMOVE_DOCUMENT_SUCCESS';
 
-  getAllDocuments() {
-    return { type: DocumentActions.GET_ALL_DOCUMENTS };
-  }
 
   getDocumentDetail(id: string) {
     return {
@@ -18,15 +17,6 @@ export class DocumentActions {
       payload: id
     };
   }
-
-  // change documents type to Document[]
-  getAllDocumentsSuccess(documents: any) {
-    return {
-      type: DocumentActions.GET_ALL_DOCUMENTS_SUCCESS,
-      payload: documents
-    };
-  }
-
   getDocumentDetailSuccess(document: Document) {
     return {
       type: DocumentActions.GET_DOCUMENT_DETAIL_SUCCESS,
@@ -34,7 +24,33 @@ export class DocumentActions {
     };
   }
 
+  getAllDocuments() {
+    return { type: DocumentActions.GET_ALL_DOCUMENTS };
+  }
+
+  getAllDocumentsSuccess(documents: Document[]) {
+    return {
+      type: DocumentActions.GET_ALL_DOCUMENTS_SUCCESS,
+      payload: documents
+    };
+  }
+
+
   clearSelectedDocument() {
     return { type: DocumentActions.CLEAR_SELECTED_DOCUMENT };
+  }
+
+  removeDocument(documentId: number) {
+    return {
+      type: DocumentActions.REMOVE_DOCUMENT,
+      payload: documentId
+    };
+  }
+
+  removeDocumentSuccess(documentId: number) {
+    return {
+      type: DocumentActions.REMOVE_DOCUMENT_SUCCESS,
+      payload: documentId
+    };
   }
 }
