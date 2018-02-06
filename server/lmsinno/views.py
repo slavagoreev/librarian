@@ -1,9 +1,6 @@
 import datetime
-from django.db import IntegrityError
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
 
-from lmsinno.permissions import DocumentPermission, OrderPermission
+from .permissions import DocumentPermission, OrderPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer
 
@@ -11,8 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-
-from django.contrib.auth import authenticate, login
+from rest_framework.permissions import AllowAny
 
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
     HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
@@ -328,7 +324,8 @@ class TagByCriteria(APIView):
         return Response(result, status=status.HTTP_201_CREATED)
 
 
-class SignIn(APIView):
+class Users(APIView):
+    permission_classes = (AllowAny,)
 
     @staticmethod
     def get(request):
@@ -359,8 +356,6 @@ class SignIn(APIView):
         result['status'] = HTTP_400_BAD_REQUEST
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-
-class SignUp(APIView):
     @staticmethod
     def post(request):
         """
@@ -386,7 +381,8 @@ class SignUp(APIView):
         result['data'] = serializer.errors
 
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
-      
+
+
 class Orders(APIView):
     permission_classes = (OrderPermission,)
     """
