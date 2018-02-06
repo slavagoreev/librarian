@@ -72,6 +72,7 @@ class OrderSerializer(serializers.ModelSerializer):
                   'user',
                   'date_created',
                   'date_accepted',
+                  'date_return',
                   'status')
 
 

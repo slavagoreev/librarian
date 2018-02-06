@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 
-from lmsinno.permissions import DocumentPermission
+from lmsinno.permissions import DocumentPermission, OrderPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer
 
@@ -325,6 +325,94 @@ class TagByCriteria(APIView):
         return Response(result, status=status.HTTP_201_CREATED)
 
 
+class Orders(APIView):
+    permission_classes = (OrderPermission,)
+    """
+        Class to get all orders
+    """
+
+    @staticmethod
+    def get(request):
+        result = {'status': '', 'data': {}}
+
+        orders = OrderSerializer(Order.objects.all(), many=True)
+
+        result['data'] = orders.data
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class OrderDetail(APIView):
+    permission_classes = (OrderPermission,)
+    """
+        Class to react with orders
+    """
+
+    @staticmethod
+    def get(request, order_id):
+        result = {'status': '', 'data': {}}
+
+        try:
+            orders = OrderSerializer(Order.objects.get(order_id=order_id))
+
+            result['data'] = orders.data
+
+            return Response(result, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+    @staticmethod
+    def patch(request, order_id):
+        result = {'status': '', 'data': {}}
+
+        try:
+            order = Order.objects.get(order_id=order_id)
+
+            order.status = int(request.META['HTTP_STATUS'])
+
+            print(order.status)
+            if order.status == 1:
+                order.date_accepted = datetime.date.today()
+                if order.user.role == 0:
+                    delta = datetime.timedelta(days=14)
+                    order.date_return = datetime.date.today() + delta
+
+                if order.user.role >= 1:
+                    delta = datetime.timedelta(days=30)
+                    order.date_return = datetime.date.today() + delta
+
+            order.save()
+
+            result['status'] = HTTP_200_OK
+            return Response(result, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+        except KeyError:
+            result['status'] = HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyOrders(APIView):
+    permission_classes = (OrderPermission,)
+    """
+        Class to react with orders
+    """
+
+    @staticmethod
+    def get(request):
+        result = {'status': '', 'data': {}}
+
+        user = User.get_instance(request=request)
+
+        orders = OrderSerializer(Order.objects.filter(user=user), many=True)
+
+        result['data'] = orders.data
+        result['status'] = HTTP_200_OK
+        return Response(result, status=status.HTTP_200_OK)
+
+
 class Booking(APIView):
     """
     Class to book one particular document by ID
@@ -357,13 +445,12 @@ class Booking(APIView):
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-            token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
-            user = Token.objects.get(key=token).user
+            user = User.get_instance(request=request)
 
             order = Order.objects.create(
                 document=document,
                 user=user,
-                status=1,
+                status=0,
             )
 
         except Document.DoesNotExist:

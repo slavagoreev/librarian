@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import validate_email
@@ -44,6 +46,12 @@ class User(AbstractUser):
     def __str__(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
 
+    def get_instance(request):
+        token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
+        user = Token.objects.get(key=token).user
+        return user
+
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -80,6 +88,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateField(auto_now_add=True)
     date_accepted = models.DateField(default=None, null=True)
+    date_return = models.DateField(default=None, null=True)
     status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
 
     def __str__(self):
