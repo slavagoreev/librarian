@@ -6,7 +6,9 @@ urlpatterns = [
     url(r'documents/(?P<document_id>[0-9]+)[/]?', views.DocumentDetail.as_view()),
     url(r'documents/$', views.DocumentsByCriteria.as_view()),
     url(r'tags/(?P<tag_id>[0-9]+)[/]?', views.TagDetail.as_view()),
-    url(r'tags/$', views.TagByCriteria.as_view())
+    url(r'tags/$', views.TagByCriteria.as_view()),
+    url(r'signin/', views.SignIn.as_view()),
+    url(r'signup/', views.SignUp.as_view())
 ]
 
 

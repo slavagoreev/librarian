@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import IntegerField
 
 from .models import Document, User, Author, DocumentOfAuthor, Order, Copy, Tag, TagOfDocument
 
@@ -53,10 +54,10 @@ class DocumentOfAuthorSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('user_id',
+        fields = ('id',
+                  'username',
                   'email',
                   'password',
-                  'password_salt',
                   'role',
                   'first_name',
                   'last_name',
