@@ -60,12 +60,8 @@ class UserSerializer(serializers.ModelSerializer):
                   'first_name',
                   'last_name',
                   'address',
-                  'phone',)
-
-        def create(self, validated_data, instance=None):
-            user = super(UserSerializer, self).create(validated_data)
-            user.save()
-            return user
+                  'phone',
+                  'username')
 
 
 class OrderSerializer(serializers.ModelSerializer):

@@ -382,6 +382,13 @@ class Booking(APIView):
 
 class Authorization(APIView):
     permission_classes = (AllowAny,)
+    """
+        Authorization for getting token for authentication
+        :param email: user email
+        :param password: user password
+        :return: HTTP_202_ACCEPTED - user get his token
+                 HTTP_404_NOT_FOUND - user does not exist in system
+    """
 
     @staticmethod
     def get(request):
@@ -408,7 +415,11 @@ class Authorization(APIView):
 
 class Registration(APIView):
     permission_classes = (AllowAny,)
-
+    """
+        Authorization for getting token for authentication
+        :return: HTTP_201_CREATED - user get his new token
+                 HTTP_400_BAD_REQUEST - some info missed
+    """
     @staticmethod
     def post(request):
 
@@ -418,7 +429,9 @@ class Registration(APIView):
             serialized = UserSerializer(data=request.data)
 
             if serialized.is_valid():
+
                 serialized.save()
+
                 new_user = serialized.instance
 
                 result['status'] = 'HTTP_201_CREATED'
@@ -428,7 +441,7 @@ class Registration(APIView):
                 }
 
                 return Response(result, status=status.HTTP_201_CREATED)
-        except IntegrityError:
+        except IOError:
             pass
 
         result['status'] = 'HTTP_400_BAD_REQUEST'
