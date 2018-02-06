@@ -397,7 +397,7 @@ class OrderDetail(APIView):
 class MyOrders(APIView):
     permission_classes = (OrderPermission,)
     """
-        Class to react with orders
+        Class to see users orders
     """
 
     @staticmethod
