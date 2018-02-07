@@ -1,60 +1,53 @@
-import re
-
-from rest_framework import permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.views import exception_handler
-
+from rest_framework import permissions
 from lmsinno.models import User
+import re
 
 
 class DocumentPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        try:
+        user = User.get_instance(request)
 
-            user = User.get_instance(request)
-
-            if request.method == 'GET':
-                result = True
-            elif request.method == 'POST' and user.role == 2:
-                result = True
-            elif request.method == 'DELETE' and user.role == 2:
-                result = True
-            elif request.method == 'PATCH' and user.role == 2:
-                result = True
-            else:
-                result = False
-
-            return result
-        except Token.DoesNotExist:
+        if not user:
             return False
-        except KeyError:
-            return False
+
+        if request.method == 'GET':
+            result = True
+        elif request.method == 'POST' and user.role == 2:
+            result = True
+        elif request.method == 'DELETE' and user.role == 2:
+            result = True
+        elif request.method == 'PATCH' and user.role == 2:
+            result = True
+        else:
+            result = False
+
+        return result
 
 
 class OrderPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        try:
+        user = User.get_instance(request)
 
-            user = User.get_instance(request)
-
-            if request.method == 'GET' and user.role == 2:
-                result = True
-            elif request.method == 'POST' and user.role == 2:
-                result = True
-            elif request.method == 'DELETE' and user.role == 2:
-                result = True
-            elif request.method == 'PATCH' and user.role == 2:
-                result = True
-            else:
-                result = False
-
-            return result
-        except Token.DoesNotExist:
+        if not user:
             return False
-        except KeyError:
-            return False
+
+        if request.method == 'GET' and user.role == 2:
+            result = True
+        elif request.method == 'POST' and user.role == 2:
+            result = True
+        elif request.method == 'DELETE' and user.role == 2:
+            result = True
+        elif request.method == 'PATCH' and user.role == 2:
+            result = True
+        else:
+            result = False
+
+        return result
+
 
 
 def custom_exception_handler(exc, context):
