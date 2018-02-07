@@ -50,9 +50,14 @@ class User(AbstractUser):
         return '{0}'.format(self.username)
 
     def get_instance(request):
-        token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
-        user = Token.objects.get(key=token).user
-        return user
+        try:
+            token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
+            user = Token.objects.get(key=token).user
+            return user
+        except Token.DoesNotExist:
+            return None
+        except KeyError:
+            return None
 
 
 
