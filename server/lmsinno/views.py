@@ -1,14 +1,15 @@
 import datetime
 
-from .permissions import DocumentPermission, OrderPermission
+from .permissions import DocumentPermission, OrderPermission, AuthenticatedUserPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
-from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer
+from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import detail_route
 
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
     HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
@@ -322,65 +323,6 @@ class TagByCriteria(APIView):
         result['data']['tag_id'] = tag.tag_id
 
         return Response(result, status=status.HTTP_201_CREATED)
-
-
-class Users(APIView):
-    permission_classes = (AllowAny,)
-
-    @staticmethod
-    def get(request):
-        """
-        GET request for Signing Up
-        :param request:
-        :return: HTTP_202_ACCEPTED: Sign In is successful
-                 HTTP_401_UNAUTHORIZED: Wrong username or password
-                 HTTP_400_BAD_REQUEST: Wrong format of input data
-        """
-        result = {'status': '', 'data': {}}
-
-        if 'HTTP_AUTHORIZATION' in request.META:
-            auth = request.META['HTTP_AUTHORIZATION'].split()
-            if len(auth) == 2:
-                if auth[0].lower() == "basic":
-                    username, password = base64.b64decode(auth[1]).decode('utf-8').split(':')
-                    user = User.objects.filter(username=username, password=password)
-                    if user.exists():
-                        token = Token.objects.get(user=user.get())
-                        result['status'] = HTTP_202_ACCEPTED
-                        result['data']['token'] = token.key
-                        return Response(result, status=status.HTTP_202_ACCEPTED)
-                    else:
-                        result['status'] = HTTP_401_UNAUTHORIZED
-                        return Response(result, status=status.HTTP_401_UNAUTHORIZED)
-
-        result['status'] = HTTP_400_BAD_REQUEST
-        return Response(result, status=status.HTTP_400_BAD_REQUEST)
-
-    @staticmethod
-    def post(request):
-        """
-        POST request for Signing Up
-        :param request:
-        :return: HTTP_202_ACCEPTED and JSON: Sign Up is successful
-                 HTTP_400_BAD_REQUEST and JSON: Wrong format of input data
-        """
-        result = {'status': '', 'data': {}}
-
-        serializer = UserSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-
-            result['status'] = HTTP_202_ACCEPTED
-            result['data'] = {'token': Token.objects.get(user=serializer.instance).key,
-                              'user_id': serializer.data['id']}
-
-            return Response(result, status=status.HTTP_202_ACCEPTED)
-
-        result['status'] = HTTP_400_BAD_REQUEST
-        result['data'] = serializer.errors
-
-        return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Orders(APIView):

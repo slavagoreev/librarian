@@ -27,6 +27,26 @@ class DocumentPermission(permissions.BasePermission):
         return result
 
 
+class AuthenticatedUserPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        user = User.get_instance(request)
+
+        if not user:
+            return False
+
+        if request.method == 'GET':
+            result = True
+        elif request.method == 'POST' and user.role == 2:
+            result = True
+        elif request.method == 'PATCH' and user.role == 2:
+            result = True
+        else:
+            result = False
+
+        return result
+
+
 class OrderPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):

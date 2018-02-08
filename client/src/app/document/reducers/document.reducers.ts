@@ -13,16 +13,18 @@ export function reducer(state = initialState, { type, payload }: any): DocumentS
 
     case DocumentActions.GET_ALL_DOCUMENTS_SUCCESS:
       const _documents: Document[] = payload.data;
-      const documentIds: number[] = _documents.map(document => document.document_id);
-      const documentEntities = _documents.reduce((documents: { [id: number]: Document }, document: Document) => {
-        return Object.assign(documents, {
-          [document.document_id]: document
-        });
-      }, { });
-      return state.merge({
-        documentIds: documentIds,
-        documentEntities: documentEntities
-      }) as DocumentState;
+      if (_documents && _documents.length > 0) {
+        const documentIds: number[] = _documents.map(document => document.document_id);
+        const documentEntities = _documents.reduce((documents: { [id: number]: Document }, document: Document) => {
+          return Object.assign(documents, {
+            [document.document_id]: document
+          });
+        }, { });
+        return state.merge({
+          documentIds: documentIds,
+          documentEntities: documentEntities
+        }) as DocumentState;
+      } else return state;
 
     case DocumentActions.REMOVE_DOCUMENT_SUCCESS:
       const documentId = payload;

@@ -49,6 +49,26 @@ class User(AbstractUser):
     def __str__(self):
         return '{0}'.format(self.username)
 
+    def set_role(self, role):
+        self.role = role
+
+
+    def set_address(self, address):
+        self.address = address
+
+    def set_phone(self, phone):
+        self.phone = phone
+
+    def set_data(self, data):
+        self.username = data.get('username') or self.username
+        self.password = data.get('password1') or data.get('password') or self.password
+        self.email = data.get('email') or self.email
+        self.role = data.get('role') or self.role
+        self.phone = data.get('phone') or self.phone
+        self.address = data.get('address') or self.address
+        self.last_name = data.get('last_name') or self.last_name
+        self.first_name = data.get('first_name') or self.first_name
+
     def get_instance(request):
         try:
             token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
@@ -58,8 +78,6 @@ class User(AbstractUser):
             return None
         except KeyError:
             return None
-
-
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

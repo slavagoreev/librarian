@@ -14,6 +14,7 @@ import { environment } from './../environments/environment.prod';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
 import { HomeModule } from './home/home.module';
+import { AuthModule } from './auth/auth.module';
 import { LayoutModule } from './layout/layout.module';
 import { DocumentModule } from './document/document.module';
 import { reducers, metaReducers } from './app.reducers';
@@ -25,6 +26,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/finally';
+import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { DocumentEffects } from './document/reducers/document.effects';
@@ -52,6 +54,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     HttpModule,
     HomeModule,
     LayoutModule,
+    AuthModule,
     DocumentModule,
     CoreModule,
     SharedModule

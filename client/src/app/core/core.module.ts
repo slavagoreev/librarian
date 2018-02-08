@@ -4,6 +4,7 @@ import { AuthService } from './services/auth.service';
 import { HttpService } from './services/http.service';
 import { DocumentService } from './services/document.service';
 import { HttpModule, XHRBackend, RequestOptions, Http } from '@angular/http';
+import { CanActivateViaAuthGuard } from './guards/auth.guard';
 
 export function httpInterceptor(
   backend: XHRBackend,
@@ -20,12 +21,14 @@ export function httpInterceptor(
     AuthService,
     HttpService,
     DocumentService,
+    CanActivateViaAuthGuard,
     {
       provide: HttpService,
       useFactory: httpInterceptor,
       deps: [ XHRBackend, RequestOptions]
     },
   ],
-  declarations: []
+  declarations: [
+  ]
 })
 export class CoreModule { }

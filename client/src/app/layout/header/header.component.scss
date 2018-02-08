@@ -2,14 +2,8 @@
 nav {
   height: 70px;
   width: 100%;
-  background: #fff;
   position: inherit;
   padding: 0 8%;
- /* -webkit-transition: height .3s;
-  -moz-transition: height .5s;
-  -ms-transition: height .5s;
-  -o-transition: height .5s;
-  transition: height .5s;*/
 
   .navbar-brand {
     position: absolute;
@@ -38,6 +32,16 @@ nav {
   }
   &.navbar.open {
     height: 100%;
+  }
+  &:before {
+    content: "";
+    background: #fff;
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 70px;
+    left: 0;
+    top: 0;
   }
 }
 @keyframes smoothScroll {

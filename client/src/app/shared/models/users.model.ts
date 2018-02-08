@@ -1,5 +1,5 @@
 import { Order } from './orders.model';
-export class Users {
+export class User {
   user_id: number;
   email: string;
   password?: string;

@@ -10,10 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os
+from os import path
+
+import sys
+from .utils import import_callable
+from django.conf import settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -38,8 +42,32 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
-    'lmsinno'
+    'lmsinno',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration'
 ]
+
+REST_USE_JWT = True
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": 'lmsinno.serializer.UserAuthSerializer',
+}
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": 'lmsinno.serializer.UserSafeSerializer'
+}
+#serializers = getattr(settings, 'REST_AUTH_SERIALIZERS', {})
+
+# UserDetailsSerializer = import_callable(
+#     serializers.get('USER_DETAILS_SERIALIZER', 'lmsinno.serializer.UserSerializer')
+# )
+# RegisterSerializer = import_callable(
+#     serializers.get('REST_AUTH_REGISTER_SERIALIZERS', 'lmsinno.serializer.UserSerializer')
+# )
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,7 +116,9 @@ AUTH_USER_MODEL = 'lmsinno.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     )
 }
 
