@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 from os import path
 
 import sys
-from .utils import import_callable
+
 from django.conf import settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -39,33 +39,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'rest_framework',
     'rest_framework.authtoken',
-    'lmsinno',
     'rest_auth',
-    'django.contrib.sites',
     'allauth',
     'allauth.account',
-    'rest_auth.registration'
+    'rest_auth.registration',
+    
+    'lmsinno',
+
 ]
 
 REST_USE_JWT = True
+
 REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": 'lmsinno.serializer.UserAuthSerializer',
+    "USER_DETAILS_SERIALIZER": 'lmsinno.serializer.UserResponceDataSerializer',
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": 'lmsinno.serializer.UserSafeSerializer'
 }
-#serializers = getattr(settings, 'REST_AUTH_SERIALIZERS', {})
-
-# UserDetailsSerializer = import_callable(
-#     serializers.get('USER_DETAILS_SERIALIZER', 'lmsinno.serializer.UserSerializer')
-# )
-# RegisterSerializer = import_callable(
-#     serializers.get('REST_AUTH_REGISTER_SERIALIZERS', 'lmsinno.serializer.UserSerializer')
-# )
 
 SITE_ID = 1
 
@@ -117,10 +113,13 @@ AUTH_USER_MODEL = 'lmsinno.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-    )
+    ),
 }
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

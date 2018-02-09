@@ -1,19 +1,11 @@
 import re
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.conf import settings
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from rest_framework.authtoken.models import Token
 
 import datetime
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
-
-from server import settings
 
 
 class Document(models.Model):
@@ -79,10 +71,14 @@ class User(AbstractUser):
         except KeyError:
             return None
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
+    def get_token(self, request):
+        try:
+            return Token.objects.get(user=self.get_instance(request))
+        except Token.DoesNotExist:
+            return None
+        except KeyError:
+            return None
+
 
 
 class Author(models.Model):
@@ -163,9 +159,4 @@ class TagOfDocument(models.Model):
     def __str__(self):
         return '{0}: {1}'.format(self.document, self.tag)
 
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
 

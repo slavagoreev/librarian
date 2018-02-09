@@ -38,10 +38,11 @@ export class AuthService {
    * @memberof AuthService
    */
   login(data): Observable<any> {
-    return this.http.get(
-      'users/',
+    return this.http.post(
+      'api/users/login/', { data }
     ).map((res: Response) => {
       data = res.json();
+      console.log (data);
       if (!data.error) {
         // Setting token after login
         this.setLocalData(data);
@@ -67,11 +68,12 @@ export class AuthService {
    */
   register(data): Observable<any> {
     return this.http.post(
-      'users/', { data }
+      'api/users/registration/', data
     ).map((res: Response) => {
       data = res.json();
       if (!data.errors) {
         // Setting token after login
+        console.log (res);
         this.setLocalData(res.json());
         this.store.dispatch(this.actions.loginSuccess());
       } else {
@@ -95,18 +97,17 @@ export class AuthService {
    */
 
   logout() {
-    return this.http.get('users/logout')
+    return this.http.post('api/users/logout', {})
       .map((res: Response) => {
         localStorage.removeItem("user");
-        localStorage.removeItem("id_token");
-        localStorage.removeItem("expires_at");
+        localStorage.removeItem("token");
         this.store.dispatch(this.actions.logoutSuccess());
         return res.json();
       });
   }
 
   isLoggedIn() {
-    return moment().isBefore(this.getExpiration());
+    return localStorage.getItem('token');
   }
 
   isLoggedOut() {
@@ -120,17 +121,9 @@ export class AuthService {
    *
    * @memberof AuthService
    */
-  private setLocalData(user_data: {user: User, idToken: string, expiresIn: string}): void {
+  private setLocalData(user_data: {user: User, token: string}): void {
     const jsonData = JSON.stringify(user_data);
-    const expiresAt = moment().add(user_data.expiresIn, 'second');
     localStorage.setItem('user', jsonData);
-    localStorage.setItem('id_token', user_data.idToken);
-    localStorage.setItem('expires_at', JSON.stringify(expiresAt.valueOf()) );
-  }
-
-  getExpiration() {
-    const expiration = localStorage.getItem("expires_at");
-    const expiresAt = JSON.parse(expiration);
-    return moment(expiresAt);
+    localStorage.setItem('token', user_data.token);
   }
 }

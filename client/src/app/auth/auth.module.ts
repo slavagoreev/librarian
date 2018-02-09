@@ -7,12 +7,18 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 import { AuthRoutes as routes } from './auth.routes';
 import { SharedModule } from '../shared/shared.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { AuthActions } from './actions/auth.actions';
 
 @NgModule({
+  providers: [
+    AuthActions
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
   ],
   declarations: [
     LoginComponent,

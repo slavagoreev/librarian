@@ -1,6 +1,10 @@
 from django.http import QueryDict
 from rest_framework import serializers
-from rest_framework.fields import IntegerField
+
+from rest_framework.response import Response
+from rest_framework import status
+
+from .misc import HTTP_202_ACCEPTED
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -14,6 +18,11 @@ try:
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
 from .models import Document, User, Author, DocumentOfAuthor, Order, Copy, Tag, TagOfDocument
+from rest_framework_jwt.settings import api_settings
+
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -155,32 +164,33 @@ class UserSafeSerializer(serializers.Serializer):
         return user
 
 
-    #
-    #
-    # def get_cleaned_data(self):
-    #     return {
-    #         'username': self.validated_data.get('username', ''),
-    #         'password': self.validated_data.get('password1', ''),
-    #         'email': self.validated_data.get('email', ''),
-    #         'role': 0,
-    #         'address': self.validated_data.get('address', ''),
-    #         'phone': self.validated_data.get('phone', '')
-    #     }
-    #
-    # def save(self, request):
-    #     adapter = get_adapter()
-    #     user = adapter.new_user(request)
-    #     self.cleaned_data = self.get_cleaned_data()
-    #     serializer = UserSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         super(UserSerializer, self).save(*args, **kwargs)
-    #     setup_user_email(request, user, [])
-    #     return user
+        # result = {'status': '', 'data': {}}
+        # payload = jwt_payload_handler(user)
+        # token = jwt_encode_handler(payload)
+        # result['status'] = HTTP_202_ACCEPTED
+        # result['data']['token'] = token
+        # result['data']['user'] = user
+        # response = Response(result, status=status.HTTP_202_ACCEPTED)
 
 class UserAuthSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password')
+
+
+
+
+class UserResponceDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id',
+                  'email',
+                  'role',
+                  'first_name',
+                  'last_name',
+                  'address',
+                  'phone',
+                  'username')
 
 
 

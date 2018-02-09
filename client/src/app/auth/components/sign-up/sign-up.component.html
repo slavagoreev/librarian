@@ -1,25 +1,84 @@
-<!--
-<div class="row register-container" data-hook="">
+<main class="body">
+  <div class="sign-in col-md-8 mx-auto">
+    <div class="row">
+
+      <!--      <div class="col-md-4">
+              <div class="side-image"></div>
+            </div>-->
+      <div class="col-md-8 mx-auto">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title font-weight-light">Signup to {{title}}</h3>
+          </div>
+        </div>
+        <form class="register-register-form" novalidate="" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+          <fieldset class="register-input-container">
+            <div class="form-row">
+              <div class="col-md-4 mb-3">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control"
+                       id="email" formControlName="email"
+                       placeholder="Email"
+                       [ngClass]="{
+                          'is-invalid' : signUpForm.get('email').errors && signUpForm.get('email').touched
+                       }">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="lastName">Phone number</label>
+                <input type="text" class="form-control"
+                       id="phone" formControlName="phone"
+                       placeholder="Phone number"
+                       [ngClass]="{
+                          'is-invalid' : signUpForm.get('phone').errors && signUpForm.get('phone').touched
+                       }">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="username">Last name</label>
+                <input type="text" class="form-control"
+                       id="username" formControlName="username"
+                       placeholder="Username"
+                       [ngClass]="{
+                          'is-invalid' : signUpForm.get('username').errors && signUpForm.get('username').touched
+                       }">
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="register-input-container">
+            <div class="form-row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName">First name</label>
+                <input type="text" class="form-control"
+                       id="firstName" formControlName="first_name"
+                       placeholder="First name"
+                       [ngClass]="{
+                          'is-invalid' : signUpForm.get('first_name').errors && signUpForm.get('first_name').touched
+                       }">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName">Last name</label>
+                <input type="text" class="form-control"
+                       id="lastName" formControlName="last_name"
+                       placeholder="Last name"
+                       [ngClass]="{
+                          'is-invalid' : signUpForm.get('last_name').errors && signUpForm.get('last_name').touched
+                       }">
+              </div>
+            </div>
+          </fieldset>
+          <button class="btn btn-primary register-button" type="submit">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+<!--<div class="row register-container" data-hook="">
   <div id="content" class="col-sm-12" data-hook="">
     <div class="col-md-5 col-centered">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">Signup to {{title}}</h3>
         </div>
-        <div id="existing-customer" class="panel-body" data-hook="login">
-          <div class="register-third-party-register">
-            <p class="register-button-info-text register-info-text">EASILY USING</p>
-            <div class="register-button-container">
-              <button class="register-facebook register-button coming-soon">
-                <span class="register-fb-logo register-sprite"></span>
-                FACEBOOK
-              </button>
-              <button class="register-google register-button coming-soon" id="gPlusLogin"><span class="register-gplus-logo register-sprite"></span>
-                  GOOGLE
-                </button>
-            </div>
-          </div>
-          <p class="register-button-info-text register-info-text">- OR USING EMAIL -</p>
+        <div id="existing-customer" class="panel-body" data-hook="signup">
           <form class="register-register-form" novalidate="" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
             <fieldset class="register-input-container">
 

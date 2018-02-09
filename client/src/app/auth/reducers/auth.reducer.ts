@@ -9,29 +9,17 @@ export function reducer(state = initialState, { type, payload }: any): AuthState
     switch (type) {
       case AuthActions.LOGIN_SUCCESS:
         return state.merge({
-          access: {
-            token: payload.access,
-            ...jwtDecode(payload.access)
-          },
-          refresh: {
-            token: payload.refresh,
-            ...jwtDecode(payload.refresh)
-          },
-
+          token: payload.token,
           isAuthenticated: true
         }) as AuthState;
       case AuthActions.TOKEN_RECEIVED:
         return state.merge({
-          access: {
-            token: payload.access,
-            ...jwtDecode(payload.access)
-          }
+          token: payload.token,
         }) as AuthState;
       case AuthActions.LOGIN_FAILURE:
       case AuthActions.TOKEN_FAILURE:
         return state.merge({
-          access: undefined,
-          refresh: undefined,
+          token: "",
           errors: payload.response || {'non_field_errors': payload.statusText},
           isAuthenticated: false
         }) as AuthState;

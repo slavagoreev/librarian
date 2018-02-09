@@ -3,7 +3,7 @@
     <img src="/assets/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
     Librarian
   </a>
-  <div id="morphsearch" class="morphsearch">
+  <div id="morphsearch" class="morphsearch" [class.open]="searchOpen">
     <form class="morphsearch-form">
       <input class="morphsearch-input" (focus)="setSearchState(true)" type="search" placeholder="Search..."/>
       <button class="morphsearch-submit" type="submit">Search</button>
@@ -14,8 +14,11 @@
   </div>
   <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav float-right">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Sign in</a>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/auth', 'signup']" routerLinkActive="active">Sign Up</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/auth', 'login']" routerLinkActive="active">Login</a>
       </li>
       <!--<li class="nav-item">
         <a class="nav-link" href="#">Features</a>

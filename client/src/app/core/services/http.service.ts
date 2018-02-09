@@ -140,10 +140,10 @@ export class HttpService extends Http {
 
     if (options.headers == null) {
       const user = localStorage.getItem('user') != "undefined" ? JSON.parse(localStorage.getItem('user')) : null;
-      const idToken = localStorage.getItem("id_token");
+      const token = localStorage.getItem("token");
       options.headers = new Headers({
         'Content-Type': 'application/json',
-        'Bearer': idToken
+        'Authorization': "JWT " + token
       });
     }
     return options;
