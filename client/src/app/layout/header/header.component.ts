@@ -1,6 +1,12 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { WINDOW } from "../../shared/services/scroll.service";
+import { AuthState } from '../../auth/reducers/auth.state';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../interfaces';
+import { getAuthStatus } from '../../auth/reducers/selectors';
+import { Observable } from 'rxjs/Observable';
+import { AuthActions } from "../../auth/actions/auth.actions";
 //import { Http } from '@angular/http';
 
 @Component({
@@ -11,17 +17,23 @@ import { WINDOW } from "../../shared/services/scroll.service";
 export class HeaderComponent implements OnInit {
   public navIsFixed: boolean = false;
   searchOpen: boolean = false;
+  isAuthenticated: boolean;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    @Inject(WINDOW) private window
-  ) { }
+    @Inject(WINDOW) private window,
+    private authActions: AuthActions,
+    private store: Store<AppState>
+  ) {
+    this.store.dispatch(this.authActions.authorize());
+    this.store.select(getAuthStatus).subscribe((auth) => {
+      console.log (auth);
+      this.isAuthenticated = auth;
+    });
+  }
 
   ngOnInit() {
-    /*this.http.get('http://127.0.0.1:8000/documents/', {search: {description: "COBRA", size: 30}}).subscribe(
-      data => console.log(data.json()),
-      err => console.error(err)
-    );*/
+
   }
   setSearchState(state: boolean) {
     this.searchOpen = state;

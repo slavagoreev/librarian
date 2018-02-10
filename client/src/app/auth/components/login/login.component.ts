@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -7,6 +7,7 @@ import { AppState } from '../../../interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
 import { getAuthStatus } from '../../reducers/selectors';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  innerHeight: number;
   signInForm: FormGroup;
   title = environment.AppName;
   loginSubs: Subscription;
@@ -27,7 +29,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authService: AuthService
   ) {
     this.redirectIfUserLoggedIn();
+    this.innerHeight =window.innerHeight;
   }
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.innerHeight = window.innerHeight;
+  }
+
 
   ngOnInit() {
     this.initForm();
@@ -41,14 +49,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     if (this.signInForm.valid) {
       console.log (this.signInForm)
-      // this.loginSubs = this.authService.login(values).subscribe(data => {
-      //   const error = data.error;
-      //   if (error) {
-      //     keys.forEach(val => {
-      //       this.pushErrorFor(val, error);
-      //     });
-      //   }
-      // });
+      this.loginSubs = this.authService.login(values).subscribe(data => {
+        const error = data.error;
+        if (error) {
+          keys.forEach(val => {
+            this.pushErrorFor(val, error);
+          });
+        }
+      });
     } else {
       keys.forEach(val => {
         const ctrl = this.signInForm.controls[val];

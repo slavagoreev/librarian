@@ -23,8 +23,4 @@ export class AppComponent implements OnInit {
       this.imageShow = !this.imageShow;
     }
   }
-  @HostListener("window:scroll", ['$event'])
-  onWindowScroll($event: any) {
-    console.log ($event);
-  }
 }

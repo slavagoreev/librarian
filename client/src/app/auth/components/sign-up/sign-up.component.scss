@@ -1,5 +1,6 @@
+@import "../../../../sass/variables";
 .sign-in {
-  margin-top: 10%;
+  margin: 10% 0 100px;
   .side-image
   {
     width: 100%;
@@ -25,5 +26,22 @@
           url(/assets/images/sign-in.jpg) 1x,
           url(/assets/images/sign-in@2x.jpg) 2x
       );
+  }
+  form {
+    position: relative;
+    p {
+      margin-top: -5px;
+    }
+    label {
+      display: none;
+    }
+  }
+}
+@media (min-width: 768px) {
+  .col-md-6:nth-child(even) {
+    padding-left: 10px;
+  }
+  .col-md-6:nth-child(odd) {
+    padding-right: 10px;
   }
 }

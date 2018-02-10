@@ -27,7 +27,6 @@ export class HttpService extends Http {
     this.loading.next({
       loading: true, hasError: false, hasMsg: ''
     });
-    console.log (this.loading.subscribe(res => console.log (res)))
   }
 
   /**
@@ -143,7 +142,7 @@ export class HttpService extends Http {
       const token = localStorage.getItem("token");
       options.headers = new Headers({
         'Content-Type': 'application/json',
-        'Authorization': "JWT " + token
+        'Bearer': "JWT " + token
       });
     }
     return options;

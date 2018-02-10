@@ -9,7 +9,7 @@ function getAuthState(state: AppState): AuthState {
 
 // ******************** Individual selectors ***************************
 const fetchAuthStatus = function(state: AuthState): boolean {
-  return fetchToken(state) !== ""
+  return state.isAuthenticated
 };
 
 const fetchToken = function (state: AuthState) {

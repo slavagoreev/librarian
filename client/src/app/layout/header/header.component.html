@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-light" [class.fixed]="navIsFixed" [class.open]="searchOpen">
-  <a class="navbar-brand mb-0 h1" href="#">
+  <a class="navbar-brand mb-0 h1" [routerLink]="['/documents/']">
     <img src="/assets/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
     Librarian
   </a>
@@ -14,10 +14,10 @@
   </div>
   <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav float-right">
-      <li class="nav-item">
+      <li *ngIf="!isAuthenticated" class="nav-item">
         <a class="nav-link" [routerLink]="['/auth', 'signup']" routerLinkActive="active">Sign Up</a>
       </li>
-      <li class="nav-item">
+      <li *ngIf="!isAuthenticated" class="nav-item">
         <a class="nav-link" [routerLink]="['/auth', 'login']" routerLinkActive="active">Login</a>
       </li>
       <!--<li class="nav-item">

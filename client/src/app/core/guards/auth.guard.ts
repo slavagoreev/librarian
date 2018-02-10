@@ -16,16 +16,14 @@ export class CanActivateViaAuthGuard implements CanActivate, OnDestroy{
     private store: Store<AppState>,
     private router: Router
   ) {
-    console.warn(123)
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    console.warn('AuthGuard#canActivate called');
     this.subscription = this.store
       .select(getAuthStatus)
       .subscribe(isAuthenticated => {
-        console.log (isAuthenticated)
         this.isAuthenticated = isAuthenticated;
+        console.log (isAuthenticated)
         if (!isAuthenticated) {
           this.router.navigate(
             ['/auth/login'],

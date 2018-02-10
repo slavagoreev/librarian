@@ -12,7 +12,8 @@ export const routes: Routes = [
   },
   {
     path: '',
-    loadChildren: './home/index#HomeModule'
+    loadChildren: './home/home.module#HomeModule',
+    canActivate: [ CanActivateViaAuthGuard ]
   },
   { path: '**', redirectTo: 'documents' }
 ];

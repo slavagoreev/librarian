@@ -71,9 +71,9 @@ class User(AbstractUser):
         except KeyError:
             return None
 
-    def get_token(self, request):
+    def get_token(self,):
         try:
-            return Token.objects.get(user=self.get_instance(request))
+            return Token.objects.get(user=self.get_instance())
         except Token.DoesNotExist:
             return None
         except KeyError:

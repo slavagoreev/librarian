@@ -5,6 +5,9 @@ import { HttpService } from './services/http.service';
 import { DocumentService } from './services/document.service';
 import { HttpModule, XHRBackend, RequestOptions, Http } from '@angular/http';
 import { CanActivateViaAuthGuard } from './guards/auth.guard';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthenticationEffects } from '../auth/effects/auth.effects';
+import { DocumentEffects } from '../document/reducers/document.effects';
 
 export function httpInterceptor(
   backend: XHRBackend,
@@ -15,7 +18,10 @@ export function httpInterceptor(
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    EffectsModule.forRoot([
+      AuthenticationEffects
+    ])
   ],
   providers: [
     AuthService,

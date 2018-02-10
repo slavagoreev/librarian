@@ -1,36 +1,44 @@
-<div class="row login-container" data-hook="">
-  <div id="content" class="col-sm-12" data-hook="">
-    <div class="col-md-5 col-centered">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Login to {{title}}</h3>
+<main class="body">
+  <div class="sign-in row mx-auto" [style.height.px]="innerHeight - 170">
+    <div class="side-image-block px-0 col-5">
+      <div class="side-image"></div>
+    </div>
+    <div class="sign-in-block">
+      <div class="sign-in-form-holder">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title font-weight-light">Login to {{title}}</h3>
+            <p class="text-muted">Get access to the non-official library system of Innopolis University now!</p>
+          </div>
         </div>
-        <div id="existing-customer" class="panel-body" data-hook="login">
-          <form class="login-login-form" [formGroup]="signInForm" (ngSubmit)="onSubmit()">
-            <fieldset class="login-input-container">
-              <div class="login-input-item">
-                <input type="text" class="login-user-input-username login-user-input" name="username" placeholder="Your username" formControlName="username"
-                  autocomplete="off">
-                <div *ngIf="signInForm.get('username').errors && signInForm.get('username').touched">
-                  <span class="login-error-icon text-danger">!</span>
-                  <p class="login-error-message text-danger">{{signInForm.get('email').errors.msg || 'Please enter a valid email id'}}</p>
-                </div>
-              </div>
-              <div class="login-input-item">
-                <input type="password" class="login-user-input-password login-user-input" name="password" placeholder="Enter Password" formControlName="password"
-                  autocomplete="off">
-                <div *ngIf="signInForm.get('password').errors && signInForm.get('password').touched">
-                  <span class="login-error-icon text-danger">!</span>
-                  <p class="login-error-message text-danger">{{signInForm.get('password').errors.msg || 'Password must be at least 6 characters'}}</p>
-                </div>
-              </div>
-            </fieldset>
-            <fieldset class="login-login-button-container">
-              <button type="submit" class="btn btn-danger login-login-button">Log in</button>
-            </fieldset>
-          </form>
-        </div>
+        <form class="login-form" novalidate="" [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control"
+                   id="username" formControlName="username"
+                   placeholder="Username"
+                   [ngClass]="{
+                          'is-invalid' : signInForm.get('username').errors && signInForm.get('username').touched
+                       }">
+            <div class="invalid-feedback">
+              {{signInForm.get('username')?.errors?.msg || 'Enter valid username!'}}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control"
+                   id="password" autocomplete="off" formControlName="password"
+                   placeholder="Password"
+                   [ngClass]="{
+                          'is-invalid' : signInForm.get('password').errors && signInForm.get('password').touched
+                       }">
+            <div class="invalid-feedback">
+              {{signInForm.get('password')?.errors?.msg || 'Enter the correct password!'}}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary login-login-button">Log in</button>
+        </form>
       </div>
     </div>
   </div>
-</div>
+</main>

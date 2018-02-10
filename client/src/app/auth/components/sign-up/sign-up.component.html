@@ -1,73 +1,120 @@
 <main class="body">
-  <div class="sign-in col-md-8 mx-auto">
-    <div class="row">
-
-      <!--      <div class="col-md-4">
-              <div class="side-image"></div>
-            </div>-->
-      <div class="col-md-8 mx-auto">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title font-weight-light">Signup to {{title}}</h3>
-          </div>
+  <div class="sign-in">
+    <div class="col-md-10 col-lg-6 mx-auto col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title font-weight-light">Signup to {{title}}</h3>
+          <p class="text-muted">Get access to the non-official library system of Innopolis University now!</p>
         </div>
-        <form class="register-register-form" novalidate="" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-          <fieldset class="register-input-container">
-            <div class="form-row">
-              <div class="col-md-4 mb-3">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control"
-                       id="email" formControlName="email"
-                       placeholder="Email"
-                       [ngClass]="{
-                          'is-invalid' : signUpForm.get('email').errors && signUpForm.get('email').touched
-                       }">
-              </div>
-              <div class="col-md-4 mb-3">
-                <label for="lastName">Phone number</label>
-                <input type="text" class="form-control"
-                       id="phone" formControlName="phone"
-                       placeholder="Phone number"
-                       [ngClass]="{
-                          'is-invalid' : signUpForm.get('phone').errors && signUpForm.get('phone').touched
-                       }">
-              </div>
-              <div class="col-md-4 mb-3">
-                <label for="username">Last name</label>
-                <input type="text" class="form-control"
-                       id="username" formControlName="username"
-                       placeholder="Username"
-                       [ngClass]="{
+      </div>
+      <form class="register-form" novalidate="" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="col-md-6">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control"
+                   id="email" formControlName="email"
+                   placeholder="Email"
+                   [ngClass]="{
+                            'is-invalid' : signUpForm.get('email').errors && signUpForm.get('email').touched
+                         }">
+            <div class="invalid-feedback">
+              {{signUpForm.get('email')?.errors?.msg || 'Enter valid email address!'}}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="username">Username</label>
+            <input type="text" class="form-control"
+                   id="username" formControlName="username"
+                   placeholder="Username"
+                   [ngClass]="{
                           'is-invalid' : signUpForm.get('username').errors && signUpForm.get('username').touched
                        }">
-              </div>
+            <div class="invalid-feedback">
+              {{signUpForm.get('username')?.errors?.msg || 'Enter valid username!'}}
             </div>
-          </fieldset>
-          <fieldset class="register-input-container">
-            <div class="form-row">
-              <div class="col-md-6 mb-3">
-                <label for="firstName">First name</label>
-                <input type="text" class="form-control"
-                       id="firstName" formControlName="first_name"
-                       placeholder="First name"
-                       [ngClass]="{
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-6">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control"
+                   id="password1" autocomplete="off" formControlName="password1"
+                   placeholder="Password"
+                   [ngClass]="{
+                          'is-invalid' : signUpForm.get('password1').errors && signUpForm.get('password1').touched
+                       }">
+            <div class="invalid-feedback">
+              {{signUpForm.get('password1')?.errors?.msg || 'Password must be at least 8 symbols!'}}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="password2">Password confirmation</label>
+            <input type="password" class="form-control"
+                   id="password2" autocomplete="off" formControlName="password2"
+                   placeholder="Password confirmation"
+                   [ngClass]="{
+                          'is-invalid' : signUpForm.get('password2').errors && signUpForm.get('password2').touched
+                       }">
+            <div class="invalid-feedback">
+              {{signUpForm.get('password2')?.errors?.msg || 'Password must match!'}}
+            </div>
+          </div>
+        </div>
+        <p class="text-muted">Enter your additional information</p>
+        <div class="form-row">
+          <div class="col-md-6">
+            <label for="phone">Phone number</label>
+            <input type="text" class="form-control"
+                   id="phone" formControlName="phone"
+                   placeholder="Phone number"
+                   [ngClass]="{
+                          'is-invalid' : signUpForm.get('phone').errors && signUpForm.get('phone').touched
+                       }">
+            <div class="invalid-feedback">
+              {{signUpForm.get('phone')?.errors?.msg || 'Enter valid phone number!'}}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="address">Address</label>
+            <input type="address" class="form-control"
+                   id="address" formControlName="address"
+                   placeholder="Address"
+                   [ngClass]="{
+                            'is-invalid' : signUpForm.get('address').errors && signUpForm.get('address').touched
+                         }">
+            <div class="invalid-feedback">
+              {{signUpForm.get('address')?.errors?.msg || 'Enter valid address!'}}
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-6">
+            <label for="firstName">First name</label>
+            <input type="text" class="form-control"
+                   id="firstName" formControlName="first_name"
+                   placeholder="First name"
+                   [ngClass]="{
                           'is-invalid' : signUpForm.get('first_name').errors && signUpForm.get('first_name').touched
                        }">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="lastName">Last name</label>
-                <input type="text" class="form-control"
-                       id="lastName" formControlName="last_name"
-                       placeholder="Last name"
-                       [ngClass]="{
+            <div class="invalid-feedback">
+              {{signUpForm.get('first_name')?.errors?.msg || 'Enter valid first name!'}}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="lastName">Last name</label>
+            <input type="text" class="form-control"
+                   id="lastName" formControlName="last_name"
+                   placeholder="Last name"
+                   [ngClass]="{
                           'is-invalid' : signUpForm.get('last_name').errors && signUpForm.get('last_name').touched
                        }">
-              </div>
+            <div class="invalid-feedback">
+              {{signUpForm.get('last_name')?.errors?.msg || 'Enter valid last name!'}}
             </div>
-          </fieldset>
-          <button class="btn btn-primary register-button" type="submit">Register</button>
-        </form>
-      </div>
+          </div>
+        </div>
+        <button class="btn btn-primary register-button" type="submit">Register</button>
+      </form>
     </div>
   </div>
 </main>
@@ -101,9 +148,9 @@
               </div>
 
               <div class="register-input-item">
-                <input type="password" class="register-user-input-password register-user-input" name="password_confirmation" formControlName="password_confirmation"
+                <input type="password" class="register-user-input-password register-user-input" name="password2" formControlName="password2"
                   placeholder="Confirm Password" autocomplete="off">
-                <div *ngIf="(signUpForm.get('password_confirmation').errors || signUpForm.hasError('mismatchedPasswords')) && signUpForm.get('password_confirmation').touched">
+                <div *ngIf="(signUpForm.get('password2').errors || signUpForm.hasError('mismatchedPasswords')) && signUpForm.get('password2').touched">
                   <span class="register-error-icon">!</span>
                   <p class="register-error-message">{{ 'Password must match'}}</p>
                 </div>

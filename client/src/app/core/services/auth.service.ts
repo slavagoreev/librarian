@@ -8,6 +8,7 @@ import { HttpService } from './http.service';
 import { AuthActions } from '../../auth/actions/auth.actions';
 import { User } from '../../shared/models/users.model';
 import * as moment from 'moment';
+import _date = moment.unitOfTime._date;
 // Todo import { AuthActions } from '../../auth/actions/auth.actions';
 
 @Injectable()
@@ -39,14 +40,14 @@ export class AuthService {
    */
   login(data): Observable<any> {
     return this.http.post(
-      'api/users/login/', { data }
+      'users/login/', data
     ).map((res: Response) => {
       data = res.json();
       console.log (data);
-      if (!data.error) {
+      if (data.token) {
         // Setting token after login
         this.setLocalData(data);
-        this.store.dispatch(this.actions.loginSuccess());
+        this.store.dispatch(this.actions.loginSuccess(data));
       } else {
         this.http.loading.next({
           loading: false,
@@ -68,14 +69,14 @@ export class AuthService {
    */
   register(data): Observable<any> {
     return this.http.post(
-      'api/users/registration/', data
+      'users/registration/', data
     ).map((res: Response) => {
-      data = res.json();
-      if (!data.errors) {
+      const _data = res.json();
+      if (_data.token) {
         // Setting token after login
         console.log (res);
         this.setLocalData(res.json());
-        this.store.dispatch(this.actions.loginSuccess());
+        this.store.dispatch(this.actions.loginSuccess(_data));
       } else {
         this.http.loading.next({
           loading: false,
@@ -83,7 +84,7 @@ export class AuthService {
           hasMsg: 'Please enter valid Credentials'
         });
       }
-      return res.json();
+      return _data;
     });
   }
 
@@ -97,7 +98,7 @@ export class AuthService {
    */
 
   logout() {
-    return this.http.post('api/users/logout', {})
+    return this.http.post('users/logout', {})
       .map((res: Response) => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
@@ -107,11 +108,18 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return localStorage.getItem('token');
+    return !!localStorage.getItem('token');
   }
 
   isLoggedOut() {
     return !this.isLoggedIn();
+  }
+
+  getToken() {
+    return localStorage.getItem('token');
+  }
+  getUserData() {
+    return JSON.parse(localStorage.getItem('user')) as User;
   }
   /**
    *
@@ -122,7 +130,7 @@ export class AuthService {
    * @memberof AuthService
    */
   private setLocalData(user_data: {user: User, token: string}): void {
-    const jsonData = JSON.stringify(user_data);
+    const jsonData = JSON.stringify(user_data.user);
     localStorage.setItem('user', jsonData);
     localStorage.setItem('token', user_data.token);
   }

@@ -68,22 +68,22 @@ export class SignUpComponent implements OnInit, OnDestroy {
     const first_name = '';
     const last_name = '';
     const username = '';
-    const password = '';
-    const password_confirmation = '';
+    const password1 = '';
+    const password2 = '';
     const phone = '';
     const address = '';
 
     this.signUpForm = this.fb.group({
-	    'email': [email, Validators.compose([Validators.required, Validators.email]) ],
-      'password': [password, Validators.compose([Validators.required, Validators.minLength(8)]) ],
-      'password_confirmation': [password_confirmation, Validators.compose([Validators.required, Validators.minLength(8)]) ],
-      'phone': [phone, Validators.compose([Validators.required, Validators.minLength(11), Validators.maxLength(11),Validators.pattern('[0-9]{11}')]) ],
-      'first_name': [first_name, Validators.required],
-      'last_name': [last_name, Validators.required],
-      'username': [username, Validators.required],
-      'address': [address, Validators.required],
-    },{validator: this.matchingPasswords('password', 'password_confirmation')}
-	);
+        'email': [email, Validators.compose([Validators.required, Validators.email]) ],
+        'password1': [password1, Validators.compose([Validators.required, Validators.minLength(8)]) ],
+        'password2': [password2, Validators.compose([Validators.required, Validators.minLength(8)]) ],
+        'phone': [phone, Validators.compose([Validators.required, Validators.minLength(11), Validators.maxLength(11),Validators.pattern('[0-9]{11}')]) ],
+        'first_name': [first_name],
+        'last_name': [last_name],
+        'username': [username, Validators.required],
+        'address': [address],
+      },{validator: this.matchingPasswords('password1', 'password2')}
+    );
   }
 
   redirectIfUserLoggedIn() {
@@ -99,17 +99,17 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   matchingPasswords(passwordKey: string, confirmPasswordKey: string) {
-  return (group: FormGroup): {[key: string]: any} => {
-    let password = group.controls[passwordKey];
-    let confirmPassword = group.controls[confirmPasswordKey];
+    return (group: FormGroup): {[key: string]: any} => {
+      let password = group.controls[passwordKey];
+      let confirmPassword = group.controls[confirmPasswordKey];
 
-    if (password.value !== confirmPassword.value) {
-      return {
-        mismatchedPasswords: true
-      };
+      if (password.value !== confirmPassword.value) {
+        return {
+          mismatchedPasswords: true
+        };
+      }
     }
   }
-}
 
 
 

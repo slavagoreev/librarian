@@ -9,6 +9,11 @@ export class AuthActions {
   static TOKEN_REQUEST = 'TOKEN_REQUEST';
   static TOKEN_RECEIVED = 'TOKEN_RECEIVED';
   static TOKEN_FAILURE = 'TOKEN_FAILURE';
+  static AUTHORIZE = 'AUTHORIZE';
+
+  authorize() {
+    return { type: AuthActions.AUTHORIZE };
+  }
 
   login() {
     return { type: AuthActions.LOGIN_REQUEST };
@@ -18,8 +23,12 @@ export class AuthActions {
     return { type: AuthActions.LOGIN_FAILURE };
   }
 
-  loginSuccess() {
-    return { type: AuthActions.LOGIN_SUCCESS};
+  loginSuccess(data: any) {
+    console.log (data)
+    return {
+      type: AuthActions.LOGIN_SUCCESS,
+      payload: data
+    };
   }
 
   logout() {

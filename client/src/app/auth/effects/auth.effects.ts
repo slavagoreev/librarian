@@ -7,6 +7,7 @@ import { AuthActions } from '../actions/auth.actions';
 import { Observable } from 'rxjs/Observable';
 
 
+
 @Injectable()
 export class AuthenticationEffects {
   constructor(
@@ -17,7 +18,11 @@ export class AuthenticationEffects {
 
   // tslint:disable-next-line:member-ordering
   @Effect()
-    Authorized$: Observable<Action> = this.actions$
-    .ofType(AuthActions.LOGIN_REQUEST)
-    .map(() => this.authActions.loginSuccess());
+  Authorized$: Observable<Action> = this.actions$
+    .ofType(AuthActions.AUTHORIZE)
+    .filter(() => this.authService.isLoggedIn())
+    .map(() => this.authActions.loginSuccess({
+      user: this.authService.getUserData(),
+      token: this.authService.getToken()
+    }));
 }
