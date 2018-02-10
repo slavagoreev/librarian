@@ -18,10 +18,7 @@ export function httpInterceptor(
 
 @NgModule({
   imports: [
-    CommonModule,
-    EffectsModule.forRoot([
-      AuthenticationEffects
-    ])
+    CommonModule
   ],
   providers: [
     AuthService,

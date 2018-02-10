@@ -24,7 +24,6 @@ export class AuthActions {
   }
 
   loginSuccess(data: any) {
-    console.log (data)
     return {
       type: AuthActions.LOGIN_SUCCESS,
       payload: data

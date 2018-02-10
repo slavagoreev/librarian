@@ -9,6 +9,8 @@ import { AuthRoutes as routes } from './auth.routes';
 import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthActions } from './actions/auth.actions';
+import { AuthenticationEffects } from './effects/auth.effects';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   providers: [
@@ -17,6 +19,9 @@ import { AuthActions } from './actions/auth.actions';
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    EffectsModule.forFeature([
+      AuthenticationEffects
+    ]),
     SharedModule,
     ReactiveFormsModule
   ],

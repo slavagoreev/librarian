@@ -23,7 +23,6 @@ export class CanActivateViaAuthGuard implements CanActivate, OnDestroy{
       .select(getAuthStatus)
       .subscribe(isAuthenticated => {
         this.isAuthenticated = isAuthenticated;
-        console.log (isAuthenticated)
         if (!isAuthenticated) {
           this.router.navigate(
             ['/auth/login'],
