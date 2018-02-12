@@ -15,9 +15,9 @@ First of all, you should download and unpack repository from here: https://githu
 2. Install Node.JS: https://nodejs.org/en/download/ (Make sure that node was added in system variable 'Path')
 3. Now let`s necessery libraries and frameworks - open console and type:
       ```
-      pip install django
-      pip install djangorestframework
+      pip install django djangorestframework django-rest-auth django-allauth django-cors-headers djangorestframework-jwt
       ```
+4. You need to be sure about where is your .sock of MySQL.
 
 ### Migrations
 Let`s make begining preparation for Data Base (make migrations)
