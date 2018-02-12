@@ -1,7 +1,7 @@
 from rest_framework.authtoken.models import Token
 from rest_framework.views import exception_handler
 from rest_framework import permissions
-from lmsinno.models import User
+from .models import User
 import re
 
 

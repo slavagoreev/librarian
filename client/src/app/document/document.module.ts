@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EffectsModule } from '@ngrx/effects';
 import { DocumentEffects } from './reducers/document.effects';
+import { DocumentActions } from './reducers/document.actions';
 
 @NgModule({
   imports: [
@@ -10,6 +11,7 @@ import { DocumentEffects } from './reducers/document.effects';
   ],
   declarations: [],
   providers: [
+    DocumentActions
   ]
 })
 export class DocumentModule { }

@@ -13,7 +13,6 @@ import { environment } from './../environments/environment.prod';
 // Modules
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
-import { HomeModule } from './home/home.module';
 import { AuthModule } from './auth/auth.module';
 import { LayoutModule } from './layout/layout.module';
 import { DocumentModule } from './document/document.module';
@@ -31,7 +30,7 @@ import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { DocumentEffects } from './document/reducers/document.effects';
-import { LoaderComponent } from './shared/loader/loader.component';
+import { LoaderComponent } from './shared/components/loader/loader.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
@@ -53,7 +52,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     BrowserModule,
     FormsModule,
     HttpModule,
-    HomeModule,
     LayoutModule,
     AuthModule,
     DocumentModule,

@@ -1,9 +1,9 @@
 <main class="body">
   <div class="sign-in row mx-auto" [style.height.px]="innerHeight - 170">
-    <div class="side-image-block px-0 col-5">
+    <div class="side-image-block px-0 col-md-5">
       <div class="side-image"></div>
     </div>
-    <div class="sign-in-block">
+    <div class="sign-in-block col-md-7">
       <div class="sign-in-form-holder">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -36,7 +36,7 @@
               {{signInForm.get('password')?.errors?.msg || 'Enter the correct password!'}}
             </div>
           </div>
-          <button type="submit" class="btn btn-primary login-login-button">Log in</button>
+          <button type="submit" class="btn btn-primary login-login-button">Sign in</button>
         </form>
       </div>
     </div>

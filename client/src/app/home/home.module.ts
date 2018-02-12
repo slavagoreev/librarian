@@ -10,7 +10,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { DocumentEffects } from '../document/reducers/document.effects';
 import { StoreModule } from '@ngrx/store';
 import { GenreNavComponent } from './genre-nav/genre-nav.component';
-import { LoaderComponent } from '../shared/loader/loader.component';
+import { LoaderComponent } from '../shared/components/loader/loader.component';
 import { SharedModule } from '../shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 

@@ -7,7 +7,7 @@ import { getDocuments, getSelectedtDocument } from '../document/reducers/documen
 import { DocumentService } from '../core/services/document.service';
 import { Document } from '../shared/models/documents.model';
 import { HttpService } from '../core/services/http.service';
-import { LoaderComponent } from '../shared/loader/loader.component';
+import { LoaderComponent } from '../shared/components/loader/loader.component';
 import { Subject } from 'rxjs/Subject';
 
 @Component({
@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private http: HttpService,
     private documentService: DocumentService
   ) {
+    console.log (123)
     this.store.dispatch(this.actions.getAllDocuments());
     this.documents$ = this.store.select(getDocuments)
       .map(res => { res.map(doc => doc as Document); return res});

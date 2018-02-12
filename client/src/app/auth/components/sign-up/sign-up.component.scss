@@ -1,31 +1,39 @@
 @import "../../../../sass/variables";
-.sign-in {
-  margin: 10% 0 100px;
+.sign-up {
+  width: 100%;
+  max-width: 1000px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  min-height: 350px;
+
+  .sign-up-block {
+    height: 100%;
+    background: #fff;
+
+  }
+  .sign-up-form-holder {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 0;
+    padding: 50px;
+  }
   .side-image
   {
     width: 100%;
     height: 100%;
     float: left;
-    background-image: url(/assets/images/sign-in.jpg);
+    opacity: 0.7;
+    background-image: url(/assets/images/login@2x.jpg);
 
     background-repeat: no-repeat;
     background-position: center;
-    background-attachment: fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-
-    background-image:
-      -webkit-image-set(
-        url(/assets/images/sign-in.jpg) 1x,
-        url(/assets/images/sign-in@2x.jpg) 2x
-      );
-    background-image:
-      image-set(
-          url(/assets/images/sign-in.jpg) 1x,
-          url(/assets/images/sign-in@2x.jpg) 2x
-      );
+  }
+  h3 {
+    margin: 0;
   }
   form {
     position: relative;
@@ -37,6 +45,20 @@
     }
   }
 }
+@media (max-width: 767px) {
+  .side-image-block {
+    height: 200px !important;
+  }
+  .side-image img {
+    background-image: url(/assets/images/login@2x.jpg);
+  }
+
+  .sign-up {
+    margin-top: 0 !important;
+  }
+}
+
+
 @media (min-width: 768px) {
   .col-md-6:nth-child(even) {
     padding-left: 10px;

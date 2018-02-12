@@ -9,6 +9,18 @@ nav {
     position: absolute;
     left: 50%;
     margin-left: -62px;
+    font-family: 'Noe Display';
+    font-size: 23px;
+    line-height: 65px;
+    padding: 5px 0 0;
+    color: $dark;
+  }
+  .dropdown {
+    cursor: pointer;
+  }
+  .dropdown-menu-right {
+    margin-left: -36px;
+    margin-top: 10px;
   }
   .nav-link {
     padding-top: 7px;
@@ -16,7 +28,7 @@ nav {
 
   img {
     transform: scale(1.5);
-    margin-right: 13px;
+    margin: 15px 10px 0 0;
   }
   .collapse {
     display: block !important;
@@ -35,7 +47,7 @@ nav {
   }
   &:before {
     content: "";
-    background: #fff;
+    background: rgba(255, 255, 255, 0.97);
     position: absolute;
     z-index: -1;
     width: 100%;
@@ -102,12 +114,12 @@ nav {
 .morphsearch-input {
   width: 100%;
   height: 100%;
-  padding: 0 10% 0 10px;
+  padding: 0 15% 0 10px;
   font-weight: 700;
   border: none;
   background: transparent;
   font-size: 0.8em;
-  color: $primary;
+  color: $dark;
   -webkit-transition: font-size 0.5s cubic-bezier(0.7,0,0.3,1);
   transition: font-size 0.5s cubic-bezier(0.7,0,0.3,1);
 }

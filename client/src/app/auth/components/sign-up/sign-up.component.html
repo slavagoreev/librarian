@@ -1,199 +1,125 @@
 <main class="body">
-  <div class="sign-in">
-    <div class="col-md-10 col-lg-6 mx-auto col-xs-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title font-weight-light">Signup to {{title}}</h3>
-          <p class="text-muted">Get access to the non-official library system of Innopolis University now!</p>
+  <div class="sign-up row mx-auto" [style.height.px]="innerHeight - 170">
+    <div class="side-image-block px-0 col-md-5">
+      <div class="side-image"></div>
+    </div>
+    <div class="sign-up-block col-md-7">
+      <div class="sign-up-form-holder">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title font-weight-light">Signup to {{title}}</h3>
+            <p class="text-muted">Get access to the non-official library system of Innopolis University now!</p>
+          </div>
         </div>
-      </div>
-      <form class="register-form" novalidate="" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-        <div class="form-row">
-          <div class="col-md-6">
-            <label for="email">Email address</label>
-            <input type="email" class="form-control"
-                   id="email" formControlName="email"
-                   placeholder="Email"
-                   [ngClass]="{
+        <form class="register-form" novalidate="" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <div class="col-md-6">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control"
+                     id="email" formControlName="email"
+                     placeholder="Email"
+                     [ngClass]="{
                             'is-invalid' : signUpForm.get('email').errors && signUpForm.get('email').touched
                          }">
-            <div class="invalid-feedback">
-              {{signUpForm.get('email')?.errors?.msg || 'Enter valid email address!'}}
+              <div class="invalid-feedback">
+                {{signUpForm.get('email')?.errors?.msg || 'Enter valid email address!'}}
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <label for="username">Username</label>
-            <input type="text" class="form-control"
-                   id="username" formControlName="username"
-                   placeholder="Username"
-                   [ngClass]="{
+            <div class="col-md-6">
+              <label for="username">Username</label>
+              <input type="text" class="form-control"
+                     id="username" formControlName="username"
+                     placeholder="Username"
+                     [ngClass]="{
                           'is-invalid' : signUpForm.get('username').errors && signUpForm.get('username').touched
                        }">
-            <div class="invalid-feedback">
-              {{signUpForm.get('username')?.errors?.msg || 'Enter valid username!'}}
+              <div class="invalid-feedback">
+                {{signUpForm.get('username')?.errors?.msg || 'Enter valid username!'}}
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-row">
-          <div class="col-md-6">
-            <label for="password1">Password</label>
-            <input type="password" class="form-control"
-                   id="password1" autocomplete="off" formControlName="password1"
-                   placeholder="Password"
-                   [ngClass]="{
+          <div class="form-row">
+            <div class="col-md-6">
+              <label for="password1">Password</label>
+              <input type="password" class="form-control"
+                     id="password1" autocomplete="off" formControlName="password1"
+                     placeholder="Password"
+                     [ngClass]="{
                           'is-invalid' : signUpForm.get('password1').errors && signUpForm.get('password1').touched
                        }">
-            <div class="invalid-feedback">
-              {{signUpForm.get('password1')?.errors?.msg || 'Password must be at least 8 symbols!'}}
+              <div class="invalid-feedback">
+                {{signUpForm.get('password1')?.errors?.msg || 'Password must be at least 8 symbols!'}}
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <label for="password2">Password confirmation</label>
-            <input type="password" class="form-control"
-                   id="password2" autocomplete="off" formControlName="password2"
-                   placeholder="Password confirmation"
-                   [ngClass]="{
+            <div class="col-md-6">
+              <label for="password2">Password confirmation</label>
+              <input type="password" class="form-control"
+                     id="password2" autocomplete="off" formControlName="password2"
+                     placeholder="Password confirmation"
+                     [ngClass]="{
                           'is-invalid' : signUpForm.get('password2').errors && signUpForm.get('password2').touched
                        }">
-            <div class="invalid-feedback">
-              {{signUpForm.get('password2')?.errors?.msg || 'Password must match!'}}
+              <div class="invalid-feedback">
+                {{signUpForm.get('password2')?.errors?.msg || 'Password must match!'}}
+              </div>
             </div>
           </div>
-        </div>
-        <p class="text-muted">Enter your additional information</p>
-        <div class="form-row">
-          <div class="col-md-6">
-            <label for="phone">Phone number</label>
-            <input type="text" class="form-control"
-                   id="phone" formControlName="phone"
-                   placeholder="Phone number"
-                   [ngClass]="{
+          <p class="text-muted">Enter your additional information</p>
+          <div class="form-row">
+            <div class="col-md-6">
+              <label for="phone">Phone number</label>
+              <input type="text" class="form-control"
+                     id="phone" formControlName="phone"
+                     placeholder="Phone number"
+                     [ngClass]="{
                           'is-invalid' : signUpForm.get('phone').errors && signUpForm.get('phone').touched
                        }">
-            <div class="invalid-feedback">
-              {{signUpForm.get('phone')?.errors?.msg || 'Enter valid phone number!'}}
+              <div class="invalid-feedback">
+                {{signUpForm.get('phone')?.errors?.msg || 'Enter valid phone number!'}}
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <label for="address">Address</label>
-            <input type="address" class="form-control"
-                   id="address" formControlName="address"
-                   placeholder="Address"
-                   [ngClass]="{
+            <div class="col-md-6">
+              <label for="address">Address</label>
+              <input type="address" class="form-control"
+                     id="address" formControlName="address"
+                     placeholder="Address"
+                     [ngClass]="{
                             'is-invalid' : signUpForm.get('address').errors && signUpForm.get('address').touched
                          }">
-            <div class="invalid-feedback">
-              {{signUpForm.get('address')?.errors?.msg || 'Enter valid address!'}}
+              <div class="invalid-feedback">
+                {{signUpForm.get('address')?.errors?.msg || 'Enter valid address!'}}
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-row">
-          <div class="col-md-6">
-            <label for="firstName">First name</label>
-            <input type="text" class="form-control"
-                   id="firstName" formControlName="first_name"
-                   placeholder="First name"
-                   [ngClass]="{
+          <div class="form-row">
+            <div class="col-md-6">
+              <label for="firstName">First name</label>
+              <input type="text" class="form-control"
+                     id="firstName" formControlName="first_name"
+                     placeholder="First name"
+                     [ngClass]="{
                           'is-invalid' : signUpForm.get('first_name').errors && signUpForm.get('first_name').touched
                        }">
-            <div class="invalid-feedback">
-              {{signUpForm.get('first_name')?.errors?.msg || 'Enter valid first name!'}}
+              <div class="invalid-feedback">
+                {{signUpForm.get('first_name')?.errors?.msg || 'Enter valid first name!'}}
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <label for="lastName">Last name</label>
-            <input type="text" class="form-control"
-                   id="lastName" formControlName="last_name"
-                   placeholder="Last name"
-                   [ngClass]="{
+            <div class="col-md-6">
+              <label for="lastName">Last name</label>
+              <input type="text" class="form-control"
+                     id="lastName" formControlName="last_name"
+                     placeholder="Last name"
+                     [ngClass]="{
                           'is-invalid' : signUpForm.get('last_name').errors && signUpForm.get('last_name').touched
                        }">
-            <div class="invalid-feedback">
-              {{signUpForm.get('last_name')?.errors?.msg || 'Enter valid last name!'}}
+              <div class="invalid-feedback">
+                {{signUpForm.get('last_name')?.errors?.msg || 'Enter valid last name!'}}
+              </div>
             </div>
           </div>
-        </div>
-        <button class="btn btn-primary register-button" type="submit">Register</button>
-      </form>
+          <button class="btn btn-primary register-button" type="submit">Register</button>
+        </form>
+      </div>
     </div>
   </div>
 </main>
-<!--<div class="row register-container" data-hook="">
-  <div id="content" class="col-sm-12" data-hook="">
-    <div class="col-md-5 col-centered">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Signup to {{title}}</h3>
-        </div>
-        <div id="existing-customer" class="panel-body" data-hook="signup">
-          <form class="register-register-form" novalidate="" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-            <fieldset class="register-input-container">
-
-              <div class="register-input-item">
-                <input type="email" class="register-user-input-email register-user-input" name="email" formControlName="email" placeholder="Your Email Address"
-                  autocomplete="off">
-                <div *ngIf="signUpForm.get('email').errors && signUpForm.get('email').touched">
-                  <span class="register-error-icon">!</span>
-                  <p class="register-error-message">{{signUpForm.get('email').errors.msg || 'Please enter a valid email id'}}</p>
-                </div>
-              </div>
-
-              <div class="register-input-item">
-                <input type="password" class="register-user-input-password register-user-input" name="password" formControlName="password"
-                  placeholder="Choose Password" autocomplete="off">
-                <div *ngIf="signUpForm.get('password').errors && signUpForm.get('password').touched">
-                  <span class="register-error-icon">!</span>
-                  <p class="register-error-message">{{signUpForm.get('password').errors.msg || 'Password must be at least 6 characters'}}</p>
-                </div>
-              </div>
-
-              <div class="register-input-item">
-                <input type="password" class="register-user-input-password register-user-input" name="password2" formControlName="password2"
-                  placeholder="Confirm Password" autocomplete="off">
-                <div *ngIf="(signUpForm.get('password2').errors || signUpForm.hasError('mismatchedPasswords')) && signUpForm.get('password2').touched">
-                  <span class="register-error-icon">!</span>
-                  <p class="register-error-message">{{ 'Password must match'}}</p>
-                </div>
-              </div>
-
-              <div class="register-input-item">
-                <input type="number" class="register-user-input-mobile register-user-input" name="mobile"
-                  formControlName="mobile" placeholder="Mobile Number (For order status updates)">
-                <div *ngIf="signUpForm.get('mobile').errors && signUpForm.get('mobile').touched">
-                  <span class="register-error-icon">!</span>
-                  <p class="register-error-message">{{signUpForm.get('mobile').errors.msg || 'Please enter a valid mobile number (10 digits)'}}</p>
-                </div>
-              </div>
-
-              <fieldset data-type="horizontal" class="register-gender">
-                <legend class="register-gender-title">I'm a</legend>
-
-                <input type="radio" class="register-gender-radio" id="male" name="gender" value="M" formControlName="gender">
-                <label class="register-gender-label" for="male">Male</label>
-
-                <input type="radio" class="register-gender-radio" id="female" name="gender" value="F" formControlName="gender">
-                <label class="register-gender-label" for="female">Female</label>
-
-                <div *ngIf="signUpForm.get('gender').errors && signUpForm.get('gender').touched">
-                  <span class="register-gender-error-icon register-error-icon">!</span>
-                  <p class="register-gender-error-message register-error-message">{{signUpForm.get('gender').errors.msg || 'Please select your gender'}}</p>
-                </div>
-              </fieldset>
-            </fieldset>
-            <fieldset class="register-register-button-container">
-              <button class="btn btn-danger register-register-button">REGISTER</button>
-            </fieldset>
-          </form>
-          <div class="register-link-container">
-            <small>
-              <div class="register-login-link">
-                <span class="register-info-text">Already have an account?</span>
-                <a class="register-create-account-link register-link text-danger" [routerLink]="['/auth','login']">Login!</a>
-              </div>
-            </small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>-->

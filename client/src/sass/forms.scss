@@ -1,0 +1,185 @@
+@import "~bootstrap/scss/mixins/breakpoints";
+@import "variables";
+
+.form-control {
+  margin-bottom: 25px;
+  padding: 0;
+  height: 35px;
+  font-size: 16px;
+  outline: 0;
+  width: 100%;
+  background: #fff;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-family: $sans-font-stack;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-style: normal;
+  border: 0;
+  border-bottom: 1px solid rgba(0,0,0,.15);
+  -webkit-border-radius: 0;
+  border-radius: 0;
+
+  &.is-invalid {
+    border-color: #dc3545 !important;
+  }
+}
+textarea.form-control {
+  padding: 15px;
+  margin: 15px 0 30px;
+  resize: none;
+  width: 100%;
+  height: 50px;
+  overflow: hidden
+}
+
+.form-control--transparent {
+  background: 0 0;
+}
+
+.form-control:invalid {
+  -webkit-box-shadow: none;
+  box-shadow: none
+}
+
+.form-control--textarea:focus {
+  outline: 0
+}
+
+.form-control--large {
+  font-size: 20px;
+  height: 40px;
+  margin: 10px auto;
+  overflow: hidden;
+  padding: 7px;
+  width: 500px;
+  white-space: nowrap;
+  font-family: $sans-font-stack;
+  letter-spacing: 0;
+  font-weight: 300;
+  font-style: normal
+}
+
+.form-control--jumbo {
+  font-family: $sans-font-stack;
+  letter-spacing: 0;
+  font-weight: 300;
+  font-style: normal;
+  font-size: 52px;
+  height: 80px;
+  padding: 0;
+  width: 100%
+}
+
+.form-control--transparent {
+  background: 0 0
+}
+
+@media all and (max-width: 767px) {
+  .form-control--jumbo {
+    font-size:34px;
+    height: 50px
+  }
+
+  .form-control--narrow {
+    width: 175px;
+    height: 32px;
+    padding: 0 10px
+  }
+}
+
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -5px;
+  margin-left: -5px;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+}
+
+.form-inline {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center; // Prevent shorter elements from growing to same height as others (e.g., small buttons growing to normal sized button height)
+
+  // Because we use flex, the initial sizing of checkboxes is collapsed and
+  // doesn't occupy the full-width (which is what we want for xs grid tier),
+  // so we force that here.
+  .form-check {
+    width: 100%;
+  }
+
+  // Kick in the inline
+  @include media-breakpoint-up(sm) {
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+
+    // Inline-block all the things for "inline"
+    .form-group {
+      display: flex;
+      flex: 0 0 auto;
+      flex-flow: row wrap;
+      align-items: center;
+      margin-bottom: 0;
+    }
+
+    // Allow folks to *not* use `.form-group`
+    .form-control {
+      display: inline-block;
+      width: auto; // Prevent labels from stacking above inputs in `.form-group`
+      vertical-align: middle;
+    }
+
+    // Make static controls behave like regular ones
+    .form-control-plaintext {
+      display: inline-block;
+    }
+
+    .input-group {
+      width: auto;
+    }
+  }
+}
+@mixin form-validation-state($state, $color) {
+  .#{$state}-feedback {
+    display: none;
+    width: 100%;
+    margin-top: -25px;
+    color: $color;
+    font-size: 11px;
+    position: absolute;
+  }
+
+  .#{$state}-tooltip {
+    position: absolute;
+    top: 100%;
+    z-index: 5;
+    display: none;
+    max-width: 100%; // Contain to parent when possible
+    padding: .5rem;
+    margin-top: .1rem;
+    font-size: .875rem;
+    line-height: 1;
+    color: #fff;
+    background-color: rgba($color, .8);
+    border-radius: .2rem;
+  }
+}
+@include form-validation-state("valid", #28a745);
+@include form-validation-state("invalid", #dc3545);
+
+.form-control.is-invalid~.invalid-feedback {
+  display: block;
+}

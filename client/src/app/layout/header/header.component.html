@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-light" [class.fixed]="navIsFixed" [class.open]="searchOpen">
+<nav class="navbar navbar-expand navbar-light flex-column flex-md-row" [class.fixed]="navIsFixed" [class.open]="searchOpen">
   <a class="navbar-brand mb-0 h1" [routerLink]="['/documents/']">
     <img src="/assets/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
     Librarian
@@ -12,17 +12,27 @@
     </div>
     <span class="morphsearch-close" (click)="setSearchState(false)"></span>
   </div>
-  <div class="navbar-collapse collapse">
-    <ul class="nav navbar-nav float-right">
-      <li *ngIf="!isAuthenticated" class="nav-item">
+  <div class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+    <ul *ngIf="!isAuthenticated; else userBar" class="nav navbar-nav float-right">
+      <li class="nav-item">
         <a class="nav-link" [routerLink]="['/auth', 'signup']" routerLinkActive="active">Sign Up</a>
       </li>
-      <li *ngIf="!isAuthenticated" class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" [routerLink]="['/auth', 'login']" routerLinkActive="active">Login</a>
       </li>
       <!--<li class="nav-item">
         <a class="nav-link" href="#">Features</a>
       </li>-->
     </ul>
+    <ng-template #userBar>
+      <ul class="nav navbar-nav float-right">
+        <li ngbDropdown class="document-menu nav-item">
+          <a ngbDropdownToggle class="nav-link active">{{user$.username}}</a>
+          <div ngbDropdownMenu class="dropdown-menu-right">
+            <button class="dropdown-item" (click)="logout()">Logout</button>
+          </div>
+        </li>
+      </ul>
+    </ng-template>
   </div>
 </nav>

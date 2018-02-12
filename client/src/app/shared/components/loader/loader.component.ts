@@ -1,7 +1,4 @@
-import { Subject } from 'rxjs/Subject';
-import { HttpService } from '../../core/services/http.service';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-loader',

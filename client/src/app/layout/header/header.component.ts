@@ -7,6 +7,8 @@ import { AppState } from '../../interfaces';
 import { getAuthStatus } from '../../auth/reducers/selectors';
 import { Observable } from 'rxjs/Observable';
 import { AuthActions } from "../../auth/actions/auth.actions";
+import { AuthService } from '../../core/services/auth.service';
+import { User } from '../../shared/models/users.model';
 //import { Http } from '@angular/http';
 
 @Component({
@@ -18,17 +20,20 @@ export class HeaderComponent implements OnInit {
   public navIsFixed: boolean = false;
   searchOpen: boolean = false;
   isAuthenticated: boolean;
+  user$: User;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject(WINDOW) private window,
     private authActions: AuthActions,
+    private authService: AuthService,
     private store: Store<AppState>
   ) {
     this.store.dispatch(this.authActions.authorize());
     this.store.select(getAuthStatus).subscribe((auth) => {
-      console.log (auth);
       this.isAuthenticated = auth;
+      if (auth)
+        this.user$ = this.authService.getUserData()
     });
   }
 
@@ -37,6 +42,9 @@ export class HeaderComponent implements OnInit {
   }
   setSearchState(state: boolean) {
     this.searchOpen = state;
+  }
+  logout() {
+    this.authService.logout().subscribe(() => {})
   }
   @HostListener("window:scroll", [])
   onWindowScroll() {

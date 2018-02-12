@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, permission_classes
 
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
     HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
@@ -23,6 +23,7 @@ class DocumentDetail(APIView):
     Class to get one particular document by id
     """
 
+    permission_classes = (DocumentPermission,)
     # TODO AUTHORIZATION
     @staticmethod
     def get(request, document_id):
@@ -54,9 +55,9 @@ class DocumentsByCriteria(APIView):
     Class to work with document using some criteria
     """
 
-    permission_classes = (DocumentPermission,)
 
     # TODO AUTHORIZATION
+    @permission_classes((DocumentPermission, ))
     @staticmethod
     def get(request):
         """
@@ -65,7 +66,6 @@ class DocumentsByCriteria(APIView):
         :return: HTTP_200_OK and JSON-Documents: if documents with such criteria exists
                  HTTP_404_NOT_FOUND: if documents with such criteria doesn`t exists
         """
-
         DEFAULT_SIZE = 50
         DEFAULT_OFFSET = 0
 
