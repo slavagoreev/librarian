@@ -79,7 +79,8 @@ MIDDLEWARE = [
 ]
 CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
-    '127.0.0.1:4200'
+    '127.0.0.1:4200',
+    'trainno.ru'
 )
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -131,7 +132,7 @@ DATABASES = {
         'NAME': 'librarian',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '/Applications/MAMP/tmp/mysql/mysql.sock'
+        'HOST': '/var/run/mysqld/mysqld.sock'
     }
 }
 
