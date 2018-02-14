@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from rest_framework.authtoken.models import Token
+from rest_framework_jwt.settings import api_settings
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 import datetime
 
@@ -64,7 +66,8 @@ class User(AbstractUser):
     def get_instance(request):
         try:
             token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
-            user = Token.objects.get(key=token).user
+            tokenObj = Token.objects.get(key=token)
+            user = tokenObj.user
             return user
         except Token.DoesNotExist:
             return None
