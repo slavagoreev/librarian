@@ -25,6 +25,7 @@ class Document(models.Model):
     type = models.IntegerField(choices=DOCUMENT_TYPE_CHOICES)
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)
+    is_bestseller = models.BooleanField(default=False)
     copies_available = models.IntegerField(default=0)
     cover = models.CharField(default='empty', max_length=255)
     date_added = models.DateField(auto_now_add=True)
@@ -79,7 +80,6 @@ class User(AbstractUser):
             return None
 
 
-
 class Author(models.Model):
     author_id = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=100)
@@ -129,15 +129,6 @@ class Copy(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(str(self.copy_id), self.document)
-
-
-class Bestseller(models.Model):
-    bestseller_id = models.AutoField(primary_key=True)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
-    background_color = models.CharField(max_length=7, default='#000000')
-
-    def __str__(self):
-        return self.document
 
 
 class Tag(models.Model):

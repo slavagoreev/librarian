@@ -39,6 +39,7 @@ class DocumentSerializer(serializers.ModelSerializer):
                   'type',
                   'price',
                   'is_reference',
+                  'is_bestseller',
                   'copies_available',
                   'cover',
                   'authors',
