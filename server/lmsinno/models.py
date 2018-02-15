@@ -1,4 +1,6 @@
 import re
+
+import jwt
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -65,19 +67,13 @@ class User(AbstractUser):
 
     def get_instance(request):
         try:
-            token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
-            tokenObj = Token.objects.get(key=token)
-            user = tokenObj.user
-            return user
-        except Token.DoesNotExist:
-            return None
-        except KeyError:
-            return None
 
-    def get_token(self,):
-        try:
-            return Token.objects.get(user=self.get_instance())
-        except Token.DoesNotExist:
+            token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
+            token = jwt.decode(verify=False, jwt=token)
+            user = User.objects.get(id=token['user_id'])
+
+            return user
+        except User.DoesNotExist:
             return None
         except KeyError:
             return None
