@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 from os import path
-
+import datetime
 import sys
 
 from django.conf import settings
@@ -52,6 +52,10 @@ INSTALLED_APPS = [
     'lmsinno',
 
 ]
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(weeks=1)
+}
 
 REST_USE_JWT = True
 
