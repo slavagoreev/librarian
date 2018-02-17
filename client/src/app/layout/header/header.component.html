@@ -26,6 +26,9 @@
     </ul>
     <ng-template #userBar>
       <ul class="nav navbar-nav float-right">
+        <li *ngIf="isAdmin" class="nav-item">
+          <a class="nav-link" [routerLink]="['/admin']" routerLinkActive="active">Admin panel</a>
+        </li>
         <li ngbDropdown class="document-menu nav-item">
           <a ngbDropdownToggle class="nav-link active">{{user$.username}}</a>
           <div ngbDropdownMenu class="dropdown-menu-right">

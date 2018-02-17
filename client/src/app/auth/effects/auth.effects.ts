@@ -19,10 +19,10 @@ export class AuthenticationEffects {
   ) { }
 
   // tslint:disable-next-line:member-ordering
+
   @Effect()
   Authorized$: Observable<Action> = this.actions$
     .ofType(AuthActions.AUTHORIZE)
-    .withLatestFrom(this.store$)
     .filter(() => this.authService.isLoggedIn())
     .map(() => this.authActions.loginSuccess({
       user: this.authService.getUserData(),

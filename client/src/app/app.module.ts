@@ -33,6 +33,8 @@ import { DocumentEffects } from './document/reducers/document.effects';
 import { LoaderComponent } from './shared/components/loader/loader.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AdminModule } from './admin/admin.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -50,9 +52,11 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     NgbModule.forRoot(),
 
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpModule,
     LayoutModule,
+    AdminModule,
     AuthModule,
     DocumentModule,
     CoreModule,

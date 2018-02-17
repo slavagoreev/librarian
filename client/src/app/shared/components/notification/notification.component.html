@@ -1,0 +1,15 @@
+<div class="notification-bar">
+    <div *ngFor="let notification of notifications; let i = index" (click)="removeItem(i)"
+         class="notification {{ notification.type }}"
+         [@notificationState]="notification.state">
+      <div class="notification-body">
+        <div class="title">
+          {{ notification.title }}
+          <button class="delete"></button>
+        </div>
+        <span>
+          {{ notification.message }}
+        </span>
+      </div>
+    </div>
+</div>

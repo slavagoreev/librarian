@@ -1,7 +1,6 @@
 import { Author } from './authors.model';
 import { Tag } from './tags.model';
 import { Copy } from './copies.model';
-import { Bestseller } from './bestsellers.model';
 
 export class Document {
   document_id: number;
@@ -18,5 +17,5 @@ export class Document {
   authors?: Author[] = [];
   tags?: Tag[];
   copies?: Copy[];
-  bestseller?: Bestseller;
+  is_bestseller?: boolean;
 }

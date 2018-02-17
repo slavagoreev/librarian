@@ -1,13 +1,15 @@
 import re
-
-import jwt
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.http import HttpResponse
+from rest_framework import status, exceptions
 from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
+from django.conf import settings
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
+import jwt
+import json
 import datetime
 
 
@@ -25,7 +27,6 @@ class Document(models.Model):
     type = models.IntegerField(choices=DOCUMENT_TYPE_CHOICES)
     price = models.FloatField()
     is_reference = models.BooleanField(default=False)
-    is_bestseller = models.BooleanField(default=False)
     copies_available = models.IntegerField(default=0)
     cover = models.CharField(default='empty', max_length=255)
     date_added = models.DateField(auto_now_add=True)
@@ -67,17 +68,31 @@ class User(AbstractUser):
         self.first_name = data.get('first_name') or self.first_name
 
     def get_instance(request):
+        token = re.split(' ', request.META['HTTP_BEARER'])[1]
+        payload = jwt.decode(token, settings.SECRET_KEY)
+        email = payload['email']
+        userid = payload['user_id']
         try:
+            user = User.objects.get(
+                email=email,
+                id=userid
+            )
 
-            token = re.split(' ', request.META['HTTP_AUTHORIZATION'])[1]
-            token = jwt.decode(verify=False, jwt=token)
-            user = User.objects.get(id=token['user_id'])
-
-            return user
+        except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:
+            return HttpResponse({'Error': "Token is invalid"}, status="403")
         except User.DoesNotExist:
+            return HttpResponse({'Error': "Internal server error"}, status="500")
+
+        return user
+
+    def get_token(self,):
+        try:
+            return Token.objects.get(user=self.get_instance())
+        except Token.DoesNotExist:
             return None
         except KeyError:
             return None
+
 
 
 class Author(models.Model):
@@ -129,6 +144,15 @@ class Copy(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(str(self.copy_id), self.document)
+
+
+class Bestseller(models.Model):
+    bestseller_id = models.AutoField(primary_key=True)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    background_color = models.CharField(max_length=7, default='#000000')
+
+    def __str__(self):
+        return self.document
 
 
 class Tag(models.Model):

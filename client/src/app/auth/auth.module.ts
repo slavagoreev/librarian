@@ -11,10 +11,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthActions } from './actions/auth.actions';
 import { AuthenticationEffects } from './effects/auth.effects';
 import { EffectsModule } from '@ngrx/effects';
+import { CanActivateViaAuthGuard } from './guards/auth.guard';
+import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
+import { RoleGuard } from './guards/role.guard';
 
 @NgModule({
   providers: [
-    AuthActions
+    AuthActions,
+    CanActivateViaAuthGuard,
+    RoleGuard
   ],
   imports: [
     CommonModule,

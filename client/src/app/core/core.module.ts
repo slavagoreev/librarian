@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { HttpService } from './services/http.service';
 import { DocumentService } from './services/document.service';
-import { HttpModule, XHRBackend, RequestOptions, Http } from '@angular/http';
-import { CanActivateViaAuthGuard } from './guards/auth.guard';
-import { EffectsModule } from '@ngrx/effects';
-import { AuthenticationEffects } from '../auth/effects/auth.effects';
-import { DocumentEffects } from '../document/reducers/document.effects';
+import { XHRBackend, RequestOptions } from '@angular/http';
+import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
+import { environment } from '../../environments/environment';
+import { NotificationService } from '../shared/components/notification/notification.service';
+import { SharedModule } from '../shared/shared.module';
 
 export function httpInterceptor(
   backend: XHRBackend,
@@ -18,13 +18,22 @@ export function httpInterceptor(
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => {
+          return localStorage.getItem('token');
+        },
+        whitelistedDomains: [environment.API_ENDPOINT]
+      }
+    })
   ],
   providers: [
     AuthService,
     HttpService,
     DocumentService,
-    CanActivateViaAuthGuard,
+    JwtHelperService,
     {
       provide: HttpService,
       useFactory: httpInterceptor,

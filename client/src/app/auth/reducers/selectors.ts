@@ -12,6 +12,10 @@ const fetchAuthStatus = function(state: AuthState): boolean {
   return state.isAuthenticated
 };
 
+const fetchUserRole = function(state: AuthState): number {
+  return state.role;
+};
+
 const fetchToken = function (state: AuthState) {
   return state.token
 };
@@ -22,5 +26,5 @@ const fetchErrors = function (state: AuthState) {
 
 // *************************** PUBLIC API's ****************************
 export const getAuthStatus = createSelector(getAuthState, fetchAuthStatus);
-export const getAccessToken = createSelector(getAuthState, fetchToken);
+export const getUserRole = createSelector(getAuthState, fetchUserRole);
 export const getErrors = createSelector(getAuthState, fetchErrors);

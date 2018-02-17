@@ -55,9 +55,9 @@ class DocumentsByCriteria(APIView):
     Class to work with document using some criteria
     """
 
-
+    permission_classes = (DocumentPermission,)
     # TODO AUTHORIZATION
-    @permission_classes((DocumentPermission, ))
+    #@permission_classes((DocumentPermission,))
     @staticmethod
     def get(request):
         """

@@ -1,5 +1,5 @@
 import { HomeComponent } from './home.component';
-import { CanActivateViaAuthGuard } from '../core/guards/auth.guard';
+import { CanActivateViaAuthGuard } from '../auth/guards/auth.guard';
 
 export const HomeRoutes = [
   {

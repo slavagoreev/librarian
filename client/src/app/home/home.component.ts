@@ -19,7 +19,7 @@ import { Subject } from 'rxjs/Subject';
 export class HomeComponent implements OnInit, OnDestroy {
 
   documents$: Observable<Document[]>;
-  loading$: Subject<{loading: boolean, hasError: boolean, hasMsg: string}>;
+  loading$: Subject<{loading: boolean, error: any}>;
 
   constructor(
     private store: Store<AppState>,
@@ -27,7 +27,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     private http: HttpService,
     private documentService: DocumentService
   ) {
-    console.log (123)
     this.store.dispatch(this.actions.getAllDocuments());
     this.documents$ = this.store.select(getDocuments)
       .map(res => { res.map(doc => doc as Document); return res});

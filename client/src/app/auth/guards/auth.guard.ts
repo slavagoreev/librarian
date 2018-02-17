@@ -4,7 +4,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../interfaces';
-import { getAuthStatus } from '../../auth/reducers/selectors';
+import { getAuthStatus } from '../reducers/selectors';
 
 
 @Injectable()

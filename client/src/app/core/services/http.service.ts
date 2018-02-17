@@ -12,10 +12,11 @@ import { Observable } from 'rxjs/Observable';
 import { AuthService } from './auth.service';
 import { Subject } from 'rxjs/Subject';
 import { environment } from "../../../environments/environment";
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class HttpService extends Http {
-  public loading = new Subject<{loading: boolean, hasError: boolean, hasMsg: string}>();
+  public loading = new Subject<{loading: boolean, error: any}>();
 
   constructor(
     backend: ConnectionBackend,
@@ -25,7 +26,7 @@ export class HttpService extends Http {
 
 
     this.loading.next({
-      loading: true, hasError: false, hasMsg: ''
+      loading: true, error: null
     });
   }
 
@@ -161,10 +162,10 @@ export class HttpService extends Http {
    * Request interceptor.
    */
   private requestInterceptor(): void {
-    console.log('Sending Request');
+    //console.log('Sending Request');
     // this.loaderService.showPreloader();
     this.loading.next({
-      loading: true, hasError: false, hasMsg: ''
+      loading: true, error: null
     });
   }
 
@@ -172,7 +173,7 @@ export class HttpService extends Http {
    * Response interceptor.
    */
   private responseInterceptor(): void {
-    console.log('Request Complete');
+    //console.log('Request Complete');
     // this.loaderService.hidePreloader();
   }
 
@@ -183,7 +184,6 @@ export class HttpService extends Http {
    * @returns {ErrorObservable}
    */
   private onCatch(error: any, caught: Observable<any>): Observable<any> {
-    console.error(error);
     return Observable.of(error);
   }
 
@@ -193,7 +193,7 @@ export class HttpService extends Http {
    */
   private onSubscribeSuccess(res: Response): void {
     this.loading.next({
-      loading: false, hasError: false, hasMsg: ''
+      loading: false, error: null
     });
   }
 
@@ -202,10 +202,12 @@ export class HttpService extends Http {
    * @param error
    */
   private onSubscribeError(error: any): void {
-    console.log('Something Went wrong while subscribing', error);
-    // this.loaderService.popError();
     this.loading.next({
-      loading: false, hasError: true, hasMsg: 'Something went wrong'
+      loading: false, error: {
+        ok: false,
+        statusText: "Server error",
+        _body: "[{'message': 'Could not connect to server.\n Please check your internet connection'}]"
+      }
     });
   }
 

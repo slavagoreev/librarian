@@ -9,6 +9,9 @@ import { AuthActions } from '../../auth/actions/auth.actions';
 import { User } from '../../shared/models/users.model';
 import * as moment from 'moment';
 import _date = moment.unitOfTime._date;
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
+import { NotificationService } from '../../shared/components/notification/notification.service';
 // Todo import { AuthActions } from '../../auth/actions/auth.actions';
 
 @Injectable()
@@ -25,7 +28,10 @@ export class AuthService {
   constructor(
     private http: HttpService,
     private actions: AuthActions,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private jwtHelper: JwtHelperService,
+    private router : Router,
+    private notifications: NotificationService
   ) {
 
   }
@@ -48,11 +54,14 @@ export class AuthService {
         // Setting token after login
         this.setLocalData(data);
         this.store.dispatch(this.actions.loginSuccess(data));
+        this.notifications.sendMessage('Authorization', 'success', 'Signed in successfully', 5000)
       } else {
         this.http.loading.next({
           loading: false,
-          hasError: true,
-          hasMsg: 'Please enter valid Credentials'
+          error: {
+            title: 'Please enter valid Credentials',
+            message: 'Username or password is incorrect'
+          }
         });
       }
       return data;
@@ -77,11 +86,13 @@ export class AuthService {
         console.log (res);
         this.setLocalData(res.json());
         this.store.dispatch(this.actions.loginSuccess(_data));
+        this.notifications.sendMessage('Registration', 'success', 'Signed up successfully', 5000)
       } else {
         this.http.loading.next({
           loading: false,
-          hasError: true,
-          hasMsg: 'Please enter valid Credentials'
+          error: {
+            title: 'Please enter valid Credentials',
+          }
         });
       }
       return _data;
@@ -103,12 +114,13 @@ export class AuthService {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         this.store.dispatch(this.actions.logoutSuccess());
+        this.router.navigate(['auth', 'login'])
         return res.json();
       });
   }
 
   isLoggedIn() {
-    return !!localStorage.getItem('token');
+    return !!this.getToken();
   }
 
   isLoggedOut() {
@@ -116,10 +128,22 @@ export class AuthService {
   }
 
   getToken() {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    if (token && !this.jwtHelper.isTokenExpired(token)) {
+      return token
+    } else {
+      this.logout();
+      return null;
+    }
   }
   getUserData() {
-    return JSON.parse(localStorage.getItem('user')) as User;
+    const token = localStorage.getItem('token');
+    if (token && !this.jwtHelper.isTokenExpired(token)) {
+      return JSON.parse(localStorage.getItem('user')) as User;
+    } else {
+      this.logout();
+      return null;
+    }
   }
   /**
    *

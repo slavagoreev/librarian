@@ -4,7 +4,7 @@ import { WINDOW } from "../../shared/services/scroll.service";
 import { AuthState } from '../../auth/reducers/auth.state';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../interfaces';
-import { getAuthStatus } from '../../auth/reducers/selectors';
+import { getAuthStatus, getUserRole } from '../../auth/reducers/selectors';
 import { Observable } from 'rxjs/Observable';
 import { AuthActions } from "../../auth/actions/auth.actions";
 import { AuthService } from '../../core/services/auth.service';
@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit {
   searchOpen: boolean = false;
   isAuthenticated: boolean;
   user$: User;
+  isAdmin: boolean;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -35,10 +36,12 @@ export class HeaderComponent implements OnInit {
       if (auth)
         this.user$ = this.authService.getUserData()
     });
+    this.store.select(getUserRole).subscribe((role) => {
+      this.isAdmin = (role === 2);
+    });
   }
 
   ngOnInit() {
-
   }
   setSearchState(state: boolean) {
     this.searchOpen = state;

@@ -21,11 +21,7 @@ export class DocumentService {
 
   getDocuments(): Observable<any> {
     return this.http.get(`documents/?size=30&title=Computer+Science`)
-      .map(res => {
-        const data = res.json();
-        console.log (data);
-        return data
-      });
+      .map(res => res.json());
   }
   removeDocument(id: number) {
     return this.http.delete(`documents/?id=${id.toString()}`)
