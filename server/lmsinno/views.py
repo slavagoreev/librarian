@@ -1,6 +1,6 @@
 import datetime
 
-from .permissions import DocumentPermission, OrderPermission, AuthenticatedUserPermission
+from .permissions import DocumentPermission, LibrariantPermission, AuthenticatedUserPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer, \
     UserResponceDataSerializer
@@ -20,7 +20,7 @@ import base64
 
 
 class Users(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (LibrariantPermission,)
 
     @staticmethod
     def get(request):
@@ -343,7 +343,7 @@ class TagByCriteria(APIView):
 
 
 class Orders(APIView):
-    permission_classes = (OrderPermission,)
+    permission_classes = (LibrariantPermission,)
     """
         Class to get all orders
     """
@@ -360,7 +360,7 @@ class Orders(APIView):
 
 
 class OrderDetail(APIView):
-    permission_classes = (OrderPermission,)
+    permission_classes = (LibrariantPermission,)
     """
         Class to react with orders
     """
@@ -412,7 +412,6 @@ class OrderDetail(APIView):
 
 
 class MyOrders(APIView):
-    permission_classes = (OrderPermission,)
     """
         Class to see users orders
     """

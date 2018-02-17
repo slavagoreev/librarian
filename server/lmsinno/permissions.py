@@ -47,7 +47,7 @@ class AuthenticatedUserPermission(permissions.BasePermission):
         return result
 
 
-class OrderPermission(permissions.BasePermission):
+class LibrariantPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         user = User.get_instance(request)
