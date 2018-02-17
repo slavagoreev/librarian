@@ -14,6 +14,7 @@ from os import path
 
 import sys
 
+import datetime
 from django.conf import settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -28,7 +29,7 @@ SECRET_KEY = '@!s!f%xjyvsd-ym%t#&s0t9!p4x71&dmf=ws7!*7#nej)3eag*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru']
+ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru', 'localhost']
 
 # Application definition
 
@@ -54,6 +55,12 @@ INSTALLED_APPS = [
 ]
 
 REST_USE_JWT = True
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'lmsinno.jwt.jwt_response_payload_handler',
+    'JWT_PAYLOAD_HANDLER': 'lmsinno.jwt.jwt_payload_handler',
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+}
 
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": 'lmsinno.serializer.UserResponceDataSerializer',
@@ -132,7 +139,7 @@ DATABASES = {
         'NAME': 'librarian',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '/var/run/mysqld/mysqld.sock'
+        'HOST': '/Applications/MAMP/tmp/mysql/mysql.sock'
     }
 }
 
@@ -143,7 +150,7 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-    'EXCEPTION_HANDLER': 'lmsinno.permissions.custom_exception_handler'
+    #'EXCEPTION_HANDLER': 'lmsinno.permissions.custom_exception_handler'
 }
 
 AUTHENTICATION_BACKENDS = (
