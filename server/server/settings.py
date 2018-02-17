@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 from os import path
-
+import datetime
 import sys
 
 import datetime
@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'rest_framework',
-    'rest_framework.authtoken',
     'rest_auth',
     'allauth',
     'allauth.account',
@@ -53,6 +52,10 @@ INSTALLED_APPS = [
     'lmsinno',
 
 ]
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(weeks=1)
+}
 
 REST_USE_JWT = True
 JWT_AUTH = {
