@@ -114,7 +114,8 @@ export class AuthService {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         this.store.dispatch(this.actions.logoutSuccess());
-        this.router.navigate(['auth', 'login'])
+        this.router.navigate(['auth', 'login']);
+        this.notifications.sendMessage('Logout', 'success', 'Logged out successfully', 5000)
         return res.json();
       });
   }
