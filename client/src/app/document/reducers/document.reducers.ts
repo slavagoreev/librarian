@@ -12,7 +12,7 @@ export function reducer(state = initialState, { type, payload }: any): DocumentS
       }) as DocumentState;
 
     case DocumentActions.GET_ALL_DOCUMENTS_SUCCESS:
-      const _documents: Document[] = payload.data;
+      const _documents: Document[] = payload;
       if (_documents && _documents.length > 0) {
         const documentIds: number[] = _documents.map(document => document.document_id);
         const documentEntities = _documents.reduce((documents: { [id: number]: Document }, document: Document) => {

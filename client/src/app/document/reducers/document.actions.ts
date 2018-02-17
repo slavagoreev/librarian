@@ -11,7 +11,7 @@ export class DocumentActions {
   static REMOVE_DOCUMENT_SUCCESS = 'REMOVE_DOCUMENT_SUCCESS';
 
 
-  getDocumentDetail(id: string) {
+  getDocumentDetail(id: number) {
     return {
       type: DocumentActions.GET_DOCUMENT_DETAIL,
       payload: id

@@ -1,0 +1,11 @@
+<main class="body">
+  <div class="document-details container-fluid mx-auto px-0" [style.height.px]="innerHeight - 70">
+    <div class="row" *ngIf="user != null; else documentNotFound">
+
+    </div>
+
+    <ng-template #documentNotFound>
+      <app-loader></app-loader>
+    </ng-template>
+  </div>
+</main>

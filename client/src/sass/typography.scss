@@ -154,7 +154,7 @@ body {
   font-family: $sans-font-stack;
   font-weight: 400;
   font-style: normal;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.4;
   color: rgba(0,0,0,.8);
 }
@@ -234,6 +234,9 @@ em {
   -webkit-font-feature-settings: "liga" on, "salt" on;
   font-feature-settings: "liga" on,"salt" on;
   //color: inherit;
+}
+.bold {
+  font-weight: 600;
 }
 
 

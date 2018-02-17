@@ -8,7 +8,6 @@ export const initialState: AuthState = new AuthStateRecord() as AuthState;
 export function reducer(state = initialState, { type, payload }: any): AuthState {
     switch (type) {
       case AuthActions.LOGIN_SUCCESS:
-        console.log(payload)
         return state.merge({
           token: payload.token,
           role: payload.user.role,

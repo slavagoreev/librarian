@@ -5,12 +5,27 @@ import { DocumentListComponent } from './document-list/document-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RouterModule } from '@angular/router';
 import { AdminRoutes } from './admin.routes';
+import { NavbarComponent } from './navbar/navbar.component';
+import { PlainUserRolePipe, UserRolePipe } from './user-list/user-list.pipe';
+import { UserDetailsComponent } from './user-list/user-details/user-details.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
+    SharedModule,
     RouterModule.forChild(AdminRoutes)
   ],
-  declarations: [UserListComponent, DocumentListComponent, DashboardComponent]
+  providers: [
+  ],
+  declarations: [
+    UserListComponent,
+    DocumentListComponent,
+    DashboardComponent,
+    NavbarComponent,
+    UserRolePipe,
+    PlainUserRolePipe,
+    UserDetailsComponent
+  ]
 })
 export class AdminModule { }

@@ -13,12 +13,16 @@ import { GenreNavComponent } from './genre-nav/genre-nav.component';
 import { LoaderComponent } from '../shared/components/loader/loader.component';
 import { SharedModule } from '../shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DocumentDetailsComponent } from './document-details/document-details.component';
+import { DocumentInfoComponent } from './document-details/document-info/document-info.component';
+import { DocumentModule } from '../document/document.module';
 
 @NgModule({
   imports: [
     RouterModule.forChild(HomeRoutes),
     CommonModule,
     SharedModule,
+    DocumentModule,
     NgbModule
   ],
   providers: [
@@ -28,7 +32,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HomeComponent,
     DocumentListComponent,
     DocumentItemComponent,
-    GenreNavComponent
+    GenreNavComponent,
+    DocumentDetailsComponent,
+    DocumentInfoComponent
   ]
 })
 export class HomeModule { }

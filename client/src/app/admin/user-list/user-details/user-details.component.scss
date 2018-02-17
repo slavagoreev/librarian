@@ -1,0 +1,37 @@
+@import "../../../../sass/variables";
+.user-details {
+  margin: 50px 0;
+  width: 100%;
+
+  .user {
+    background: #fff;
+    padding: 50px;
+    width: 100%;
+  }
+  .italic .bold {
+    color: #7b79b7;
+  }
+  .user-username {
+    display: inline-block;
+    width: 100%;
+    h2 {
+      font-family: $title-sans-font-stack;
+      font-weight: 400;
+      font-size: 33px;
+      color: #365652;
+      line-height: 1;
+      margin: 0;
+      float: left;
+    }
+  }
+  p {
+    margin: 0 0 5px;
+  }
+  .user-data {
+    margin-bottom: 20px;
+    tr {
+      line-height: 28px;
+    }
+  }
+
+}

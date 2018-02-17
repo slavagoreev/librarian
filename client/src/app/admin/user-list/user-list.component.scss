@@ -1,0 +1,57 @@
+.user-list {
+  margin: 50px 0;
+
+  .table thead th {
+    border-top: 0;
+  }
+
+  .table-responsive {
+    background: #fff;
+    padding: 40px;
+  }
+  .user-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .user-fullname {
+    width: 100%;
+    float: left;
+    color: #7b79b7;
+  }
+  .username {
+    font-size: 15px;
+    color: #777;
+  }
+  .user-phone {
+    color: inherit;
+  }
+  .table-link {
+    float: left;
+    margin: 9px;
+    cursor: pointer;
+    outline: none;
+
+    i {
+      opacity: 0.2;
+      transition: opacity .2s;
+      width: 26px;
+      height: 26px;
+      display: block;
+    }
+    .user-edit {
+      background: url('/assets/icons/user-edit.svg');
+    }
+    .user-delete {
+      background: url('/assets/icons/user-delete.svg');
+    }
+    &:hover i {
+      opacity: 0.5;
+    }
+  }
+  tr:hover {
+    .table-link i {
+      opacity: 0.3;
+    }
+  }
+}

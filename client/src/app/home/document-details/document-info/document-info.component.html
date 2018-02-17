@@ -1,0 +1,59 @@
+<div class="document col-lg-8 col-md-10 col-12 mx-auto" *ngIf="document != null" itemscope
+     itemtype="https://schema.org/CreativeWork">
+  <div class="row">
+    <div class="col-md-4 col-12 document-cover" [class.fixed]="thumbIsFixed">
+      <img itemprop="image"
+           class="document-thumb-image"
+           alt="{{document.title}}"
+           [src]="document.cover">
+    </div>
+    <div class="col-md-8 document-info">
+      <div itemprop="headline" class="document-title card-title">
+        {{ document.title }}
+      </div>
+      <ul class="document-authors">
+        <li *ngFor="let author of document.authors"
+            itemprop="author" class="document-author">{{ author.name }}</li>
+      </ul>
+      <div itemprop="description"
+           class="document-description card-text italic">
+        {{ description }}
+        <span class="more"
+              *ngIf="document.description.length > 200"
+              (click)="extendDescription($event)">
+          more..
+        </span>
+      </div>
+      <table class="document-extra col-12">
+        <thead>
+          <tr><th width="50%"></th><th width="50%"></th></tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="document.publisher">
+            <td class="bold">Publisher</td>
+            <td>{{document.publisher}}
+            </td>
+          </tr>
+          <tr *ngIf="document.year">
+            <td class="bold">Year of publication</td>
+            <td>{{document.year}}
+            </td>
+          </tr>
+          <tr>
+            <td class="bold">Type</td>
+            <td>{{document.type | documentType}}
+            </td>
+          </tr>
+          <tr>
+            <td class="bold">Price</td>
+            <td>{{document.price}} ₽</td>
+          </tr>
+          <tr>
+            <td class="bold">Copies available</td>
+            <td>{{document.copies_available}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

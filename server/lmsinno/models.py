@@ -69,22 +69,25 @@ class User(AbstractUser):
         self.first_name = data.get('first_name') or self.first_name
 
     def get_instance(request):
-        token = re.split(' ', request.META['HTTP_BEARER'])[1]
-        payload = jwt.decode(token, settings.SECRET_KEY)
-        email = payload['email']
-        userid = payload['user_id']
-        try:
-            user = User.objects.get(
-                email=email,
-                id=userid
-            )
+        if 'HTTP_HOST' in request.META:
+            token = re.split(' ', request.META['HTTP_BEARER'])[1]
+            payload = jwt.decode(token, settings.SECRET_KEY)
+            email = payload['email']
+            userid = payload['user_id']
+            try:
+                user = User.objects.get(
+                    email=email,
+                    id=userid
+                )
 
-        except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:
-            return HttpResponse({'Error': "Token is invalid"}, status="403")
-        except User.DoesNotExist:
+            except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:
+                return HttpResponse({'Error': "Token is invalid"}, status="403")
+            except User.DoesNotExist:
+                return HttpResponse({'Error': "Internal server error"}, status="500")
+
+            return user
+        else:
             return HttpResponse({'Error': "Internal server error"}, status="500")
-
-        return user
 
 
 

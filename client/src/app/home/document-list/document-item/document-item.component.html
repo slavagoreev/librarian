@@ -2,14 +2,15 @@
     itemtype="https://schema.org/CreativeWork">
   <div class="card-body">
     <div class="document-thumb image-shadow">
-      <img itemprop="image"
+      <img (click)="selectDocument(document.document_id)"
+           itemprop="image"
            class="document-thumb-image"
            alt="{{document.title}}"
            [src]="document.cover">
     </div>
     <div class="document-MetaInfo">
       <div itemprop="headline" class="document-title card-title">
-        <a itemprop="url" [routerLink]="['/document/', document.document_id]">
+        <a (click)="selectDocument(document.document_id)" [routerLink]="['/documents', document.document_id.toString()]">
           {{ document.title }}
         </a>
       </div>
@@ -17,7 +18,7 @@
         <li *ngFor="let author of document.authors"
             itemprop="author" class="document-author">{{ author.name }}</li>
       </ul>
-      <div *ngIf="document.description.length > 0" itemprop="description"
+      <div (click)="selectDocument(document.document_id)" *ngIf="document.description.length > 0" itemprop="description"
            class="document-description card-text">
         {{ document.description }}
       </div>

@@ -18,7 +18,11 @@ export class DocumentEffects {
   GetAllDocuments$: Observable<Action> = this.actions$
     .ofType(DocumentActions.GET_ALL_DOCUMENTS)
     .switchMap((action: any) => this.documentService.getDocuments())
-    .map((data: Document[]) => {console.log (data);
-      return this.documentActions.getAllDocumentsSuccess(data)
-    });
+    .map((data: Document[]) => this.documentActions.getAllDocumentsSuccess(data));
+
+  @Effect()
+  GetDocumentDetail$: Observable<Action> = this.actions$
+    .ofType(DocumentActions.GET_DOCUMENT_DETAIL)
+    .switchMap((action: any) => this.documentService.getDocument(action.payload))
+    .map((data: any) => this.documentActions.getDocumentDetailSuccess(data));
 }

@@ -1,0 +1,51 @@
+<main class="body">
+  <div class="user-details col-lg-10 col-12 px-0 row mx-auto">
+    <app-navbar></app-navbar>
+    <div *ngIf="user != null; else userNotFound" class="user">
+      <div class="user-username">
+        <h2>{{ user.first_name ? user.first_name + " " + user.last_name : user.username }}</h2>
+      </div>
+      <p class="text-muted italic">Profile of {{ user.role | plainUserRole}}</p>
+      <table class="user-data col-12">
+        <thead>
+        <tr><th width="50%"></th><th width="50%"></th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="bold">Email</td>
+          <td>{{user.email}}</td>
+        </tr>
+        <tr>
+          <td class="bold">Username</td>
+          <td>{{user.username}}</td>
+        </tr>
+        <tr>
+          <td class="bold">Role</td>
+          <td> <span [innerHTML]="user.role | userRole"></span></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <p class="text-muted italic">Additional information</p>
+      <table class="user-data col-12">
+        <thead>
+        <tr><th width="50%"></th><th width="50%"></th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="bold">Phone number</td>
+          <td>{{user.phone}}</td>
+        </tr>
+        <tr *ngIf="user.address">
+          <td class="bold">Living address</td>
+          <td>{{user.address}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <ng-template #userNotFound>
+    <app-loader></app-loader>
+  </ng-template>
+</main>

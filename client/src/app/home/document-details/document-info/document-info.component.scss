@@ -1,0 +1,62 @@
+@import "../../../../sass/variables";
+.document {
+  margin: 50px 0;
+  width: 100%;
+
+  .document-info {
+    padding: 50px 50px 50px 80px;
+    background: #fff;
+    position: absolute;
+    left: 30%;
+    z-index: 1;
+    margin-top: 30px;
+    margin-bottom: 50px;
+
+    .more {
+      color: #7b79b7;
+      cursor: pointer;
+    }
+  }
+  .document-title {
+    font-family: $sans-font-stack;
+    font-weight: 400;
+    font-size: 33px;
+    color: #365652;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .document-authors {
+    padding: 0;
+    margin-bottom: 20px;
+    color: #7b79b7;
+
+
+    .document-author {
+      list-style: none;
+      padding: 0;
+      display: block;
+    }
+  }
+
+  .document-cover {
+    height: auto;
+    box-shadow: 5px 0 20px #b9b9b9;
+    background: #fff;
+    padding: 0;
+    z-index: 2;
+    width: auto;
+
+    .document-thumb-image {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .document-extra {
+    margin-top:  20px;
+    tr {
+      line-height: 28px;
+    }
+  }
+
+}

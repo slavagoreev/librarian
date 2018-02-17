@@ -1,0 +1,16 @@
+@import "../../../sass/variables";
+.navbar {
+  margin-bottom: 10px;
+
+  .navbar-brand {
+    font-family: $title-sans-font-stack;
+    font-weight: 400;
+    font-size: 33px;
+    color: #365652;
+    margin-right: 35px;
+  }
+  .navbar-collapse {
+    margin-top: -2px;
+  }
+
+}

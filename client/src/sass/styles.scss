@@ -7,8 +7,13 @@
   '~bootstrap/scss/badge',
   '~bootstrap/scss/card',
   '~bootstrap/scss/dropdown',
+  '~bootstrap/scss/tables',
   '~bootstrap/scss/grid',
   '~bootstrap/scss/nav',
+  '~bootstrap/scss/modal',
+  '~bootstrap/scss/transitions',
+  '~bootstrap/scss/close',
+  '~bootstrap/scss/close',
   '~bootstrap/scss/navbar',
   '~bootstrap/scss/reboot',
   '~bootstrap/scss/type',
@@ -83,4 +88,21 @@ body {
   background: #000;
   border-color: #000;
   color: rgba(255,255,255,.97)
+}
+
+.modal {
+  z-index: 10002;
+  margin-top: 15%;
+}
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 10001;
+}
+.modal-title {
+  margin: 0;
+}
+
+app-navbar {
+  width: 100%;
+  float: left;
 }

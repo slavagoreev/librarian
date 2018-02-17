@@ -15,7 +15,7 @@
           </app-document-list>
         </div>
       </div>
-      <app-loader [hidden]="(loading$ | async)?.loading === false || (loading$ | async)?.hasError === true"></app-loader>
+      <app-loader [hidden]="(loading$ | async)?.loading === false || !!(loading$ | async)?.error"></app-loader>
     </div>
   </div>
 </main>
