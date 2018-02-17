@@ -2,7 +2,8 @@ import datetime
 
 from .permissions import DocumentPermission, OrderPermission, AuthenticatedUserPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
-from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer
+from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer, \
+    UserResponceDataSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,6 +17,22 @@ from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BA
 
 import re
 import base64
+
+
+class Users(APIView):
+    permission_classes = (AllowAny,)
+
+    @staticmethod
+    def get(request):
+        result = {'status': '', 'data': {}}
+        if not User.objects.all():
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+        serializer = UserResponceDataSerializer(User.objects.all(), many=True)
+        result['data'] = serializer.data
+        result['status'] = HTTP_200_OK
+
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class DocumentDetail(APIView):
