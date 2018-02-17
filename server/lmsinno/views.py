@@ -20,18 +20,57 @@ import base64
 
 
 class Users(APIView):
+    """
+       Class to get list of all Users
+    """
     permission_classes = (LibrariantPermission,)
 
     @staticmethod
     def get(request):
+        """
+            GET request to get list of all Users
+            :param request:
+            :return: HTTP_200_OK and JSON-Documents: if all good
+                     HTTP_404_NOT_FOUND: if users don`t exist
+        """
         result = {'status': '', 'data': {}}
+
         if not User.objects.all():
             result['status'] = HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
+
         serializer = UserResponceDataSerializer(User.objects.all(), many=True)
         result['data'] = serializer.data
         result['status'] = HTTP_200_OK
 
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class UserDetail(APIView):
+    """
+        Class to get one User by id
+    """
+    permission_classes = (LibrariantPermission,)
+
+    @staticmethod
+    def get(request, user_id):
+        """
+            GET request to get one particular user
+            :param request:
+            :return: HTTP_200_OK and JSON-Documents: if all good
+                    HTTP_404_NOT_FOUND: if user don`t exist
+        """
+        result = {'status': '', 'data': {}}
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserResponceDataSerializer(user)
+        result['data'] = serializer.data
+        result['status'] = HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
 

@@ -170,6 +170,8 @@ class UserAuthSerializer(serializers.ModelSerializer):
 
 
 class UserResponceDataSerializer(serializers.ModelSerializer):
+    orders = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ('id',
@@ -179,8 +181,13 @@ class UserResponceDataSerializer(serializers.ModelSerializer):
                   'last_name',
                   'address',
                   'phone',
-                  'username')
+                  'username',
+                  'orders')
 
+    @staticmethod
+    def get_orders(obj):
+        orders = OrderSerializer(Order.objects.filter(user=obj), many=True)
+        return orders.data
 
 
 class OrderSerializer(serializers.ModelSerializer):

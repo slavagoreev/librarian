@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^api/tags/$', views.TagByCriteria.as_view()),
 
     url(r'^api/users/', include('rest_auth.urls')),
+    url(r'^api/users/(?P<user_id>[0-9]+)[/]?$', views.UserDetail.as_view()),
     url(r'^api/users/$', views.Users.as_view()),
     url(r'^api/users/registration/', include('rest_auth.registration.urls')),
 
