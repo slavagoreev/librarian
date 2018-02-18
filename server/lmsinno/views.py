@@ -307,6 +307,10 @@ class CopyDetail(APIView):
 
             copy = Copy.objects.create(**copy_serializer.data)
 
+            document = Document.objects.get(document_id=copy.document.document_id)
+            document.copies_available += 1
+            document.save()
+
             result['data'] = CopyDetailSerializer(copy).data
             result['status'] = HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
@@ -316,7 +320,12 @@ class CopyDetail(APIView):
             result['status'] = HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-            
+        except Document.DoesNotExist:
+
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+
 class TagDetail(APIView):
     """
     Class to get one particular tag by ID
@@ -534,12 +543,18 @@ class Booking(APIView):
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
+            copy = Copy.objects.all()
+            copy = copy.filter(document=document)
+            copy = copy.filter(status=0)
+            copy = copy[0]
+            copy.status = 1
+            copy.save()
+
             user = User.get_instance(request=request)
 
             order = Order.objects.create(
-                document=document,
+                copy=copy,
                 user=user,
-                status=0,
             )
 
         except Document.DoesNotExist:
