@@ -557,7 +557,13 @@ class Booking(APIView):
                 user=user,
             )
 
+        except IndexError:
+
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+        
         except Document.DoesNotExist:
+
             result['status'] = HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
