@@ -1,12 +1,14 @@
 import datetime
 
+from django.utils.datastructures import MultiValueDictKeyError
+
 from .permissions import DocumentPermission, LibrariantPermission, AuthenticatedUserPermission
-from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
+from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order, Copy
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer, \
-    UserResponceDataSerializer
+    UserResponceDataSerializer, UserDetailSerializer, CopySerializer, CopyDetailSerializer
 
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -68,7 +70,7 @@ class UserDetail(APIView):
             result['status'] = HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = UserResponceDataSerializer(user)
+        serializer = UserDetailSerializer(user)
         result['data'] = serializer.data
         result['status'] = HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
@@ -281,6 +283,47 @@ class DocumentsByCriteria(APIView):
 
         result['status'] = HTTP_400_BAD_REQUEST
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CopyDetail(APIView):
+    permission_classes = (LibrariantPermission,)
+    """
+    Class handle with copyes
+    """
+
+    @staticmethod
+    def post(request):
+        """
+        Add one particular copy
+        :param request:
+        :return: HTTP_200_OK and JSON-tag: if copy was added successfully
+                 HTTP_400_BAD_REQUEST: if format of input is wrong
+        """
+
+        result = {'status': '', 'data': {}}
+
+        try:
+            copy_serializer = CopySerializer(request.data)
+
+            copy = Copy.objects.create(**copy_serializer.data)
+
+            document = Document.objects.get(document_id=copy.document.document_id)
+            document.copies_available += 1
+            document.save()
+
+            result['data'] = CopyDetailSerializer(copy).data
+            result['status'] = HTTP_200_OK
+            return Response(result, status=status.HTTP_200_OK)
+
+        except MultiValueDictKeyError:
+
+            result['status'] = HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+        except Document.DoesNotExist:
+
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
 
 
 class TagDetail(APIView):
@@ -500,15 +543,27 @@ class Booking(APIView):
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
+            copy = Copy.objects.all()
+            copy = copy.filter(document=document)
+            copy = copy.filter(status=0)
+            copy = copy[0]
+            copy.status = 1
+            copy.save()
+
             user = User.get_instance(request=request)
 
             order = Order.objects.create(
-                document=document,
+                copy=copy,
                 user=user,
-                status=0,
             )
 
+        except IndexError:
+
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+        
         except Document.DoesNotExist:
+
             result['status'] = HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
