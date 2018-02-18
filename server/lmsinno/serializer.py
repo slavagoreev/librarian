@@ -1,4 +1,5 @@
 from django.http import QueryDict
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import serializers
 
 from rest_framework.response import Response
@@ -214,6 +215,23 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class CopySerializer(serializers.ModelSerializer):
+    document = serializers.SerializerMethodField()
+    class Meta:
+        model = Copy
+        fields = ('copy_id',
+                  'document',
+                  'status',
+                  'place_hall_number',
+                  'place_shelf_letter')
+
+    @staticmethod
+    def get_document(obj):
+
+        document = Document.objects.get(document_id=obj['document'])
+        return document
+
+
+class CopyDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Copy
         fields = ('copy_id',

@@ -1,3 +1,4 @@
+import random
 import re
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -118,8 +119,8 @@ class Copy(models.Model):
     copy_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     status = models.IntegerField(choices=ORDER_STATUS_TYPE_CHOICES, default=0)
-    place_hall_number = models.IntegerField(default=0)
-    place_shelf_letter = models.CharField(max_length=1, default='A')
+    place_hall_number = models.IntegerField(null=False)
+    place_shelf_letter = models.CharField(max_length=1, null=False)
 
     def __str__(self):
         return '{0}: {1}'.format(str(self.copy_id), self.document)

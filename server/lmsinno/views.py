@@ -1,12 +1,14 @@
 import datetime
 
+from django.utils.datastructures import MultiValueDictKeyError
+
 from .permissions import DocumentPermission, LibrariantPermission, AuthenticatedUserPermission
-from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
+from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order, Copy
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer, \
-    UserResponceDataSerializer, UserDetailSerializer
+    UserResponceDataSerializer, UserDetailSerializer, CopySerializer, CopyDetailSerializer
 
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -294,18 +296,27 @@ class CopyDetail(APIView):
         """
         Add one particular copy
         :param request:
-        :return: HTTP_202_ACCEPTED and JSON-tag: if copy was added successfully
-                 HTTP_409_CONFLICT and JSON: if copy with such data already exists
+        :return: HTTP_200_OK and JSON-tag: if copy was added successfully
                  HTTP_400_BAD_REQUEST: if format of input is wrong
         """
 
         result = {'status': '', 'data': {}}
 
-        print(request.data)
+        try:
+            copy_serializer = CopySerializer(request.data)
 
-        return Response(result, status=status.HTTP_200_OK)
+            copy = Copy.objects.create(**copy_serializer.data)
 
+            result['data'] = CopyDetailSerializer(copy).data
+            result['status'] = HTTP_200_OK
+            return Response(result, status=status.HTTP_200_OK)
 
+        except MultiValueDictKeyError:
+
+            result['status'] = HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+            
 class TagDetail(APIView):
     """
     Class to get one particular tag by ID
