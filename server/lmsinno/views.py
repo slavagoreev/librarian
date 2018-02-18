@@ -3,7 +3,7 @@ import datetime
 from .permissions import DocumentPermission, LibrariantPermission, AuthenticatedUserPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer, \
-    UserResponceDataSerializer
+    UserResponceDataSerializer, UserDetailSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -68,7 +68,7 @@ class UserDetail(APIView):
             result['status'] = HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = UserResponceDataSerializer(user)
+        serializer = UserDetailSerializer(user)
         result['data'] = serializer.data
         result['status'] = HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
@@ -281,6 +281,29 @@ class DocumentsByCriteria(APIView):
 
         result['status'] = HTTP_400_BAD_REQUEST
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CopyDetail(APIView):
+    permission_classes = (LibrariantPermission,)
+    """
+    Class handle with copyes
+    """
+
+    @staticmethod
+    def post(request):
+        """
+        Add one particular copy
+        :param request:
+        :return: HTTP_202_ACCEPTED and JSON-tag: if copy was added successfully
+                 HTTP_409_CONFLICT and JSON: if copy with such data already exists
+                 HTTP_400_BAD_REQUEST: if format of input is wrong
+        """
+
+        result = {'status': '', 'data': {}}
+
+        print(request.data)
+
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class TagDetail(APIView):

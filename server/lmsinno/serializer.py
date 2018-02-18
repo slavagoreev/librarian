@@ -167,9 +167,20 @@ class UserAuthSerializer(serializers.ModelSerializer):
         fields = ('username', 'password')
 
 
-
-
 class UserResponceDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id',
+                  'email',
+                  'role',
+                  'first_name',
+                  'last_name',
+                  'address',
+                  'phone',
+                  'username')
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
     orders = serializers.SerializerMethodField()
 
     class Meta:
@@ -194,7 +205,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('order_id',
-                  'document',
+                  'copy',
                   'user',
                   'date_created',
                   'date_accepted',

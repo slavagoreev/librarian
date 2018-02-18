@@ -14,6 +14,7 @@ urlpatterns = [
 
     url(r'^api/documents/(?P<document_id>[0-9]+)[/]?$', views.DocumentDetail.as_view()),
     url(r'^api/documents/$', views.DocumentsByCriteria.as_view()),
+    url(r'^api/copy/$', views.CopyDetail.as_view()),
     url(r'^api/tags/(?P<tag_id>[0-9]+)[/]?', views.TagDetail.as_view()),
     url(r'^api/tags/$', views.TagByCriteria.as_view()),
 

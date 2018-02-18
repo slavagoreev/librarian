@@ -81,13 +81,13 @@ class User(AbstractUser):
                 )
 
             except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:
-                return HttpResponse({'Error': "Token is invalid"}, status="403")
+                return None
             except User.DoesNotExist:
-                return HttpResponse({'Error': "Internal server error"}, status="500")
+                return None
 
             return user
         else:
-            return HttpResponse({'Error': "Internal server error"}, status="500")
+            return None
 
 
 
@@ -110,23 +110,6 @@ class DocumentOfAuthor(models.Model):
         return '{0}: {1}'.format(self.document, self.author)
 
 
-class Order(models.Model):
-    # Type of Status:
-    # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed
-    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed')]
-
-    order_id = models.AutoField(primary_key=True)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_created = models.DateField(auto_now_add=True)
-    date_accepted = models.DateField(default=None, null=True)
-    date_return = models.DateField(default=None, null=True)
-    status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
-
-    def __str__(self):
-        return '{0}: {1}'.format(self.user, self.document)
-
-
 class Copy(models.Model):
     # Type of Order Status
     # 0 - not ordered; 1 - ordered
@@ -140,6 +123,23 @@ class Copy(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(str(self.copy_id), self.document)
+
+
+class Order(models.Model):
+    # Type of Status:
+    # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed
+    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed')]
+
+    order_id = models.AutoField(primary_key=True)
+    copy = models.ForeignKey(Copy, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_created = models.DateField(auto_now_add=True)
+    date_accepted = models.DateField(default=None, null=True)
+    date_return = models.DateField(default=None, null=True)
+    status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
+
+    def __str__(self):
+        return '{0}: {1}'.format(self.user, self.copy)
 
 
 class Tag(models.Model):
