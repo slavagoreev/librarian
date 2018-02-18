@@ -4,11 +4,13 @@
     <div *ngIf="user != null; else userNotFound" class="user">
       <div class="user-username">
         <h2>{{ user.first_name ? user.first_name + " " + user.last_name : user.username }}</h2>
+        <span class="user-action" (click)="openModal(deleteUser, user)"><i class="user-delete"></i></span>
+        <span class="user-action" [routerLink]="'/admin/user/'+user.id+'/edit'"><i class="user-edit"></i></span>
       </div>
       <p class="text-muted italic">Profile of {{ user.role | plainUserRole}}</p>
       <table class="user-data col-12">
         <thead>
-        <tr><th width="50%"></th><th width="50%"></th></tr>
+        <tr><th width="20%"></th><th width="50%"></th></tr>
         </thead>
         <tbody>
         <tr>
@@ -29,7 +31,7 @@
       <p class="text-muted italic">Additional information</p>
       <table class="user-data col-12">
         <thead>
-        <tr><th width="50%"></th><th width="50%"></th></tr>
+        <tr><th width="20%"></th><th width="50%"></th></tr>
         </thead>
         <tbody>
         <tr>
@@ -49,3 +51,17 @@
     <app-loader></app-loader>
   </ng-template>
 </main>
+
+<ng-template #deleteUser let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Are you sure?</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" (click)="c('Close click')">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="c('Confirm')">Confirm</button>
+  </div>
+</ng-template>
+

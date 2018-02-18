@@ -1,0 +1,30 @@
+i {
+  width: 28px;
+  height: 26px;
+  display: inline-block;
+
+  &.user-edit {
+    background: url('/assets/icons/user-edit.svg') no-repeat center;
+  }
+  &.user-delete {
+    background: url('/assets/icons/user-delete.svg') no-repeat center;
+  }
+  &.magnifier {
+    background: url('/assets/icons/magnifier.svg') no-repeat center;
+  }
+  &.loupe {
+    background: url('/assets/icons/loupe.svg') no-repeat center;
+  }
+  &.left-chevron {
+    background: url('/assets/icons/left-chevron.svg') no-repeat center;
+  }
+  &.edit {
+    background: url('/assets/icons/edit.svg') no-repeat center;
+    transform: scale(0.9);
+  }
+  &.remove {
+    background: url('/assets/icons/remove.svg') no-repeat center;
+    transform: scale(1.3);
+  }
+
+}

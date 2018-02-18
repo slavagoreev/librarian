@@ -7,7 +7,7 @@
         <tr>
           <th><span>User</span></th>
           <th><span>Phone</span></th>
-          <th><span>Status</span></th>
+          <th><span>Role</span></th>
           <th><span>Email</span></th>
           <th>&nbsp;</th>
         </tr>
@@ -24,7 +24,7 @@
           <td [innerHTML]="user.role | userRole"></td>
           <td>{{user.email}}</td>
           <td>
-            <span class="table-link" [routerLink]="'/admin/user/'+user.id"><i class="user-edit"></i> </span>
+            <span class="table-link" [routerLink]="'/admin/user/'+user.id+'/edit'"><i class="user-edit"></i> </span>
             <span class="table-link" (click)="openModal(deleteUser, user)"><i class="user-delete"></i></span>
           </td>
         </tr>

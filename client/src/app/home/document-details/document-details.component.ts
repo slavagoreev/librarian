@@ -24,7 +24,10 @@ export class DocumentDetailsComponent implements OnInit, OnDestroy {
       this.documentId = params['id'];
       this.documentService
         .getDocument(this.documentId)
-        .subscribe(res => this.document = res as Document);
+        .subscribe(res => {
+          this.document = res
+          console.log ('Res', res)
+        });
     })
     this.innerHeight =window.innerHeight;
   }

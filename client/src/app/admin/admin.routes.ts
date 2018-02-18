@@ -3,6 +3,7 @@ import { UserListComponent } from './user-list/user-list.component';
 import { DocumentListComponent } from './document-list/document-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserDetailsComponent } from './user-list/user-details/user-details.component';
+import { UserEditComponent } from './user-list/user-edit/user-edit.component';
 
 export const AdminRoutes = [
   {
@@ -22,7 +23,16 @@ export const AdminRoutes = [
       },
       {
         path: 'user/:id',
-        component: UserDetailsComponent
+        children: [
+          {
+            path: 'edit',
+            component: UserEditComponent
+          },
+          {
+            path: '',
+            component: UserDetailsComponent,
+          },
+        ]
       },
       {
         path: 'document-list',

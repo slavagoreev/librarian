@@ -183,3 +183,10 @@ textarea.form-control {
 .form-control.is-invalid~.invalid-feedback {
   display: block;
 }
+.input-group-text {
+  position: absolute;
+}
+
+.input-group-prepend ~ .form-control {
+  padding-left:  40px;
+}
