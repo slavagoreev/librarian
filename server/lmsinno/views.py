@@ -76,6 +76,34 @@ class UserDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
+class MyDetail(APIView):
+    """
+        Class to get one User by id
+    """
+    permission_classes = (LibrariantPermission,)
+
+    @staticmethod
+    def get(request, user_id):
+        """
+            GET request to get one particular user
+            :param request:
+            :return: HTTP_200_OK and JSON-Documents: if all good
+                    HTTP_404_NOT_FOUND: if user don`t exist
+        """
+        result = {'status': '', 'data': {}}
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserDetailSerializer(user)
+        result['data'] = serializer.data
+        result['status'] = HTTP_200_OK
+        return Response(result, status=status.HTTP_200_OK)
+
+
 class DocumentDetail(APIView):
     """
     Class to get one particular document by id

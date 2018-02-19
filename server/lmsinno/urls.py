@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^api/users/$', views.Users.as_view()),
     url(r'^api/users/registration/', include('rest_auth.registration.urls')),
 
+    url(r'^api/profile/', views.MyDetail.as_view()),
+
     url(r'^api/users/token/', obtain_jwt_token),
     url(r'^api/users/token/refresh/', refresh_jwt_token),
 
