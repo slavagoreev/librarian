@@ -32,6 +32,9 @@
         <li ngbDropdown class="document-menu nav-item">
           <a ngbDropdownToggle class="nav-link active">{{user$.first_name ? user$.first_name + " " + user$.last_name : user$.username}}</a>
           <div ngbDropdownMenu class="dropdown-menu-right">
+            <button class="dropdown-item" [routerLink]="['/user', 'profile']">Profile</button>
+            <button class="dropdown-item" [routerLink]="['/user', 'orders']">Orders</button>
+            <div class="dropdown-divider"></div>
             <button class="dropdown-item" (click)="logout()">Logout</button>
           </div>
         </li>

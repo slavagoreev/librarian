@@ -11,7 +11,7 @@
         <div class="content col-12 col-lg-9">
           <app-genre-nav></app-genre-nav>
           <app-document-list
-            [documents]="documents$ | async">
+            [documents]="documents$ | async" [permission]="permission">
           </app-document-list>
         </div>
       </div>

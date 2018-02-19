@@ -27,5 +27,10 @@ export class DocumentListComponent implements OnInit {
       }
     });
   }
+  search($event: any) {
+    /*if(event.keyCode == 13) {
+      console.log ($event.target);
+    }*/
+  }
 
 }

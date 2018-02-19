@@ -29,12 +29,21 @@
   transform: rotate(45deg) translate(6px,6px);
   -webkit-box-shadow: -1px -1px 1px -1px rgba(0,0,0,.54);
   box-shadow: -1px -1px 1px -1px rgba(0,0,0,.54);
-  top: -15px;
-  right: 10px;
   z-index: -1;
+  left: 10px;
+  top: -15px;
 }
+.dropdown-menu-right .dropdown-menu:after {
+  right: 10px;
+}
+
 .dropdown-toggle::after {
   border-top: 0.4em solid;
   top: 2px;
   position: relative;
+}
+.dropdown-menu-right {
+  right: 0;
+  left: auto !important;
+  margin-right: -9px;
 }

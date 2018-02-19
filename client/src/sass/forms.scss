@@ -190,3 +190,8 @@ textarea.form-control {
 .input-group-prepend ~ .form-control {
   padding-left:  40px;
 }
+
+.input-group-prepend {
+  position: absolute;
+  left: 0;
+}

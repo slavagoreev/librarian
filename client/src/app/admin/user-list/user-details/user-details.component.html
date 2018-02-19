@@ -5,7 +5,7 @@
       <div class="user-username">
         <h2>{{ user.first_name ? user.first_name + " " + user.last_name : user.username }}</h2>
         <span class="user-action" (click)="openModal(deleteUser, user)"><i class="user-delete"></i></span>
-        <span class="user-action" [routerLink]="'/admin/user/'+user.id+'/edit'"><i class="user-edit"></i></span>
+        <span class="user-action" [routerLink]="'edit'"><i class="user-edit"></i></span>
       </div>
       <p class="text-muted italic">Profile of {{ user.role | plainUserRole}}</p>
       <table class="user-data col-12">

@@ -5,7 +5,7 @@
       <div class="user-username">
         <h2>{{ user.first_name ? user.first_name + " " + user.last_name : user.username }}</h2>
       </div>
-      <p class="text-muted italic" [routerLink]="'/admin/user/'+user.id">
+      <p class="text-muted italic" [routerLink]="['../']">
         <i class="left-chevron"></i> Go back to profile
       </p>
       <form class="user-edit-form" novalidate="" [formGroup]="userEditInfoForm" (ngSubmit)="onSubmit()">
@@ -50,11 +50,11 @@
               <select class="form-control"
                      id="role" formControlName="role"
                      [ngClass]="{
-                          'is-invalid' : userEditInfoForm.get('role').errors && userEditInfoForm.get('role').dirty
+                          'is-invalid' : userEditInfoForm.get('username').errors && userEditInfoForm.get('username').dirty
                        }">
                 <option value="0" [selected]="user.role === 0">Patron</option>
                 <option value="1" [selected]="user.role === 1">Faculty</option>
-                <option value="2" [selected]="user.role === 2">Librarian</option>
+                <option value="2" [selected]="user.role === 2">Patron</option>
               </select>
               <div class="invalid-feedback">
                 {{userEditInfoForm.get('username')?.errors?.msg || 'Enter valid username!'}}

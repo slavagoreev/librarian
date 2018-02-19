@@ -4,16 +4,37 @@
     <div class="table-responsive">
       <div class="form-row">
         <div class="input-group mb-1 document-search col-5">
-          <div class="input-group-prepend">
-            <div class="input-group-text"><i class="loupe"></i> </div>
-          </div>
-          <input type="search" id="documentSearch"
+          <label ngbDropdown class="input-group-prepend">
+            <button id="documentSearchProps" ngbDropdownToggle>
+              <i class="loupe"></i>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="documentSearchProps">
+              <button class="dropdown-item">Document title</button>
+              <button class="dropdown-item">Author</button>
+              <button class="dropdown-item">Year</button>
+            </div>
+          </label>
+          <!--<label ngbDropdown class="input-group-prepend document-menu" for="documentSearch">
+
+            <div ngbDropdownMenu class="dropdown-menu">
+              <button class="dropdown-item">Logout</button>
+            </div>
+          </label>-->
+          <input type="search" id="documentSearch" (keydown)="search($event)"
                  class="form-control form-control-lg"
                  placeholder="Search documents">
         </div>
       </div>
       <p class="text-muted italic">Documents by criteria:</p>
         <table class="table">
+          <thead>
+          <tr>
+            <th></th>
+            <th width="40%"></th>
+            <th width="35%"></th>
+            <th width="20%"></th>
+          </tr>
+          </thead>
           <tbody>
           <tr *ngFor="let document of (documents$ | async)">
             <td class="pr-0">
@@ -24,13 +45,13 @@
             <td>
               <a class="document-link" [routerLink]="'/admin/document/'+document.document_id">
                 <span class="document-title">{{document.title.substr(0, 50)}}</span>
-                <span class="document-type">{{document.type | documentType}}</span>
+                <span class="document-type">{{document.type | documentType}}
+                  {{document.authors.length ? 'by ' + document.authors[0].name : ''}}
+                </span>
               </a>
             </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
+            <td>{{document.publisher}}</td>
+            <td class="float-right">
               <span class="table-link" [routerLink]="'/admin/document/'+document.document_id+'/edit'"><i class="edit"></i> </span>
               <span class="table-link" (click)="openModal(deleteDocument, document)"><i class="remove"></i></span>
             </td>

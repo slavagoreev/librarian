@@ -4,6 +4,9 @@ import { DocumentService } from '../../core/services/document.service';
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from 'rxjs/Subscription';
 import { Document } from '../../shared/models/documents.model';
+import { getUserRole } from '../../auth/reducers/selectors';
+import { AppState } from '../../interfaces';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-document-details',
@@ -15,8 +18,10 @@ export class DocumentDetailsComponent implements OnInit, OnDestroy {
   documentId: any;
   actionsSubscription: Subscription;
   document: Document;
+  permission: boolean;
 
   constructor(
+    private store: Store<AppState>,
     private documentService: DocumentService,
     private router : ActivatedRoute
   ) {
@@ -26,9 +31,9 @@ export class DocumentDetailsComponent implements OnInit, OnDestroy {
         .getDocument(this.documentId)
         .subscribe(res => {
           this.document = res
-          console.log ('Res', res)
         });
-    })
+    });
+    this.store.select(getUserRole).subscribe(res => this.permission = res == 2);
     this.innerHeight =window.innerHeight;
   }
   @HostListener('window:resize', ['$event'])
