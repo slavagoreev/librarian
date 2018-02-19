@@ -9,6 +9,7 @@ import { Document } from '../shared/models/documents.model';
 import { HttpService } from '../core/services/http.service';
 import { LoaderComponent } from '../shared/components/loader/loader.component';
 import { Subject } from 'rxjs/Subject';
+import { getUserRole } from '../auth/reducers/selectors';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +21,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   documents$: Observable<Document[]>;
   loading$: Subject<{loading: boolean, error: any}>;
+  permission: boolean;
 
   constructor(
     private store: Store<AppState>,
@@ -28,6 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private documentService: DocumentService
   ) {
     this.store.dispatch(this.actions.getAllDocuments());
+    this.store.select(getUserRole).subscribe(res => this.permission = res == 2);
     this.documents$ = this.store.select(getDocuments)
       .map(res => { res.map(doc => doc as Document); return res});
 

@@ -12,6 +12,7 @@ import { SharedModule } from '../shared/shared.module';
 import { UserEditComponent } from './user-list/user-edit/user-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DocumentModule } from '../document/document.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { DocumentModule } from '../document/document.module';
     SharedModule,
     ReactiveFormsModule,
     DocumentModule,
+    NgbModule,
     RouterModule.forChild(AdminRoutes)
   ],
   providers: [

@@ -3,6 +3,7 @@ import { User } from '../../../shared/models/users.model';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
 import { Subscription } from 'rxjs/Subscription';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-user-details',
@@ -16,11 +17,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   private userId: number;
   constructor(
 
+    private authService: AuthService,
     private userService: UserService,
     private router : ActivatedRoute
   ) {
     this.subscription = this.router.params.subscribe((params: any) => {
-      this.userId = params['id'];
+      this.userId = params['id'] || authService.getUserData().id;
       this.userService
         .getUserData(this.userId)
         .subscribe(res => this.user = res as User);

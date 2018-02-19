@@ -3,6 +3,7 @@ import { DOCUMENT } from '@angular/platform-browser';
 import { WINDOW } from "../../../shared/services/scroll.service";
 import { Document as DocumentModel } from '../../../shared/models/documents.model';
 import { $ } from 'protractor';
+import { getUserRole } from '../../../auth/reducers/selectors';
 
 @Component({
   selector: 'app-document-info',
@@ -11,6 +12,7 @@ import { $ } from 'protractor';
 })
 export class DocumentInfoComponent implements OnInit {
   @Input() document: DocumentModel;
+  @Input() permission: boolean;
   thumbIsFixed: boolean;
   thumbWidth: number;
   description: string;

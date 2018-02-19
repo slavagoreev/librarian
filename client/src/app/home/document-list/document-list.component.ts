@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class DocumentListComponent implements OnInit {
   @Input() documents;
+  @Input() permission: boolean;
 
   constructor(){}
 

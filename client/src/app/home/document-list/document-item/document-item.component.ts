@@ -3,6 +3,8 @@ import { DocumentService } from '../../../core/services/document.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../interfaces';
 import { DocumentActions } from '../../../document/reducers/document.actions';
+import { getUserRole } from '../../../auth/reducers/selectors';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-document-item',
@@ -11,12 +13,15 @@ import { DocumentActions } from '../../../document/reducers/document.actions';
 })
 export class DocumentItemComponent implements OnInit {
   @Input() document : Document;
+  @Input() permission: boolean;
 
   constructor(
     private documentService: DocumentService,
     private store: Store<AppState>,
     private actions: DocumentActions,
-  ) { }
+    private router: Router,
+  ) {
+  }
 
   ngOnInit() {
   }
@@ -25,6 +30,7 @@ export class DocumentItemComponent implements OnInit {
   }
   selectDocument(document_id: number){
     this.store.dispatch(this.actions.getDocumentDetail(document_id));
+    this.router.navigate(['/documents/', document_id.toString()])
   }
 
 }

@@ -11,6 +11,27 @@
       margin: 8px;
     }
   }
+  .dropdown-toggle {
+    background: none;
+    border: 0;
+    line-height: 10px;
+    outline: none;
+    position: relative;
+
+
+    &:after {
+      top: 40%;
+      right: 0;
+      position: absolute;
+    }
+  }
+  .dropdown-menu {
+    left: 18px !important;
+    top: 39px !important;
+  }
+  #documentSearch {
+    padding-left: 60px;
+  }
   .thumb-wrap {
     width: 44px;
     height: 44px;
@@ -28,8 +49,36 @@
     background: #fff;
     padding: 40px;
 
-    tr:first-child td {
-      border-top: none;
+    thead {
+      height: 0;
+      overflow: hidden;
+    }
+    thead th {
+      padding: 0 !important;
+      border: 0 !important;
+    }
+    tr {
+      border-bottom: 1px solid #dee2e6;
+    }
+    td {
+      border: none;
+      vertical-align: middle;
+    }
+  }
+
+  tbody tr:first-child td {
+    border-top: none;
+  }
+  .document-authors {
+    padding: 0;
+    margin-bottom: 5px;
+    color: #777;
+
+
+    .document-author {
+      list-style: none;
+      padding: 0;
+      display: block;
     }
   }
   .document-link {

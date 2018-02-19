@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -6,10 +7,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-
-  constructor() { }
+  permission: boolean;
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit() {
+    console.log (this.router.url)
+    this.permission = this.router.url.search('admin') > -1
   }
 
 }

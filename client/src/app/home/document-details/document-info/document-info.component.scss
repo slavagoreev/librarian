@@ -25,6 +25,33 @@
     line-height: 1;
     margin: 0;
   }
+  .document-menu {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+
+    .document-options {
+      background: url(/assets/menu.svg);
+      width: 14px;
+      height: 14px;
+      opacity: 0.2;
+      -webkit-transition: .3s opacity;
+      -moz-transition: .3s opacity;
+      -ms-transition: .3s opacity;
+      -o-transition: .3s opacity;
+      transition: .2s opacity;
+
+      &:hover {
+        opacity: 0.3;
+      }
+      &[aria-expanded="true"]{
+        opacity: 0.4;
+      }
+      &:after {
+        display: none;
+      }
+    }
+  }
 
   .document-authors {
     padding: 0;

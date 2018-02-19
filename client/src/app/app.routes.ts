@@ -12,6 +12,10 @@ export const routes: Routes = [
     loadChildren: './auth/auth.module#AuthModule'
   },
   {
+    path: 'user',
+    loadChildren: './user/user.module#UserModule'
+  },
+  {
     path: '',
     pathMatch: 'full', redirectTo: 'documents'
   },
