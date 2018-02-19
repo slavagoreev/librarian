@@ -476,11 +476,15 @@ class OrderDetail(APIView):
                     delta = datetime.timedelta(weeks=3)
                     order.date_return = datetime.date.today() + delta
 
+                if order.copy.document.is_bestseller:
+                    delta = datetime.timedelta(weeks=2)
+                    order.date_return = datetime.date.today() + delta
+
                 if order.user.role >= 1:
                     delta = datetime.timedelta(weeks=4)
                     order.date_return = datetime.date.today() + delta
 
-                if order.copy.document.is_bestseller or order.copy.document.type > 0:
+                if order.copy.document.type > 0:
                     delta = datetime.timedelta(weeks=2)
                     order.date_return = datetime.date.today() + delta
 
