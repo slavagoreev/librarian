@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^api/orders/(?P<order_id>[0-9]+)[/]?$', views.OrderDetail.as_view()),
     url(r'^api/orders/$', views.Orders.as_view()),
     url(r'^api/myorders/$', views.MyOrders.as_view()),
+    url(r'^api/myorders/(?P<order_id>[0-9]+)[/]?$', views.MyOrders.as_view()),
 ]

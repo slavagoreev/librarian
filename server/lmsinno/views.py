@@ -470,15 +470,18 @@ class OrderDetail(APIView):
 
             order.status = int(request.META['HTTP_STATUS'])
 
-            print(order.status)
             if order.status == 1:
                 order.date_accepted = datetime.date.today()
                 if order.user.role == 0:
-                    delta = datetime.timedelta(days=14)
+                    delta = datetime.timedelta(weeks=3)
                     order.date_return = datetime.date.today() + delta
 
                 if order.user.role >= 1:
-                    delta = datetime.timedelta(days=30)
+                    delta = datetime.timedelta(weeks=4)
+                    order.date_return = datetime.date.today() + delta
+
+                if order.copy.document.is_bestseller or order.copy.document.type > 0:
+                    delta = datetime.timedelta(weeks=2)
                     order.date_return = datetime.date.today() + delta
 
             order.save()
@@ -511,6 +514,15 @@ class MyOrders(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
+    @staticmethod
+    def patch(request, order_id):
+        result = {'status': '', 'data': {}}
+
+        result['status'] = HTTP_200_OK
+        result['data'] = order_id
+        return Response(result, status=status.HTTP_200_OK)
+
+
 class Booking(APIView):
     """
     Class to book one particular document by ID
@@ -536,7 +548,7 @@ class Booking(APIView):
 
             if document.copies_available == 0:
                 result['status'] = HTTP_400_BAD_REQUEST
-                result['data'] = {'details': 'document is not available'}
+                result['data'] = {'details': 'document is not available (run out of copies)'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
             elif document.is_reference:
                 result['status'] = HTTP_400_BAD_REQUEST
@@ -561,7 +573,7 @@ class Booking(APIView):
 
             result['status'] = HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
-        
+
         except Document.DoesNotExist:
 
             result['status'] = HTTP_404_NOT_FOUND
