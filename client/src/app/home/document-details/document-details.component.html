@@ -1,7 +1,7 @@
 <main class="body">
   <div class="document-details container-fluid mx-auto px-0" [style.height.px]="innerHeight - 70">
-    <div class="row" *ngIf="user != null; else documentNotFound">
-
+    <div class="row" *ngIf="document != null; else documentNotFound">
+      <app-document-info [document]="document"></app-document-info>
     </div>
 
     <ng-template #documentNotFound>

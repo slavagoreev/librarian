@@ -31,26 +31,15 @@
     margin: 9px;
     cursor: pointer;
     outline: none;
-
-    i {
-      opacity: 0.2;
-      transition: opacity .2s;
-      width: 26px;
-      height: 26px;
-      display: block;
-    }
-    .user-edit {
-      background: url('/assets/icons/user-edit.svg');
-    }
-    .user-delete {
-      background: url('/assets/icons/user-delete.svg');
-    }
-    &:hover i {
-      opacity: 0.5;
+    opacity: 0.2;
+    transition: opacity .2s;
+    
+    &:hover {
+      opacity: 0.5 !important;
     }
   }
   tr:hover {
-    .table-link i {
+    .table-link {
       opacity: 0.3;
     }
   }

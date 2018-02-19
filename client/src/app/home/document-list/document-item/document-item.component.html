@@ -1,13 +1,14 @@
 <li class="document card" id="{{document.document_id}}" itemscope
     itemtype="https://schema.org/CreativeWork">
   <div class="card-body">
-    <div class="document-thumb image-shadow">
-      <img (click)="selectDocument(document.document_id)"
-           itemprop="image"
+    <a class="document-thumb image-shadow"
+       [routerLink]="['/documents', document.document_id.toString()]"
+       (click)="selectDocument(document.document_id)">
+      <img itemprop="image"
            class="document-thumb-image"
            alt="{{document.title}}"
            [src]="document.cover">
-    </div>
+    </a>
     <div class="document-MetaInfo">
       <div itemprop="headline" class="document-title card-title">
         <a (click)="selectDocument(document.document_id)" [routerLink]="['/documents', document.document_id.toString()]">

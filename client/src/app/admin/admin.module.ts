@@ -9,11 +9,16 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { PlainUserRolePipe, UserRolePipe } from './user-list/user-list.pipe';
 import { UserDetailsComponent } from './user-list/user-details/user-details.component';
 import { SharedModule } from '../shared/shared.module';
+import { UserEditComponent } from './user-list/user-edit/user-edit.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DocumentModule } from '../document/document.module';
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
+    ReactiveFormsModule,
+    DocumentModule,
     RouterModule.forChild(AdminRoutes)
   ],
   providers: [
@@ -25,7 +30,8 @@ import { SharedModule } from '../shared/shared.module';
     NavbarComponent,
     UserRolePipe,
     PlainUserRolePipe,
-    UserDetailsComponent
+    UserDetailsComponent,
+    UserEditComponent
   ]
 })
 export class AdminModule { }

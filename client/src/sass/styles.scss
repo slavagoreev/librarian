@@ -23,6 +23,7 @@
 @import './forms';
 @import './typography';
 @import './dropdown';
+@import './icons';
 @import './mixins';
 
 body {
@@ -105,4 +106,8 @@ body {
 app-navbar {
   width: 100%;
   float: left;
+}
+[ng-reflect-router-link] {
+  outline: none !important;
+  cursor: pointer;
 }
