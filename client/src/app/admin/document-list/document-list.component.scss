@@ -4,33 +4,59 @@
   .table thead th {
     border-top: 0;
   }
-  .document-search {
+  .search-btn {
+    padding: 8px 20px 8px 10px;
+    cursor: pointer;
+    float: right;
+    height: 34px;
+
     .loupe {
       width: 20px;
       height: 20px;
-      margin: 8px;
+      display: inline-block;
     }
   }
   .dropdown-toggle {
     background: none;
     border: 0;
     line-height: 10px;
+    width: 50px;
     outline: none;
     position: relative;
 
 
     &:after {
-      top: 40%;
-      right: 0;
+      top: 8px;
+      right: 10px;
       position: absolute;
     }
   }
+  .input-group-append {
+    height: 34px;
+    margin: 0 10px 0 0;
+
+    .dropdown {
+      float: left;
+    }
+  }
+  #documentSearchProps {
+    width: 100px;
+    height: 20px;
+    padding: 0;
+    padding-right: 27px;
+    margin-right: 15px;
+    margin-top: 8px;
+    border-right: 1px solid #dee2e6;
+    .badge {
+      float: right;
+    }
+  }
   .dropdown-menu {
-    left: 18px !important;
-    top: 39px !important;
+    right: 22px !important;
+    top: 32px !important;
   }
   #documentSearch {
-    padding-left: 60px;
+    padding-right: 165px;
   }
   .thumb-wrap {
     width: 44px;
@@ -114,5 +140,8 @@
     .table-link {
       opacity: 0.3;
     }
+  }
+  .highlight {
+    background-color: yellow;
   }
 }

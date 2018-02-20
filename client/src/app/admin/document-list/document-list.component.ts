@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Document } from '../../shared/models/documents.model';
 import { DocumentService } from '../../core/services/document.service';
@@ -10,12 +10,16 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./document-list.component.scss']
 })
 export class DocumentListComponent implements OnInit {
-  documents$: Observable<Document[]>;
+  documents: Document[];
+  type = 'title';
+  @ViewChild('searchInput')
+  input: ElementRef;
+
   constructor(
     private documentService: DocumentService,
     private modalService: NgbModal
   ) {
-    this.documents$ = this.documentService.searchDocuments({size: 30});
+    this.documentService.searchDocuments({size: 30}).subscribe(res => this.documents = res);
   }
 
   ngOnInit() {
@@ -27,10 +31,24 @@ export class DocumentListComponent implements OnInit {
       }
     });
   }
-  search($event: any) {
-    /*if(event.keyCode == 13) {
-      console.log ($event.target);
-    }*/
+  search() {
+    const options = { size: 30 },
+          value = this.input.nativeElement.value;
+    options[this.type] = value;
+    console.log (options);
+    this.documentService.searchDocuments(options).subscribe(res => {
+      this.documents = res;
+      this.highlight(value);
+    });
   }
+  selectType(type: string) {
+    this.type = type;
+  }
+  highlight(text) {
+    const results = document.getElementById("searchResults");
+    const innerHTML = results.innerHTML;
+    results.innerHTML = innerHTML.replace(text, `<span class="highlight">${text}</span>`);
+
+}
 
 }

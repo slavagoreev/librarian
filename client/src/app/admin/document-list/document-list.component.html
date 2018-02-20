@@ -4,25 +4,28 @@
     <div class="table-responsive">
       <div class="form-row">
         <div class="input-group mb-1 document-search col-5">
-          <label ngbDropdown class="input-group-prepend">
-            <button id="documentSearchProps" ngbDropdownToggle>
-              <i class="loupe"></i>
-            </button>
-            <div ngbDropdownMenu aria-labelledby="documentSearchProps">
-              <button class="dropdown-item">Document title</button>
-              <button class="dropdown-item">Author</button>
-              <button class="dropdown-item">Year</button>
+          <input type="search" id="documentSearch" (onEnter)="search()"
+                 class="form-control form-control-lg" #searchInput
+                 placeholder="Search documents">
+          <div class="input-group-append">
+            <div ngbDropdown>
+              <button id="documentSearchProps" ngbDropdownToggle>
+                <span class="badge badge-warning">By {{ type }}</span>
+              </button>
+              <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="documentSearchProps">
+                <button class="dropdown-item" (click)="selectType('title')">Document title</button>
+                <button class="dropdown-item" (click)="selectType('author')">Author</button>
+                <button class="dropdown-item" (click)="selectType('year')">Year</button>
+              </div>
             </div>
-          </label> 
+            <span class="search-btn" (click)="search()"><i class="loupe"></i></span>
+          </div>
           <!--<label ngbDropdown class="input-group-prepend document-menu" for="documentSearch">
 
             <div ngbDropdownMenu class="dropdown-menu">
               <button class="dropdown-item">Logout</button>
             </div>
           </label>-->
-          <input type="search" id="documentSearch" (keydown)="search($event)"
-                 class="form-control form-control-lg"
-                 placeholder="Search documents">
         </div>
       </div>
       <p class="text-muted italic">Documents by criteria:</p>
@@ -35,7 +38,7 @@
             <th width="20%"></th>
           </tr>
           </thead>
-          <tbody>
+          <tbody id="searchResults">
           <tr *ngFor="let document of (documents$ | async)">
             <td class="pr-0">
               <div class="thumb-wrap">
