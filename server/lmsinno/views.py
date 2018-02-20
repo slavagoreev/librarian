@@ -75,6 +75,36 @@ class UserDetail(APIView):
         result['status'] = HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
+    @staticmethod
+    def patch(request, user_id):
+        """
+            PATCH request to update users
+            :param request:
+            :return: HTTP_202_ACCEPTED and JSON-Document: update is success
+                     HTTP_400_BAD_REQUEST and JSON-Document with errors: data is not valid
+                     HTTP_404_NOT_FOUND: user with such id is not found
+        """
+
+        result = {'status': '', 'data': {}}
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserDetailSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            result['status'] = HTTP_202_ACCEPTED
+            return Response(result, status=status.HTTP_202_ACCEPTED)
+
+        result['status'] = HTTP_400_BAD_REQUEST
+        result['data'] = serializer.errors
+
+        return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
 
 class MyDetail(APIView):
     """
@@ -110,7 +140,7 @@ class DocumentDetail(APIView):
     """
 
     permission_classes = (DocumentPermission,)
-    # TODO AUTHORIZATION
+
     @staticmethod
     def get(request, document_id):
         """
@@ -142,8 +172,9 @@ class DocumentsByCriteria(APIView):
     """
 
     permission_classes = (DocumentPermission,)
+
     # TODO AUTHORIZATION
-    #@permission_classes((DocumentPermission,))
+    # @permission_classes((DocumentPermission,))
     @staticmethod
     def get(request):
         """
@@ -544,7 +575,6 @@ class MyOrders(APIView):
         result['data'] = orders.data
         result['status'] = HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
-
 
     @staticmethod
     def patch(request, order_id):

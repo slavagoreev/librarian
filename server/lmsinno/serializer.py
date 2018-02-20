@@ -25,7 +25,6 @@ jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
-
 class DocumentSerializer(serializers.ModelSerializer):
     authors = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
@@ -122,7 +121,6 @@ class UserSafeSerializer(serializers.Serializer):
             raise serializers.ValidationError("A user is already registered with this phone number.")
         return phone
 
-
     def validate(self, data):
         if data['password1'] != data['password2']:
             raise serializers.ValidationError("The two password fields didn't match.")
@@ -153,14 +151,6 @@ class UserSafeSerializer(serializers.Serializer):
         setup_user_email(request, user, [])
         return user
 
-
-        # result = {'status': '', 'data': {}}
-        # payload = jwt_payload_handler(user)
-        # token = jwt_encode_handler(payload)
-        # result['status'] = HTTP_202_ACCEPTED
-        # result['data']['token'] = token
-        # result['data']['user'] = user
-        # response = Response(result, status=status.HTTP_202_ACCEPTED)
 
 class UserAuthSerializer(serializers.ModelSerializer):
     class Meta:
@@ -216,6 +206,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class CopySerializer(serializers.ModelSerializer):
     document = serializers.SerializerMethodField()
+
     class Meta:
         model = Copy
         fields = ('copy_id',
@@ -226,7 +217,6 @@ class CopySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_document(obj):
-
         document = Document.objects.get(document_id=obj['document'])
         return document
 
