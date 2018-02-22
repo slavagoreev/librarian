@@ -494,6 +494,11 @@ class Orders(APIView):
 
     @staticmethod
     def get(request):
+        """
+        Return set of all orders
+        :param request:
+        :return: HTTP_200_OK and JSON
+        """
         Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
@@ -571,6 +576,11 @@ class MyOrders(APIView):
 
     @staticmethod
     def get(request):
+        """
+        Return set of all orders of one particular user
+        :param request:
+        :return: HTTP_200_OK and JSON
+        """
         Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
@@ -584,11 +594,35 @@ class MyOrders(APIView):
 
     @staticmethod
     def patch(request, order_id):
+        """
+        Extended copy for 1 week
+        :param request:
+        :return: HTTP_200_OK and JSON
+        """
         result = {'status': '', 'data': {}}
-        #   для продления
-        result['status'] = HTTP_200_OK
-        result['data'] = order_id
-        return Response(result, status=status.HTTP_200_OK)
+
+        try:
+            order = Order.objects.get(order_id=order_id)
+            if order.user != User.get_instance(request=request):
+                raise KeyError
+
+            new_status = int(request.META['HTTP_STATUS'])
+            if new_status != 4 or order.status == 4:
+                raise KeyError
+
+            delta = datetime.timedelta(weeks=1)
+            order.date_return += delta
+            order.status = new_status
+            order.save()
+
+            result['status'] = HTTP_200_OK
+            return Response(result, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+        except KeyError:
+            result['status'] = HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Booking(APIView):
