@@ -156,6 +156,15 @@ class Order(models.Model):
                 order.status = 2
                 order.save()
 
+        orders = Order.objects.all().filter(status=4)
+
+        for order in orders:
+            if not order.date_return:
+                continue
+
+            if order.date_return < datetime.date.today():
+                order.status = 2
+                order.save()
 
 
 class Tag(models.Model):

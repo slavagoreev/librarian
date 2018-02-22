@@ -5,7 +5,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from .permissions import DocumentPermission, LibrariantPermission, AuthenticatedUserPermission, UserDetailPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order, Copy
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer, \
-    UserResponceDataSerializer, UserDetailSerializer, CopySerializer, CopyDetailSerializer
+    UserResponceDataSerializer, UserDetailSerializer, CopySerializer, CopyDetailSerializer, OrderDetailSerializer
 
 from rest_framework.response import Response
 from rest_framework import status, serializers
@@ -494,9 +494,10 @@ class Orders(APIView):
 
     @staticmethod
     def get(request):
+        Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
-        orders = OrderSerializer(Order.objects.all(), many=True)
+        orders = OrderDetailSerializer(Order.objects.all(), many=True)
 
         result['data'] = orders.data
 
@@ -511,10 +512,11 @@ class OrderDetail(APIView):
 
     @staticmethod
     def get(request, order_id):
+        Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
         try:
-            orders = OrderSerializer(Order.objects.get(order_id=order_id))
+            orders = OrderDetailSerializer(Order.objects.get(order_id=order_id))
 
             result['data'] = orders.data
 
@@ -569,6 +571,7 @@ class MyOrders(APIView):
 
     @staticmethod
     def get(request):
+        Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
         user = User.get_instance(request=request)
@@ -582,7 +585,7 @@ class MyOrders(APIView):
     @staticmethod
     def patch(request, order_id):
         result = {'status': '', 'data': {}}
-
+        #   для продления
         result['status'] = HTTP_200_OK
         result['data'] = order_id
         return Response(result, status=status.HTTP_200_OK)
