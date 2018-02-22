@@ -560,9 +560,11 @@ class OrderDetail(APIView):
 
             elif order.status == 3:
 
-                # TODO order 2 -> 3
                 if old_order == 2:
-                    pass
+                    overdue_days = (datetime.date.today() - order.date_return).days
+                    sum = min(overdue_days * 100, order.copy.document.price)
+                    result['data'] = {'overdue_sum' : sum}
+                    order.date_return = datetime.date.today()
                 if old_order == 1:
                     order.date_return = datetime.date.today()
 
