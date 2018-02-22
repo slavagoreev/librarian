@@ -59,6 +59,7 @@ class UserDetail(APIView):
         """
             GET request to get one particular user
             :param request:
+            :param user_id
             :return: HTTP_200_OK and JSON-Documents: if all good
                     HTTP_404_NOT_FOUND: if user don`t exist
         """
@@ -80,6 +81,7 @@ class UserDetail(APIView):
         """
             PATCH request to update users
             :param request:
+            :param user_id:
             :return: HTTP_202_ACCEPTED and JSON-Document: update is success
                      HTTP_400_BAD_REQUEST and JSON-Document with errors: data is not valid
                      HTTP_404_NOT_FOUND: user with such id is not found
@@ -117,6 +119,7 @@ class MyDetail(APIView):
         """
             GET request to get one particular user
             :param request:
+            :param user_id:
             :return: HTTP_200_OK and JSON-Documents: if all good
                     HTTP_404_NOT_FOUND: if user don`t exist
         """
@@ -596,7 +599,6 @@ class Booking(APIView):
         Book one particular document by ID
         :param request:
         :param document_id:
-        :param format:
         :return: HTTP_200_OK and JSON-order: if tag with such ID exists
                  HTTP_400_BAD_REQUEST and JSON: 'details': 'document is not available'
                  HTTP_400_BAD_REQUEST and JSON: 'details': 'reference document cannot be checked out'

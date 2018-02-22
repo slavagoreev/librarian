@@ -5,8 +5,6 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 from . import views
 
-
-
 urlpatterns = [
 
     url(r'^$', generic.RedirectView.as_view(
