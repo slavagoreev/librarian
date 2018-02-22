@@ -2,7 +2,7 @@ import datetime
 
 from django.utils.datastructures import MultiValueDictKeyError
 
-from .permissions import DocumentPermission, LibrariantPermission, AuthenticatedUserPermission
+from .permissions import DocumentPermission, LibrariantPermission, AuthenticatedUserPermission, UserDetailPermission
 from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order, Copy
 from .serializer import DocumentSerializer, TagSerializer, UserSerializer, OrderSerializer, UserSafeSerializer, \
     UserResponceDataSerializer, UserDetailSerializer, CopySerializer, CopyDetailSerializer
@@ -52,7 +52,7 @@ class UserDetail(APIView):
     """
         Class to get one User by id
     """
-    permission_classes = (LibrariantPermission,)
+    permission_classes = (UserDetailPermission,)
 
     @staticmethod
     def get(request, user_id):
