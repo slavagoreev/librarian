@@ -94,7 +94,6 @@ class User(AbstractUser):
             return None
 
 
-
 class Author(models.Model):
     author_id = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=100)
@@ -132,7 +131,7 @@ class Copy(models.Model):
 class Order(models.Model):
     # Type of Status:
     # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed
-    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed')]
+    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed'), (4, 'Extended')]
 
     order_id = models.AutoField(primary_key=True)
     copy = models.ForeignKey(Copy, on_delete=models.CASCADE)
