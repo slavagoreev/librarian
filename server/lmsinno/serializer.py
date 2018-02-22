@@ -1,3 +1,5 @@
+import datetime
+
 from django.http import QueryDict
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import serializers
@@ -202,6 +204,30 @@ class OrderSerializer(serializers.ModelSerializer):
                   'date_accepted',
                   'date_return',
                   'status')
+
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    overdue_sum = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        fields = ('order_id',
+                  'copy',
+                  'user',
+                  'date_created',
+                  'date_accepted',
+                  'date_return',
+                  'status',
+                  'overdue_sum')
+
+    @staticmethod
+    def get_overdue_sum(obj):
+        sum = 0
+        if obj.status == 2:
+            overdue_days = (datetime.date.today() - obj.date_return).days
+            sum = min(overdue_days*100, obj.copy.document.price)
+
+        return sum
 
 
 class CopySerializer(serializers.ModelSerializer):
