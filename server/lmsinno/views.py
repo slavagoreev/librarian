@@ -531,9 +531,10 @@ class OrderDetail(APIView):
 
         try:
             order = Order.objects.get(order_id=order_id)
-
+            old_order = int(order.status)
             order.status = int(request.META['HTTP_STATUS'])
 
+            # if order status is 1 or 3 proceed
             if order.status == 1:
                 order.date_accepted = datetime.date.today()
                 if order.user.role == 0:
@@ -551,6 +552,19 @@ class OrderDetail(APIView):
                 if order.copy.document.type > 0:
                     delta = datetime.timedelta(weeks=2)
                     order.date_return = datetime.date.today() + delta
+
+            elif order.status == 3:
+
+                # TODO order 2 -> 3
+                if old_order == 2:
+                    pass
+                if old_order == 1:
+                    order.date_return = datetime.date.today()
+
+            elif order.status == 0:
+
+                result['status'] = HTTP_400_BAD_REQUEST
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             order.save()
 
