@@ -144,6 +144,19 @@ class Order(models.Model):
     def __str__(self):
         return '{0}: {1}'.format(self.user, self.copy)
 
+    @staticmethod
+    def overdue_validation():
+        orders = Order.objects.all().filter(status=1)
+
+        for order in orders:
+            if not order.date_return:
+                continue
+
+            if order.date_return < datetime.date.today():
+                order.status = 2
+                order.save()
+
+
 
 class Tag(models.Model):
     tag_id = models.AutoField(primary_key=True)
