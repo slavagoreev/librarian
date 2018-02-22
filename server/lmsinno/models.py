@@ -69,7 +69,7 @@ class User(AbstractUser):
         self.last_name = data.get('last_name') or self.last_name
         self.first_name = data.get('first_name') or self.first_name
 
-        def get_instance(request):
+    def get_instance(request):
         if 'HTTP_HOST' in request.META:
             try:
                 token = re.split(' ', request.META['HTTP_BEARER'])[1]
