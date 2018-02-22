@@ -69,13 +69,14 @@ class User(AbstractUser):
         self.last_name = data.get('last_name') or self.last_name
         self.first_name = data.get('first_name') or self.first_name
 
-    def get_instance(request):
+        def get_instance(request):
         if 'HTTP_HOST' in request.META:
-            token = re.split(' ', request.META['HTTP_BEARER'])[1]
-            payload = jwt.decode(token, settings.SECRET_KEY)
-            email = payload['email']
-            userid = payload['user_id']
             try:
+                token = re.split(' ', request.META['HTTP_BEARER'])[1]
+                payload = jwt.decode(token, settings.SECRET_KEY)
+                email = payload['email']
+                userid = payload['user_id']
+
                 user = User.objects.get(
                     email=email,
                     id=userid
@@ -84,6 +85,8 @@ class User(AbstractUser):
             except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:
                 return None
             except User.DoesNotExist:
+                return None
+            except KeyError:
                 return None
 
             return user
