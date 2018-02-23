@@ -59,13 +59,13 @@ Moreover you can upload test dataset (about 500 books) (You server should have b
 
 ### 1. Client
 If you wish to see available books or checkout new book, you may enter the main page:
-      '''
+      ```
       http://trainno.ru/
-      '''
+      ```
 Also you can manage your profile.
 ### 2. Server
 #### Orders
 To check orders and their statuses you may log in by librarian first, then type:
-      '''
+      ```
       http://trainno.ru:41000/api/orders/
-      '''
+      ```
