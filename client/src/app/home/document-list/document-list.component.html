@@ -1,6 +1,6 @@
 <section>
   <ul class="documents">
-    <p *ngIf="document && documents$.length === 0">No documents found for this category</p>
-    <app-document-item *ngFor="let document of documents$" [document]="document" [permission]="permission"></app-document-item>
+    <p *ngIf="document && documents.length === 0">No documents found for this category</p>
+    <app-document-item *ngFor="let document of documents" [document]="document" [permission]="permission"></app-document-item>
   </ul>
 </section>

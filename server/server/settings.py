@@ -29,8 +29,8 @@ SECRET_KEY = '@!s!f%xjyvsd-ym%t#&s0t9!p4x71&dmf=ws7!*7#nej)3eag*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru', 'localhost']
-
+ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru', 'localhost', 'localhost:4200', 'localhost:8000']
+#ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
