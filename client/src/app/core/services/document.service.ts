@@ -22,7 +22,6 @@ export class DocumentService {
     return this.http.get(`documents/${id.toString()}`)
       .map(res => {
         const _res = res.json();
-        console.log (_res.data)
         if (!_.isEmpty(_res.data)) {
           return _res.data as Document;
         } else {

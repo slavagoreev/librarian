@@ -1,6 +1,7 @@
 import { environment } from '../environments/environment';
 import * as fromDocument from './document/reducers/document.reducers';
 import * as fromAuth from './auth/reducers/auth.reducer';
+import * as fromUser from './user/reducers/user.reducers';
 
 /**
  * combineReducers is another useful metareducer that takes a map of reducer
@@ -34,6 +35,7 @@ import { storeFreeze } from 'ngrx-store-freeze';
 export const reducers: ActionReducerMap<State> = {
   documents: fromDocument.reducer,
   auth: fromAuth.reducer,
+  user: fromUser.reducer
 };
 
 // console.log all actions
