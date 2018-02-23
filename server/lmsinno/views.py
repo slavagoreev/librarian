@@ -30,7 +30,7 @@ import base64
 @api_view()
 @renderer_classes([SwaggerUIRenderer, OpenAPIRenderer])
 def schema_view(request):
-    generator = schemas.SchemaGenerator(title='Pastebin API')
+    generator = schemas.SchemaGenerator(title='REST API')
     return response.Response(generator.get_schema(request=request))
 
 class Users(APIView):
