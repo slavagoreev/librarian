@@ -8,12 +8,16 @@ from .serializer import DocumentSerializer, TagSerializer, UserSerializer, Order
     UserResponceDataSerializer, UserDetailSerializer, CopySerializer, CopyDetailSerializer, OrderDetailSerializer
 
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status, serializers, response, schemas
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
-from rest_framework.decorators import detail_route, permission_classes
+from rest_framework.decorators import detail_route, permission_classes, api_view, renderer_classes
 from rest_framework_swagger.views import get_swagger_view
+from rest_framework.schemas import SchemaGenerator
+from rest_framework_swagger import renderers
+from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
+
 
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
     HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
@@ -21,7 +25,13 @@ from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BA
 import re
 import base64
 
-schema_view = get_swagger_view(title='Librarian API Docs')
+# schema_view = get_swagger_view(title='Librarian API Docs')
+
+@api_view()
+@renderer_classes([SwaggerUIRenderer, OpenAPIRenderer])
+def schema_view(request):
+    generator = schemas.SchemaGenerator(title='Pastebin API')
+    return response.Response(generator.get_schema(request=request))
 
 class Users(APIView):
     """
