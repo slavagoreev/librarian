@@ -70,7 +70,7 @@ To check orders and their statuses you may log in by librarian first, then type:
       http://trainno.ru:41000/api/orders/
       ```
 ### Sample Python script:
-      ``` python
+      ```python
       import requests as rq
 
       admin = "JWT " + rq.post("http://trainno.ru:41000/api/users/login/", data={"username": "librarian", "password": "librarian"}).json()['token']
@@ -82,3 +82,4 @@ To check orders and their statuses you may log in by librarian first, then type:
       status = request['status']
       print(data, status)
       ```
+      
