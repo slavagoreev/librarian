@@ -69,6 +69,30 @@ class LibrariantPermission(permissions.BasePermission):
         return result
 
 
+class UserDetailPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        user = User.get_instance(request)
+
+        if not user:
+            return False
+
+        if request.method == 'GET' and user.role == 2:
+            result = True
+        elif request.method == 'POST' and user.role == 2:
+            result = True
+        elif request.method == 'DELETE' and user.role == 2:
+            result = True
+        elif request.method == 'PATCH':
+            if user.role == 2 or user.pk == int(request.META['PATH_INFO'].split('/')[-1]):
+                result = True
+            else:
+                result = False
+        else:
+            result = False
+
+        return result
+
 
 def custom_exception_handler(exc, context):
     # Call REST framework's default exception handler first,

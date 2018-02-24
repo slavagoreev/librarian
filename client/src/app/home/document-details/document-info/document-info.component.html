@@ -56,8 +56,15 @@
             <td>{{document.price}} ₽</td>
           </tr>
           <tr>
-            <td class="bold">Copies available</td>
-            <td>{{document.copies_available}}</td>
+            <td>
+              <button type="button" class="btn btn-primary mt-3" *ngIf="document.copies_available > 0; else noCopies">
+                Book it!<span class="badge badge-warning">{{document.copies_available}} left</span>
+              </button>
+              <ng-template #noCopies>
+                <p class="text-muted italic">No copies left</p>
+              </ng-template>
+            </td>
+            <td></td>
           </tr>
         </tbody>
       </table>

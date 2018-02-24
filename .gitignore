@@ -17,6 +17,9 @@ settings.py# IDEs and editors
 /server/settings.py
 settings.py
 new.txt
+.cache
+.npm
+.pycharm_helpers
 
 # System Files
 .DS_Store

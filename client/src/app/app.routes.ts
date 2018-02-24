@@ -16,6 +16,10 @@ export const routes: Routes = [
     loadChildren: './user/user.module#UserModule'
   },
   {
+    path: 'admin',
+    loadChildren: './admin/admin.module#AdminModule'
+  },
+  {
     path: '',
     pathMatch: 'full', redirectTo: 'documents'
   },

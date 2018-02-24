@@ -5,8 +5,6 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 from . import views
 
-
-
 urlpatterns = [
 
     url(r'^$', generic.RedirectView.as_view(
@@ -33,4 +31,5 @@ urlpatterns = [
     url(r'^api/orders/$', views.Orders.as_view()),
     url(r'^api/myorders/$', views.MyOrders.as_view()),
     url(r'^api/myorders/(?P<order_id>[0-9]+)[/]?$', views.MyOrders.as_view()),
+    url(r'^api/docs/$', views.schema_view)
 ]

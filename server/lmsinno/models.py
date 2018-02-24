@@ -71,11 +71,12 @@ class User(AbstractUser):
 
     def get_instance(request):
         if 'HTTP_HOST' in request.META:
-            token = re.split(' ', request.META['HTTP_BEARER'])[1]
-            payload = jwt.decode(token, settings.SECRET_KEY)
-            email = payload['email']
-            userid = payload['user_id']
             try:
+                token = re.split(' ', request.META['HTTP_BEARER'])[1]
+                payload = jwt.decode(token, settings.SECRET_KEY)
+                email = payload['email']
+                userid = payload['user_id']
+
                 user = User.objects.get(
                     email=email,
                     id=userid
@@ -85,11 +86,12 @@ class User(AbstractUser):
                 return None
             except User.DoesNotExist:
                 return None
+            except KeyError:
+                return None
 
             return user
         else:
             return None
-
 
 
 class Author(models.Model):
@@ -129,7 +131,7 @@ class Copy(models.Model):
 class Order(models.Model):
     # Type of Status:
     # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed
-    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed')]
+    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed'), (4, 'Extended')]
 
     order_id = models.AutoField(primary_key=True)
     copy = models.ForeignKey(Copy, on_delete=models.CASCADE)
@@ -141,6 +143,28 @@ class Order(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(self.user, self.copy)
+
+    @staticmethod
+    def overdue_validation():
+        orders = Order.objects.all().filter(status=1)
+
+        for order in orders:
+            if not order.date_return:
+                continue
+
+            if order.date_return < datetime.date.today():
+                order.status = 2
+                order.save()
+
+        orders = Order.objects.all().filter(status=4)
+
+        for order in orders:
+            if not order.date_return:
+                continue
+
+            if order.date_return < datetime.date.today():
+                order.status = 2
+                order.save()
 
 
 class Tag(models.Model):

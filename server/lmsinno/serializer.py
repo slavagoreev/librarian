@@ -1,3 +1,5 @@
+import datetime
+
 from django.http import QueryDict
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import serializers
@@ -23,7 +25,6 @@ from rest_framework_jwt.settings import api_settings
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -122,7 +123,6 @@ class UserSafeSerializer(serializers.Serializer):
             raise serializers.ValidationError("A user is already registered with this phone number.")
         return phone
 
-
     def validate(self, data):
         if data['password1'] != data['password2']:
             raise serializers.ValidationError("The two password fields didn't match.")
@@ -153,14 +153,6 @@ class UserSafeSerializer(serializers.Serializer):
         setup_user_email(request, user, [])
         return user
 
-
-        # result = {'status': '', 'data': {}}
-        # payload = jwt_payload_handler(user)
-        # token = jwt_encode_handler(payload)
-        # result['status'] = HTTP_202_ACCEPTED
-        # result['data']['token'] = token
-        # result['data']['user'] = user
-        # response = Response(result, status=status.HTTP_202_ACCEPTED)
 
 class UserAuthSerializer(serializers.ModelSerializer):
     class Meta:
@@ -214,8 +206,33 @@ class OrderSerializer(serializers.ModelSerializer):
                   'status')
 
 
+class OrderDetailSerializer(serializers.ModelSerializer):
+    overdue_sum = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        fields = ('order_id',
+                  'copy',
+                  'user',
+                  'date_created',
+                  'date_accepted',
+                  'date_return',
+                  'status',
+                  'overdue_sum')
+
+    @staticmethod
+    def get_overdue_sum(obj):
+        sum = 0
+        if obj.status == 2:
+            overdue_days = (datetime.date.today() - obj.date_return).days
+            sum = min(overdue_days*100, obj.copy.document.price)
+
+        return sum
+
+
 class CopySerializer(serializers.ModelSerializer):
     document = serializers.SerializerMethodField()
+
     class Meta:
         model = Copy
         fields = ('copy_id',
@@ -226,7 +243,6 @@ class CopySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_document(obj):
-
         document = Document.objects.get(document_id=obj['document'])
         return document
 
