@@ -31,7 +31,7 @@ import base64
 @renderer_classes([SwaggerUIRenderer, OpenAPIRenderer])
 def schema_view(request):
     generator = schemas.SchemaGenerator(title='REST API')
-    return response.Response(generator.get_schema(request=request))
+    return response.Response(generator.get_schema())
 
 class Users(APIView):
     """
@@ -635,11 +635,12 @@ class MyOrders(APIView):
 
         try:
             order = Order.objects.get(order_id=order_id)
+
             if order.user != User.get_instance(request=request):
                 raise KeyError
 
             new_status = int(request.META['HTTP_STATUS'])
-            if new_status != 4 or order.status == 4 or order.document.is_bestseller:
+            if new_status != 4 or order.status == 4 or order.copy.document.is_bestseller:
                 raise KeyError
 
             delta = datetime.timedelta(weeks=1)
