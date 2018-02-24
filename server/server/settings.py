@@ -17,6 +17,8 @@ import sys
 
 from django.conf import settings
 
+APPEND_SLASH=False
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 
@@ -88,7 +90,8 @@ MIDDLEWARE = [
 CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
     '127.0.0.1:4200',
-    'trainno.ru'
+    'trainno.ru',
+    'www.trainno.ru'
 )
 CORS_ALLOW_METHODS = (
     'DELETE',
