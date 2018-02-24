@@ -544,6 +544,7 @@ class OrderDetail(APIView):
 
     @staticmethod
     def patch(request, order_id):
+        Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
         try:
