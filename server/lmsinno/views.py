@@ -579,6 +579,9 @@ class OrderDetail(APIView):
                     order.date_return = datetime.date.today()
                 if old_order == 1:
                     order.date_return = datetime.date.today()
+                    
+                order.copy.status = 0
+                order.copy.save()
 
             elif order.status == 0:
 
@@ -635,7 +638,7 @@ class MyOrders(APIView):
                 raise KeyError
 
             new_status = int(request.META['HTTP_STATUS'])
-            if new_status != 4 or order.status == 4:
+            if new_status != 4 or order.status == 4 or order.document.is_bestseller:
                 raise KeyError
 
             delta = datetime.timedelta(weeks=1)
