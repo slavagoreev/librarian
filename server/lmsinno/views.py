@@ -583,6 +583,8 @@ class OrderDetail(APIView):
                     
                 order.copy.status = 0
                 order.copy.save()
+                order.copy.document.copies_available += 1
+                order.copy.document.save()
 
             elif order.status == 0:
 
