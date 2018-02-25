@@ -20,6 +20,7 @@ new.txt
 .cache
 .npm
 .pycharm_helpers
+.README.md.swp
 
 # System Files
 .DS_Store
