@@ -18,12 +18,12 @@ from rest_framework.schemas import SchemaGenerator
 from rest_framework_swagger import renderers
 from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
-
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
     HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
 
 import re
 import base64
+
 
 # schema_view = get_swagger_view(title='Librarian API Docs')
 
@@ -32,6 +32,7 @@ import base64
 def schema_view(request):
     generator = schemas.SchemaGenerator(title='REST API')
     return response.Response(generator.get_schema())
+
 
 class Users(APIView):
     """
@@ -149,7 +150,7 @@ class MyDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
-class DocumentDetail(APIView):
+class DocumentDetailByDocumentID(APIView):
     """
     Class to get one particular document by id
     """
@@ -357,6 +358,25 @@ class DocumentsByCriteria(APIView):
 
         result['status'] = HTTP_400_BAD_REQUEST
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DocumentDetailByCopyID(APIView):
+    permission_classes = (DocumentPermission,)
+
+    @staticmethod
+    def get(request, copy_id):
+        result = {'status': '', 'data': {}}
+
+        try:
+            copy = Copy.objects.get(pk=copy_id)
+        except Copy.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        result['status'] = HTTP_200_OK
+        result['data'] = DocumentSerializer(Document.objects.get(pk=copy.document_id)).data
+
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class CopyDetail(APIView):
@@ -576,11 +596,11 @@ class OrderDetail(APIView):
                 if old_order == 2:
                     overdue_days = (datetime.date.today() - order.date_return).days
                     sum = min(overdue_days * 100, order.copy.document.price)
-                    result['data'] = {'overdue_sum' : sum}
+                    result['data'] = {'overdue_sum': sum}
                     order.date_return = datetime.date.today()
                 if old_order == 1:
                     order.date_return = datetime.date.today()
-                    
+
                 order.copy.status = 0
                 order.copy.save()
                 order.copy.document.copies_available += 1
