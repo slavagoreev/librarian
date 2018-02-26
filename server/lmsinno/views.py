@@ -8,17 +8,30 @@ from .serializer import DocumentSerializer, TagSerializer, UserSerializer, Order
     UserResponceDataSerializer, UserDetailSerializer, CopySerializer, CopyDetailSerializer, OrderDetailSerializer
 
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status, serializers, response, schemas
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
-from rest_framework.decorators import detail_route, permission_classes
+from rest_framework.decorators import detail_route, permission_classes, api_view, renderer_classes
+from rest_framework_swagger.views import get_swagger_view
+from rest_framework.schemas import SchemaGenerator
+from rest_framework_swagger import renderers
+from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
 from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
     HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
 
 import re
 import base64
+
+
+# schema_view = get_swagger_view(title='Librarian API Docs')
+
+@api_view()
+@renderer_classes([SwaggerUIRenderer, OpenAPIRenderer])
+def schema_view(request):
+    generator = schemas.SchemaGenerator(title='REST API')
+    return response.Response(generator.get_schema())
 
 
 class Users(APIView):
@@ -137,7 +150,7 @@ class MyDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
-class DocumentDetail(APIView):
+class DocumentDetailByDocumentID(APIView):
     """
     Class to get one particular document by id
     """
@@ -347,6 +360,25 @@ class DocumentsByCriteria(APIView):
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
+class DocumentDetailByCopyID(APIView):
+    permission_classes = (DocumentPermission,)
+
+    @staticmethod
+    def get(request, copy_id):
+        result = {'status': '', 'data': {}}
+
+        try:
+            copy = Copy.objects.get(pk=copy_id)
+        except Copy.DoesNotExist:
+            result['status'] = HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        result['status'] = HTTP_200_OK
+        result['data'] = DocumentSerializer(Document.objects.get(pk=copy.document_id)).data
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
 class CopyDetail(APIView):
     permission_classes = (LibrariantPermission,)
     """
@@ -532,6 +564,7 @@ class OrderDetail(APIView):
 
     @staticmethod
     def patch(request, order_id):
+        Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
         try:
@@ -563,10 +596,15 @@ class OrderDetail(APIView):
                 if old_order == 2:
                     overdue_days = (datetime.date.today() - order.date_return).days
                     sum = min(overdue_days * 100, order.copy.document.price)
-                    result['data'] = {'overdue_sum' : sum}
+                    result['data'] = {'overdue_sum': sum}
                     order.date_return = datetime.date.today()
                 if old_order == 1:
                     order.date_return = datetime.date.today()
+
+                order.copy.status = 0
+                order.copy.save()
+                order.copy.document.copies_available += 1
+                order.copy.document.save()
 
             elif order.status == 0:
 
@@ -619,11 +657,12 @@ class MyOrders(APIView):
 
         try:
             order = Order.objects.get(order_id=order_id)
+
             if order.user != User.get_instance(request=request):
                 raise KeyError
 
             new_status = int(request.META['HTTP_STATUS'])
-            if new_status != 4 or order.status == 4:
+            if new_status != 4 or order.status == 4 or order.copy.document.is_bestseller:
                 raise KeyError
 
             delta = datetime.timedelta(weeks=1)

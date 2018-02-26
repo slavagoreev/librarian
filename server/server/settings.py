@@ -11,11 +11,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 from os import path
+
 import datetime
 import sys
 
-import datetime
 from django.conf import settings
+
+APPEND_SLASH=False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
@@ -29,7 +31,7 @@ SECRET_KEY = '@!s!f%xjyvsd-ym%t#&s0t9!p4x71&dmf=ws7!*7#nej)3eag*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru', 'localhost']
+ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru']
 
 # Application definition
 
@@ -43,21 +45,19 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_auth',
     'allauth',
     'allauth.account',
     'rest_auth.registration',
     'corsheaders',
-    
+    'rest_framework_swagger',
     'lmsinno',
 
 ]
 
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(weeks=1)
-}
-
 REST_USE_JWT = True
+
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'lmsinno.jwt.jwt_response_payload_handler',
     'JWT_PAYLOAD_HANDLER': 'lmsinno.jwt.jwt_payload_handler',
@@ -90,7 +90,8 @@ MIDDLEWARE = [
 CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
     '127.0.0.1:4200',
-    'trainno.ru'
+    'trainno.ru',
+    'www.trainno.ru'
 )
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -142,7 +143,7 @@ DATABASES = {
         'NAME': 'librarian',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '/Applications/MAMP/tmp/mysql/mysql.sock'
+        'HOST': '/var/run/mysqld/mysqld.sock'
     }
 }
 
@@ -153,7 +154,7 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-    #'EXCEPTION_HANDLER': 'lmsinno.permissions.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'lmsinno.permissions.custom_exception_handler'
 }
 
 AUTHENTICATION_BACKENDS = (

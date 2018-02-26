@@ -10,7 +10,8 @@ urlpatterns = [
     url(r'^$', generic.RedirectView.as_view(
         url='/api/', permanent=False)),
 
-    url(r'^api/documents/(?P<document_id>[0-9]+)[/]?$', views.DocumentDetail.as_view()),
+    url(r'^api/documents/(?P<document_id>[0-9]+)[/]?$', views.DocumentDetailByDocumentID.as_view()),
+    url(r'^api/documents/copy/(?P<copy_id>[0-9]+)[/]?$', views.DocumentDetailByCopyID.as_view()),
     url(r'^api/documents/$', views.DocumentsByCriteria.as_view()),
     url(r'^api/copy/$', views.CopyDetail.as_view()),
     url(r'^api/tags/(?P<tag_id>[0-9]+)[/]?', views.TagDetail.as_view()),
@@ -31,4 +32,5 @@ urlpatterns = [
     url(r'^api/orders/$', views.Orders.as_view()),
     url(r'^api/myorders/$', views.MyOrders.as_view()),
     url(r'^api/myorders/(?P<order_id>[0-9]+)[/]?$', views.MyOrders.as_view()),
+    url(r'^api/docs/$', views.schema_view)
 ]

@@ -10,11 +10,11 @@
           <div class="input-group-append">
             <div ngbDropdown>
               <button id="documentSearchProps" ngbDropdownToggle>
-                <span class="badge badge-warning">By {{ type }}</span>
+                <span class="badge badge-warning">By {{ type.split('_')[0] }}</span>
               </button>
               <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="documentSearchProps">
                 <button class="dropdown-item" (click)="selectType('title')">Document title</button>
-                <button class="dropdown-item" (click)="selectType('author')">Author</button>
+                <button class="dropdown-item" (click)="selectType('author_name')">Author</button>
                 <button class="dropdown-item" (click)="selectType('year')">Year</button>
               </div>
             </div>
