@@ -1,3 +1,4 @@
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.authtoken.models import Token
 from rest_framework.views import exception_handler
 from rest_framework import permissions
@@ -84,8 +85,16 @@ class UserDetailPermission(permissions.BasePermission):
         elif request.method == 'DELETE' and user.role == 2:
             result = True
         elif request.method == 'PATCH':
-            if user.role == 2 or user.pk == int(request.META['PATH_INFO'].split('/')[-1]):
+            if user.role == 2:
                 result = True
+            elif user.pk == int(request.META['PATH_INFO'].split('/')[-1]):
+                result = True
+                try:
+                    request.data['role']
+                    result = False
+                except MultiValueDictKeyError:
+                    pass
+                print('fdsfs')
             else:
                 result = False
         else:
