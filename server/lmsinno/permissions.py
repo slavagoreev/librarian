@@ -94,7 +94,6 @@ class UserDetailPermission(permissions.BasePermission):
                     result = False
                 except MultiValueDictKeyError:
                     pass
-                print('fdsfs')
             else:
                 result = False
         else:
