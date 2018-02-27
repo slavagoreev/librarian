@@ -16,7 +16,7 @@ export const routes: Routes = [
     loadChildren: './user/user.module#UserModule'
   },
   {
-    path: 'admin',
+    path: 'librarian',
     loadChildren: './admin/admin.module#AdminModule'
   },
   {

@@ -46,7 +46,7 @@
               </div>
             </td>
             <td>
-              <a class="document-link" [routerLink]="'/admin/document/'+document.document_id">
+              <a class="document-link" [routerLink]="'/librarian/document/'+document.document_id">
                 <span class="document-title">{{document.title.substr(0, 50)}}</span>
                 <span class="document-type">{{document.type | documentType}}
                   {{document.authors.length ? 'by ' + document.authors[0].name : ''}}
@@ -55,7 +55,7 @@
             </td>
             <td>{{document.publisher}}</td>
             <td class="float-right">
-              <span class="table-link" [routerLink]="'/admin/document/'+document.document_id+'/edit'"><i class="edit"></i> </span>
+              <span class="table-link" [routerLink]="'/librarian/document/'+document.document_id+'/edit'"><i class="edit"></i> </span>
               <span class="table-link" (click)="openModal(deleteDocument, document)"><i class="remove"></i></span>
             </td>
           </tr>

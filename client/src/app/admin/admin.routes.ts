@@ -7,7 +7,7 @@ import { UserEditComponent } from './user-list/user-edit/user-edit.component';
 
 export const AdminRoutes = [
   {
-    path: 'admin',
+    path: 'librarian',
     canActivate: [ RoleGuard ],
     data: {
       expectedRole: 2
