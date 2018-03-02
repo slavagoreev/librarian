@@ -25,5 +25,12 @@ export class OrdersComponent implements OnInit {
       }
     );
   }
+  statusStr(status: number){
+    if (status == 0) return 'Requested';
+    if (status == 1) return 'Booked';
+    if (status == 2) return 'Overdue';
+    if (status == 3) return 'Closed';
+    if (status == 4) return 'Extended';
+  }
 
 }

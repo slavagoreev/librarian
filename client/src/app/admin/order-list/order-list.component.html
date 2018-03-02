@@ -43,17 +43,17 @@
         <tr *ngFor="let order of (orders$ | async | reverse)">
           <td>
             <div class="thumb-wrap">
-              <!-- <img src="{{document.cover.substr(0, document.cover.length-1)}}1" alt="{{document.title}}"> -->
+              <img src="{{order.document.cover.substr(0, order.document.cover.length-1)}}1" alt="{{order.document.title}}">
             </div>
           </td>
           <td>
-            <span class="document-title">Some awesome book in English</span>
-            <span class="document-type">By Keen Author</span>
+            <span class="document-title">{{order.document.title}}</span>
+            <span class="document-type">Booked by {{order.user.first_name}} {{order.user.last_name}}</span>
           </td>
           <td>
             <div ngbDropdown>
               <button id="orderStatus" ngbDropdownToggle>
-                <span class="badge">{{ statusStr(order.status) }}</span>
+                <span >{{ statusStr(order.status) }}</span>
               </button>
               <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="orderStatus">
                 <button class="dropdown-item" (click)="selectStatus(order.order_id, 1)">Accept</button>

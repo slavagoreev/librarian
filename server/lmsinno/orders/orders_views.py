@@ -132,7 +132,7 @@ class MyOrders(APIView):
 
         user = User.get_instance(request=request)
 
-        orders = OrderSerializer(Order.objects.filter(user=user), many=True)
+        orders = OrderDetailSerializer(Order.objects.filter(user=user), many=True)
 
         result['data'] = orders.data
         result['status'] = misc.HTTP_200_OK
