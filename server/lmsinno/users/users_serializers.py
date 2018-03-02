@@ -1,13 +1,11 @@
-import datetime
-
-from django.http import QueryDict
-from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import serializers
+from rest_framework_jwt.settings import api_settings
 
-from rest_framework.response import Response
-from rest_framework import status
+from ..orders.orders_serializers import OrderSerializer
+from ..models import User, Order
 
-from .misc import HTTP_202_ACCEPTED
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -20,11 +18,6 @@ try:
     from allauth.socialaccount.providers.base import AuthProcess
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
-from .models import Document, User, Author, DocumentOfAuthor, Order, Copy, Tag, TagOfDocument
-from rest_framework_jwt.settings import api_settings
-
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -55,21 +48,25 @@ class UserSafeSerializer(serializers.Serializer):
     first_name = serializers.CharField(write_only=True)
     last_name = serializers.CharField(write_only=True)
 
-    def validate_username(self, username):
+    @staticmethod
+    def validate_username(username):
         username = get_adapter().clean_username(username)
         return username
 
-    def validate_email(self, email):
+    @staticmethod
+    def validate_email(email):
         email = get_adapter().clean_email(email)
         if allauth_settings.UNIQUE_EMAIL:
             if email and email_address_exists(email):
                 raise serializers.ValidationError("A user is already registered with this e-mail address.")
         return email
 
-    def validate_password1(self, password):
+    @staticmethod
+    def validate_password1(password):
         return get_adapter().clean_password(password)
 
-    def validate_phone(self, phone):
+    @staticmethod
+    def validate_phone(phone):
         existing_user = User.objects.filter(phone=phone)
         if existing_user and existing_user.exists():
             raise serializers.ValidationError("A user is already registered with this phone number.")
@@ -112,7 +109,7 @@ class UserAuthSerializer(serializers.ModelSerializer):
         fields = ('username', 'password')
 
 
-class UserResponceDataSerializer(serializers.ModelSerializer):
+class UserResponseDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id',
@@ -144,39 +141,3 @@ class UserDetailSerializer(serializers.ModelSerializer):
     def get_orders(obj):
         orders = OrderSerializer(Order.objects.filter(user=obj), many=True)
         return orders.data
-
-
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = ('order_id',
-                  'copy',
-                  'user',
-                  'date_created',
-                  'date_accepted',
-                  'date_return',
-                  'status')
-
-
-class OrderDetailSerializer(serializers.ModelSerializer):
-    overdue_sum = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Order
-        fields = ('order_id',
-                  'copy',
-                  'user',
-                  'date_created',
-                  'date_accepted',
-                  'date_return',
-                  'status',
-                  'overdue_sum')
-
-    @staticmethod
-    def get_overdue_sum(obj):
-        sum = 0
-        if obj.status == 2:
-            overdue_days = (datetime.date.today() - obj.date_return).days
-            sum = max(min(overdue_days * 100, obj.copy.document.price), 0)
-
-        return sum

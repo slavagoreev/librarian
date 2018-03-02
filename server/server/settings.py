@@ -17,7 +17,7 @@ import sys
 
 from django.conf import settings
 
-APPEND_SLASH=False
+APPEND_SLASH = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
@@ -66,12 +66,12 @@ JWT_AUTH = {
 }
 
 REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": 'lmsinno.serializer.UserResponceDataSerializer',
+    "USER_DETAILS_SERIALIZER": 'lmsinno.users.users_serializers.UserResponseDataSerializer',
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": 'lmsinno.serializer.UserSafeSerializer'
+    "REGISTER_SERIALIZER": 'lmsinno.users.users_serializers.UserSafeSerializer'
 }
 
 SITE_ID = 1

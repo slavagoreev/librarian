@@ -1,169 +1,13 @@
-import datetime
-
-from django.utils.datastructures import MultiValueDictKeyError
-
-from .permissions import DocumentPermission, LibrariantPermission, AuthenticatedUserPermission, UserDetailPermission
-from .models import Document, Author, DocumentOfAuthor, Tag, TagOfDocument, User, Order, Copy
-from .serializer import  UserSerializer, OrderSerializer, UserSafeSerializer, \
-    UserResponceDataSerializer, UserDetailSerializer, OrderDetailSerializer
-
-from rest_framework.response import Response
-from rest_framework import status, serializers, response, schemas
 from rest_framework.views import APIView
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
-from rest_framework.decorators import detail_route, permission_classes, api_view, renderer_classes
-from rest_framework_swagger.views import get_swagger_view
-from rest_framework.schemas import SchemaGenerator
-from rest_framework_swagger import renderers
-from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
+from rest_framework.response import Response
+from rest_framework import status
 
-from .misc import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, \
-    HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
+from .orders_serializers import OrderSerializer, OrderDetailSerializer
+from ..permissions import LibrariantPermission
+from ..models import Order, User, Document, Copy
+from .. import misc
 
-import re
-import base64
-
-
-# schema_view = get_swagger_view(title='Librarian API Docs')
-
-@api_view()
-@renderer_classes([SwaggerUIRenderer, OpenAPIRenderer])
-def schema_view(request):
-    generator = schemas.SchemaGenerator(title='REST API')
-    return response.Response(generator.get_schema())
-
-
-class Users(APIView):
-    """
-       Class to get list of all Users
-    """
-    permission_classes = (LibrariantPermission,)
-
-    @staticmethod
-    def get(request):
-        """
-            GET request to get list of all Users
-            :param request:
-            :return: HTTP_200_OK and JSON-Documents: if all good
-                     HTTP_404_NOT_FOUND: if users don`t exist
-        """
-        result = {'status': '', 'data': {}}
-
-        if not User.objects.all():
-            result['status'] = HTTP_404_NOT_FOUND
-            return Response(result, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = UserResponceDataSerializer(User.objects.all(), many=True)
-        result['data'] = serializer.data
-        result['status'] = HTTP_200_OK
-
-        return Response(result, status=status.HTTP_200_OK)
-
-
-class UserDetail(APIView):
-    """
-        Class to get one User by id
-    """
-    permission_classes = (UserDetailPermission,)
-
-    @staticmethod
-    def get(request, user_id):
-        """
-            GET request to get one particular user
-            :param request:
-            :param user_id
-            :return: HTTP_200_OK and JSON-Documents: if all good
-                    HTTP_404_NOT_FOUND: if user don`t exist
-        """
-        result = {'status': '', 'data': {}}
-
-        try:
-            user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            result['status'] = HTTP_404_NOT_FOUND
-            return Response(result, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = UserDetailSerializer(user)
-        result['data'] = serializer.data
-        result['status'] = HTTP_200_OK
-        return Response(result, status=status.HTTP_200_OK)
-
-    @staticmethod
-    def patch(request, user_id):
-        """
-            PATCH request to update users
-            :param request:
-            :param user_id:
-            :return: HTTP_202_ACCEPTED and JSON-Document: update is success
-                     HTTP_400_BAD_REQUEST and JSON-Document with errors: data is not valid
-                     HTTP_404_NOT_FOUND: user with such id is not found
-        """
-
-        result = {'status': '', 'data': {}}
-
-        try:
-            user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            result['status'] = HTTP_404_NOT_FOUND
-            return Response(result, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = UserDetailSerializer(user, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            # First, need to check whether the user try to change his role
-            # We return 'accepted' in case that 'hacker' who try to change state
-            # Might try several times before he totally burn in tears about our security :)
-            # NOTE: User.get_instance(request).role - the instance of requester
-            if User.get_instance(request).role != 2 and user.role != User.get_instance(request).role:
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
-            # If pass, then save all
-            serializer.save()
-            result['status'] = HTTP_202_ACCEPTED
-            return Response(result, status=status.HTTP_202_ACCEPTED)
-
-        result['status'] = HTTP_400_BAD_REQUEST
-        result['data'] = serializer.errors
-
-        return Response(result, status=status.HTTP_400_BAD_REQUEST)
-
-
-class MyDetail(APIView):
-    """
-        Class to get one User by id
-    """
-    permission_classes = (LibrariantPermission,)
-
-    @staticmethod
-    def get(request, user_id):
-        """
-            GET request to get one particular user
-            :param request:
-            :param user_id:
-            :return: HTTP_200_OK and JSON-Documents: if all good
-                    HTTP_404_NOT_FOUND: if user don`t exist
-        """
-        result = {'status': '', 'data': {}}
-
-        try:
-            user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            result['status'] = HTTP_404_NOT_FOUND
-            return Response(result, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = UserDetailSerializer(user)
-        result['data'] = serializer.data
-        result['status'] = HTTP_200_OK
-        return Response(result, status=status.HTTP_200_OK)
-
-
-
-
-
-
-
-
-
+import datetime
 
 
 class Orders(APIView):
@@ -207,7 +51,7 @@ class OrderDetail(APIView):
 
             return Response(result, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            result['status'] = HTTP_404_NOT_FOUND
+            result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
@@ -256,18 +100,18 @@ class OrderDetail(APIView):
 
             elif order.status == 0:
 
-                result['status'] = HTTP_400_BAD_REQUEST
+                result['status'] = misc.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             order.save()
 
-            result['status'] = HTTP_200_OK
+            result['status'] = misc.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            result['status'] = HTTP_404_NOT_FOUND
+            result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
-            result['status'] = HTTP_400_BAD_REQUEST
+            result['status'] = misc.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -291,7 +135,7 @@ class MyOrders(APIView):
         orders = OrderSerializer(Order.objects.filter(user=user), many=True)
 
         result['data'] = orders.data
-        result['status'] = HTTP_200_OK
+        result['status'] = misc.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
@@ -319,13 +163,13 @@ class MyOrders(APIView):
             order.status = new_status
             order.save()
 
-            result['status'] = HTTP_200_OK
+            result['status'] = misc.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            result['status'] = HTTP_404_NOT_FOUND
+            result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
-            result['status'] = HTTP_400_BAD_REQUEST
+            result['status'] = misc.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -352,11 +196,11 @@ class Booking(APIView):
             document = Document.objects.get(pk=document_id)
 
             if document.copies_available == 0:
-                result['status'] = HTTP_400_BAD_REQUEST
+                result['status'] = misc.HTTP_400_BAD_REQUEST
                 result['data'] = {'details': 'document is not available (run out of copies)'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
             elif document.is_reference:
-                result['status'] = HTTP_400_BAD_REQUEST
+                result['status'] = misc.HTTP_400_BAD_REQUEST
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
@@ -376,12 +220,12 @@ class Booking(APIView):
 
         except IndexError:
 
-            result['status'] = HTTP_404_NOT_FOUND
+            result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         except Document.DoesNotExist:
 
-            result['status'] = HTTP_404_NOT_FOUND
+            result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         document.copies_available -= 1
@@ -389,6 +233,6 @@ class Booking(APIView):
 
         order_serializer = OrderSerializer(order)
         result['data'] = order_serializer.data
-        result['status'] = HTTP_200_OK
+        result['status'] = misc.HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
