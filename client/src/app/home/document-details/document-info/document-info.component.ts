@@ -26,8 +26,9 @@ export class DocumentInfoComponent implements OnInit {
   ) { }
 
   bookDocument(documentId: number) {
-    this.userService.bookTheDocument(documentId).subscribe();
-    this.router.navigate(['/user', 'orders']);
+    this.userService.bookTheDocument(documentId).subscribe(() => {
+      this.router.navigate(['/user', 'orders'])
+    });
   }
 
   ngOnInit() {

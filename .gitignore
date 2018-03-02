@@ -32,4 +32,8 @@ server/lmsinno/copies/__pycache__/
 server/lmsinno/documents/__pycache__/
 server/lmsinno/orders/__pycache__/
 server/lmsinno/tags/__pycache__/
+<<<<<<< HEAD
 server/lmsinno/users/__pycache__/
+=======
+server/lmsinno/users/__pycache__/
+>>>>>>> 86c63eab775b091ba4cfb6aadb21b452cd370e18
