@@ -7,12 +7,12 @@ from rest_framework import status, exceptions
 from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
 from django.conf import settings
+
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 import jwt
 import json
 import datetime
-
 
 
 class Document(models.Model):
@@ -51,7 +51,6 @@ class User(AbstractUser):
 
     def set_role(self, role):
         self.role = role
-
 
     def set_address(self, address):
         self.address = address
@@ -119,7 +118,7 @@ class Copy(models.Model):
     ORDER_STATUS_TYPE_CHOICES = [(i, i) for i in range(2)]
 
     copy_id = models.AutoField(primary_key=True)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, to_field='document_id')
     status = models.IntegerField(choices=ORDER_STATUS_TYPE_CHOICES, default=0)
     place_hall_number = models.IntegerField(null=False)
     place_shelf_letter = models.CharField(max_length=1, null=False)
@@ -184,5 +183,3 @@ class TagOfDocument(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(self.document, self.tag)
-
-

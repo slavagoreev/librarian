@@ -1,7 +1,10 @@
 from django.conf.urls import url, include
 from django.views import generic
-from rest_framework import serializers, status
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
+
+from .documents import documents_views
+from .tags import tags_views
+from .copies import copies_views
 
 from . import views
 
@@ -10,12 +13,15 @@ urlpatterns = [
     url(r'^$', generic.RedirectView.as_view(
         url='/api/', permanent=False)),
 
-    url(r'^api/documents/(?P<document_id>[0-9]+)[/]?$', views.DocumentDetailByDocumentID.as_view()),
-    url(r'^api/documents/copy/(?P<copy_id>[0-9]+)[/]?$', views.DocumentDetailByCopyID.as_view()),
-    url(r'^api/documents/$', views.DocumentsByCriteria.as_view()),
-    url(r'^api/copy/$', views.CopyDetail.as_view()),
-    url(r'^api/tags/(?P<tag_id>[0-9]+)[/]?', views.TagDetail.as_view()),
-    url(r'^api/tags/$', views.TagByCriteria.as_view()),
+    url(r'^api/documents/(?P<document_id>[0-9]+)[/]?$', documents_views.DocumentDetailByDocumentID.as_view()),
+    url(r'^api/documents/copy/(?P<copy_id>[0-9]+)[/]?$', documents_views.DocumentDetailByCopyID.as_view()),
+    url(r'^api/documents/$', documents_views.DocumentsByCriteria.as_view()),
+
+    url(r'^api/copies/$', copies_views.CopyDetail.as_view()),
+    url(r'^api/copies/(?P<copy_id>[0-9]+)[/]?$', copies_views.CopyDetail.as_view()),
+
+    url(r'^api/tags/(?P<tag_id>[0-9]+)[/]?', tags_views.TagDetail.as_view()),
+    url(r'^api/tags/$', tags_views.TagByCriteria.as_view()),
 
     url(r'^api/users/', include('rest_auth.urls')),
     url(r'^api/users/(?P<user_id>[0-9]+)[/]?$', views.UserDetail.as_view()),

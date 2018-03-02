@@ -27,54 +27,6 @@ jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
-class DocumentSerializer(serializers.ModelSerializer):
-    authors = serializers.SerializerMethodField()
-    tags = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Document
-        fields = ('document_id',
-                  'title',
-                  'description',
-                  'publisher',
-                  'year',
-                  'type',
-                  'price',
-                  'is_reference',
-                  'is_bestseller',
-                  'copies_available',
-                  'cover',
-                  'authors',
-                  'tags')
-
-    @staticmethod
-    def get_authors(obj):
-        document_of_authors = Author.objects.filter(documentofauthor__document_id=obj.document_id)
-        serializer = AuthorSerializer(document_of_authors, many=True)
-        return serializer.data
-
-    @staticmethod
-    def get_tags(obj):
-        tags_of_book = Tag.objects.filter(tagofdocument__document_id=obj.document_id)
-        serializer = TagSerializer(tags_of_book, many=True)
-        return serializer.data
-
-
-class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Author
-        fields = ('author_id',
-                  'name')
-
-
-class DocumentOfAuthorSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = DocumentOfAuthor
-        fields = ('id',
-                  'document_id',
-                  'author_id')
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -225,47 +177,6 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         sum = 0
         if obj.status == 2:
             overdue_days = (datetime.date.today() - obj.date_return).days
-            sum = max(min(overdue_days*100, obj.copy.document.price), 0)
-            
+            sum = max(min(overdue_days * 100, obj.copy.document.price), 0)
+
         return sum
-
-
-class CopySerializer(serializers.ModelSerializer):
-    document = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Copy
-        fields = ('copy_id',
-                  'document',
-                  'status',
-                  'place_hall_number',
-                  'place_shelf_letter')
-
-    @staticmethod
-    def get_document(obj):
-        document = Document.objects.get(document_id=obj['document'])
-        return document
-
-
-class CopyDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Copy
-        fields = ('copy_id',
-                  'document',
-                  'status',
-                  'place_hall_number',
-                  'place_shelf_letter')
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ('tag_id',
-                  'name')
-
-
-class TagOfDocumentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TagOfDocument
-        fields = ('document',
-                  'tag')
