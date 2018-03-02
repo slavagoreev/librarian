@@ -53,7 +53,7 @@
           <td>
             <div ngbDropdown>
               <button id="orderStatus" ngbDropdownToggle>
-                <span class="badge badge-warning">{{ statusStr(order.status) }}</span>
+                <span class="badge">{{ statusStr(order.status) }}</span>
               </button>
               <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="orderStatus">
                 <button class="dropdown-item" (click)="selectStatus(order.order_id, 1)">Accept</button>
@@ -69,7 +69,8 @@
             {{order.date_return}}
           </td>
           <td>
-            {{order.overdue_sum}}
+            <span *ngIf="order.overdue_sum > 0; else overdueZero">{{order.overdue_sum}}<b>₽</b></span>
+            <ng-template #overdueZero>-</ng-template>
           </td>
         </tr>
         </tbody>

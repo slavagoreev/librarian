@@ -16,7 +16,6 @@ export class OrderListComponent implements OnInit {
   constructor(
     private userService: UserService
   ) {
-    this.orders$ = userService.getAllOrders();
   }
 
   search() {
@@ -28,8 +27,10 @@ export class OrderListComponent implements OnInit {
   }
 
   selectStatus(id: number, status: number) {
-    this.userService.setStatusForOrder(id, status).subscribe();
-    this.orders$ = this.userService.getAllOrders();
+    this.userService.setStatusForOrder(id, status).subscribe(res => {
+      this.observeOrders();
+    });
+    this.userService.getAllOrders().subscribe();
   }
 
   statusStr(status: number){
@@ -40,7 +41,14 @@ export class OrderListComponent implements OnInit {
     if (status == 4) return 'Extended';
   }
 
+  observeOrders() {
+    this.userService.getAllOrders().subscribe(res => {
+      this.orders$ = Observable.of(res);
+    });
+  }
+
   ngOnInit() {
+    this.observeOrders();
   }
 
 }
