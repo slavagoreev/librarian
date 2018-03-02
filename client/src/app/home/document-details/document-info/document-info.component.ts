@@ -4,6 +4,8 @@ import { WINDOW } from "../../../shared/services/scroll.service";
 import { Document as DocumentModel } from '../../../shared/models/documents.model';
 import { $ } from 'protractor';
 import { getUserRole } from '../../../auth/reducers/selectors';
+import {UserService} from "../../../core/services/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-document-info',
@@ -19,7 +21,14 @@ export class DocumentInfoComponent implements OnInit {
   constructor(
     @Inject(DOCUMENT) private documentEl: Document,
     @Inject(WINDOW) private window,
+    private userService: UserService,
+    private router: Router,
   ) { }
+
+  bookDocument(documentId: number) {
+    this.userService.bookTheDocument(documentId).subscribe();
+    this.router.navigate(['/user', 'orders']);
+  }
 
   ngOnInit() {
     this.description = this.document.description.substr(0, 200);

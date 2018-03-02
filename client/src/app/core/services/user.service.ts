@@ -3,7 +3,7 @@ import { HttpService } from './http.service';
 import { Observable } from 'rxjs/Observable';
 import { User } from '../../shared/models/users.model';
 import { Order } from '../../shared/models/orders.model';
-import { RequestOptions } from '@angular/http';
+import { Headers, RequestMethod, RequestOptions } from '@angular/http';
 
 @Injectable()
 export class UserService {
@@ -14,6 +14,26 @@ export class UserService {
 
   getUserData(id: number): Observable<User> {
     return this.http.get(`users/${id}`)
+      .map(res => {
+        const _res = res.json();
+        if (_res.data) {
+          return _res.data
+        } else {
+          this.http.loading.next({
+            loading: true,
+            error: {
+              title: 'Loading error',
+              message: 'Could not load user details from server',
+              delay: 20000
+            }
+          });
+          return null;
+        }
+      });
+  }
+
+  setUserData(user): Observable<any> {
+    return this.http.patch(`users/${user.id}`, user)
       .map(res => {
         const _res = res.json();
         if (_res.data) {
@@ -51,6 +71,7 @@ export class UserService {
         }
       });
   }
+
   getOrders(): Observable<Order[]> {
     return this.http.get(`myorders/`)
       .map(res => {
@@ -70,6 +91,7 @@ export class UserService {
         }
       });
   }
+
   getAllOrders(): Observable<Order[]> {
     return this.http.get(`orders/`)
       .map(res => {
@@ -89,6 +111,7 @@ export class UserService {
         }
       });
   }
+
   getOrderDetail(orderNumber): Observable<Order> {
     return this.http.get(`users/${orderNumber}`)
       .map(res => {
@@ -128,13 +151,14 @@ export class UserService {
         }
       });
   }
+
   setStatusForOrder(order_id: number, status: number): Observable<Order> {
-    let options = new RequestOptions();
-    options.headers.set('status', status.toString());
-    return this.http.patch(`orders/${order_id}`, options)
+    //options.body.set('status', status.toString());
+    return this.http.patch(`orders/${order_id}`, {'status': status})
       .map(res => {
         const _res = res.json();
-        console.error ("TODO");
+        //return _res.data;
+        //console.error ("TODO");
         return null;
     });
 }

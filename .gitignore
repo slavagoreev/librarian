@@ -15,12 +15,14 @@ settings.py# IDEs and editors
 /server/lmsinno/migrations/__pycache__/*
 /server/.idea/
 /server/settings.py
-settings.py
+server/server/settings.py
 new.txt
 .cache
 .npm
 .pycharm_helpers
-
+.README.md.swp
+/server/server/settings.py
 # System Files
 .DS_Store
 Thumbs.db
+/client/src/environments/environment.ts

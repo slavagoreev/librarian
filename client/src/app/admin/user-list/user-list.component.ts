@@ -20,10 +20,15 @@ export class UserListComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  deleteUser(id: number) {
+    // TODO delete user
+  }
+
   openModal(content, user: User) {
     this.modalService.open(content).result.then((result: string) => {
       if (result == 'Confirm') {
-        console.log ('Should be deleted', user);
+        this.deleteUser(user.id);
       }
     });
   }

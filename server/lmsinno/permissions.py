@@ -51,6 +51,7 @@ class AuthenticatedUserPermission(permissions.BasePermission):
 class LibrariantPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
+
         user = User.get_instance(request)
 
         if not user:
@@ -78,9 +79,9 @@ class UserDetailPermission(permissions.BasePermission):
         if not user:
             return False
 
-        if request.method == 'GET' and user.role == 2:
+        if request.method == 'GET' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1]) or user.role == 2):
             result = True
-        elif request.method == 'POST' and user.role == 2:
+        elif request.method == 'POST' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1]) or user.role == 2):
             result = True
         elif request.method == 'DELETE' and user.role == 2:
             result = True

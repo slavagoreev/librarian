@@ -4,10 +4,11 @@ import { DocumentListComponent } from './document-list/document-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserDetailsComponent } from './user-list/user-details/user-details.component';
 import { UserEditComponent } from './user-list/user-edit/user-edit.component';
+import { OrderListComponent } from "./order-list/order-list.component";
 
 export const AdminRoutes = [
   {
-    path: 'admin',
+    path: 'librarian',
     canActivate: [ RoleGuard ],
     data: {
       expectedRole: 2
@@ -40,7 +41,7 @@ export const AdminRoutes = [
       },
       {
         path: 'order-list',
-        component: UserListComponent
+        component: OrderListComponent
       },
       {
         path: 'tag-list',

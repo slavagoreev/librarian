@@ -57,8 +57,8 @@
           </tr>
           <tr>
             <td>
-              <button type="button" class="btn btn-primary mt-3" *ngIf="document.copies_available > 0; else noCopies">
-                Book it!<span class="badge badge-warning">{{document.copies_available}} left</span>
+              <button type="button" class="btn btn-primary mt-3" (click)="bookDocument(document.document_id)" *ngIf="document.copies_available > 0; else noCopies">
+                  Book it!<span class="badge badge-warning">{{document.copies_available}} left</span>
               </button>
               <ng-template #noCopies>
                 <p class="text-muted italic">No copies left</p>

@@ -111,6 +111,13 @@ class UserDetail(APIView):
         serializer = UserDetailSerializer(user, data=request.data, partial=True)
 
         if serializer.is_valid():
+            # First, need to check whether the user try to change his role
+            # We return 'accepted' in case that 'hacker' who try to change state
+            # Might try several times before he totally burn in tears about our security :)
+            # NOTE: User.get_instance(request).role - the instance of requester
+            if User.get_instance(request).role != 2 and user.role != User.get_instance(request).role:
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            # If pass, then save all
             serializer.save()
             result['status'] = HTTP_202_ACCEPTED
             return Response(result, status=status.HTTP_202_ACCEPTED)
@@ -189,8 +196,6 @@ class DocumentsByCriteria(APIView):
 
     permission_classes = (DocumentPermission,)
 
-    # TODO AUTHORIZATION
-    # @permission_classes((DocumentPermission,))
     @staticmethod
     def get(request):
         """
@@ -570,7 +575,7 @@ class OrderDetail(APIView):
         try:
             order = Order.objects.get(order_id=order_id)
             old_order = int(order.status)
-            order.status = int(request.META['HTTP_STATUS'])
+            order.status = int(request.data['status'])
 
             # if order status is 1 or 3 proceed
             if order.status == 1:

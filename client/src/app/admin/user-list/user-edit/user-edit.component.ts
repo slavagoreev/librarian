@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../shared/models/users.model';
 import { Subscription } from 'rxjs/Subscription';
@@ -16,11 +16,24 @@ export class UserEditComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   userChangeSubscription: Subscription;
   user: User;
-
+  userChanged: User;
+  @ViewChild('editEmail')
+  email: ElementRef;
+  @ViewChild('editUsername')
+  username: ElementRef;
+  @ViewChild('editRole')
+  role: ElementRef;
+  @ViewChild('editPhone')
+  phone: ElementRef;
+  @ViewChild('editAddress')
+  address: ElementRef;
+  @ViewChild('editFirstName')
+  firstname: ElementRef;
+  @ViewChild('editLastName')
+  lastname: ElementRef;
 
   userEditInfoForm: FormGroup;
   userChangePasswordForm: FormGroup;
-
 
   private innerHeight: number;
   private userId: number;
@@ -99,6 +112,19 @@ export class UserEditComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  submitForm() {
+    this.userChanged = this.user;
+    this.userChanged.email = this.email.nativeElement.value;
+    this.userChanged.username = this.username.nativeElement.value;
+    this.userChanged.role = this.role.nativeElement.value;
+    this.userChanged.phone = this.phone.nativeElement.value;
+    this.userChanged.address = this.address.nativeElement.value;
+    this.userChanged.first_name = this.firstname.nativeElement.value;
+    this.userChanged.last_name = this.lastname.nativeElement.value;
+    this.userService.setUserData(JSON.parse(JSON.stringify(this.userChanged))).subscribe();
+  }
+
   private pushErrorFor(ctrl_name: string, msg: string) {
     console.log (ctrl_name, msg)
     if (this.userEditInfoForm.controls[ctrl_name])

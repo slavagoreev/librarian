@@ -15,7 +15,7 @@
         <tbody>
         <tr *ngFor="let user of (users$ | async)">
           <td>
-            <a class="user-link" [routerLink]="'/admin/user/'+user.id">
+            <a class="user-link" [routerLink]="'/librarian/user/'+user.id">
               <span class="user-fullname">{{user.first_name + " " + user.last_name}}</span>
               <span class="username">{{user.username}}</span>
             </a>
@@ -24,7 +24,7 @@
           <td [innerHTML]="user.role | userRole"></td>
           <td>{{user.email}}</td>
           <td>
-            <span class="table-link" [routerLink]="'/admin/user/'+user.id+'/edit'"><i class="user-edit"></i> </span>
+            <span class="table-link" [routerLink]="'/librarian/user/'+user.id+'/edit'"><i class="user-edit"></i> </span>
             <span class="table-link" (click)="openModal(deleteUser, user)"><i class="user-delete"></i></span>
           </td>
         </tr>
