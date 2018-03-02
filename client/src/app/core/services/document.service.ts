@@ -39,6 +39,27 @@ export class DocumentService {
       });
   }
 
+  getCopy(id: number): Observable<Document> {
+    return this.http.get(`documents/copy/${id.toString()}`)
+      .map(res => {
+        const _res = res.json();
+        console.log (_res.data)
+        if (!_.isEmpty(_res.data)) {
+          return _res.data as Document;
+        } else {
+          this.http.loading.next({
+            loading: true,
+            error: {
+              title: 'Loading error',
+              message: 'There is no document with this ID',
+              delay: 20000
+            }
+          });
+          return null;
+        }
+      });
+  }
+
   getDocuments(): Observable<Document[]> {
     return this.http.get(`documents/?size=30&year=2018`)
       .map(res => {

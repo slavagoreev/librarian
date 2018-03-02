@@ -13,6 +13,9 @@ import { UserEditComponent } from './user-list/user-edit/user-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DocumentModule } from '../document/document.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { OrderListComponent } from './order-list/order-list.component';
+import { ReversePipe } from './order-list/reverse.pipe';
+import { OrdersComponent } from './order-list/orders/orders.component';
 
 @NgModule({
   imports: [
@@ -33,7 +36,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     UserRolePipe,
     PlainUserRolePipe,
     UserDetailsComponent,
-    UserEditComponent
+    UserEditComponent,
+    OrderListComponent,
+    ReversePipe,
+    OrdersComponent
   ]
 })
 export class AdminModule { }

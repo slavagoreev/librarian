@@ -31,7 +31,7 @@ SECRET_KEY = '@!s!f%xjyvsd-ym%t#&s0t9!p4x71&dmf=ws7!*7#nej)3eag*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru']
+ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru', 'localhost']
 
 # Application definition
 
@@ -89,6 +89,7 @@ MIDDLEWARE = [
 ]
 CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
+    'localhost:8000',
     '127.0.0.1:4200',
     'trainno.ru',
     'www.trainno.ru'
@@ -113,6 +114,7 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
     'bearer',
+    'status',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -143,7 +145,7 @@ DATABASES = {
         'NAME': 'librarian',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '/var/run/mysqld/mysqld.sock'
+        'HOST': '/tmp/mysql.sock'
     }
 }
 

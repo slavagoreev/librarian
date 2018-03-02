@@ -1,0 +1,79 @@
+<main class="body">
+  <div class="document-list col-lg-10 col-12 px-0 row mx-auto">
+    <app-navbar></app-navbar>
+    <div class="table-responsive">
+      <div class="form-row">
+        <div class="input-group mb-1 document-search col-5">
+          <input type="search" id="documentSearch" (onEnter)="search()"
+                 class="form-control form-control-lg" #searchInput
+                 placeholder="Search orders">
+          <div class="input-group-append">
+            <div ngbDropdown>
+              <button id="documentSearchProps" ngbDropdownToggle>
+                <span class="badge badge-warning">By {{ type }}</span>
+              </button>
+              <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="documentSearchProps">
+                <button class="dropdown-item" (click)="selectType('book')">Book</button>
+                <button class="dropdown-item" (click)="selectType('user')">User</button>
+              </div>
+            </div>
+            <span class="search-btn" (click)="search()"><i class="loupe"></i></span>
+          </div>
+          <!--<label ngbDropdown class="input-group-prepend document-menu" for="documentSearch">
+
+            <div ngbDropdownMenu class="dropdown-menu">
+              <button class="dropdown-item">Logout</button>
+            </div>
+          </label>-->
+        </div>
+      </div>
+      <p class="text-muted italic">Order list:</p>
+      <table class="table">
+        <thead>
+        <tr>
+          <th width="5%"></th>
+          <th width="35%"></th> <!-- 40% -->
+          <th width="4%">Status</th>
+          <th width="10%">Accepted</th> <!-- 70% -->
+          <th width="10%">Return</th>
+          <th width="10%">Overdue sum</th>
+        </tr>
+        </thead>
+        <tbody id="searchResults">
+        <tr *ngFor="let order of (orders$ | async | reverse)">
+          <td>
+            <div class="thumb-wrap">
+              <!-- <img src="{{document.cover.substr(0, document.cover.length-1)}}1" alt="{{document.title}}"> -->
+            </div>
+          </td>
+          <td>
+            <span class="document-title">Some awesome book in English</span>
+            <span class="document-type">By Keen Author</span>
+          </td>
+          <td>
+            <div ngbDropdown>
+              <button id="orderStatus" ngbDropdownToggle>
+                <span class="badge badge-warning">{{ statusStr(order.status) }}</span>
+              </button>
+              <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="orderStatus">
+                <button class="dropdown-item" (click)="selectStatus(order.order_id, 1)">Accept</button>
+                <button class="dropdown-item" (click)="selectStatus(order.order_id, 3)">Close</button>
+              </div>
+            </div>
+          </td>
+          <!-- 4..6 -->
+          <td>
+            {{order.date_accepted}}
+          </td>
+          <td>
+            {{order.date_return}}
+          </td>
+          <td>
+            {{order.overdue_sum}}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
