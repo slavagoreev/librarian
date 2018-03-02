@@ -89,8 +89,8 @@ class UserDetail(APIView):
             # We return 'accepted' in case that 'hacker' who try to change state
             # Might try several times before he totally burn in tears about our security :)
             # NOTE: User.get_instance(request).role - the instance of requester
-            if User.get_instance(request).role != 2 and user.role != User.get_instance(request).role:
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            if User.get_instance(request).role != 2 or (user.role != User.get_instance(request).role and User.get_instance(request).role != 2):
+                return Response(result, status=status.HTTP_202_ACCEPTED)
             # If pass, then save all
             serializer.save()
             result['status'] = misc.HTTP_202_ACCEPTED
