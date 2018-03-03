@@ -235,3 +235,21 @@ class DocumentDetailByCopyID(APIView):
         result['data'] = DocumentSerializer(Document.objects.get(pk=copy.document_id)).data
 
         return Response(result, status=status.HTTP_200_OK)
+
+
+class Bestsellers(APIView):
+    permission_classes = (DocumentPermission,)
+
+    @staticmethod
+    def get(request):
+        result = {'status': '', 'data': {}}
+
+        bestsellers = Document.objects.filter(is_bestseller=True)
+        if not bestsellers:
+            result['status'] = misc.HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        result['status'] = misc.HTTP_200_OK
+        result['data'] = DocumentSerializer(bestsellers, many=True).data
+
+        return Response(result, status=status.HTTP_200_OK)
