@@ -1,6 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/compiler/src/core';
-//import { Http, URLSearchParams } from '@angular/http';
+// import { Http, URLSearchParams } from '@angular/http';
 
 @Component({
   selector: 'app-root',

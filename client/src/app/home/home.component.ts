@@ -21,6 +21,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   documents$: Observable<Document[]>;
   loading$: Subject<{loading: boolean, error: any}>;
+  // bestsellers$: Observable<Document[]>;
+  bestsellers$: Document[];
   permission: boolean;
 
   constructor(
@@ -38,7 +40,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
+    this.documents$.subscribe(res => {
+      this.bestsellers$ = res;
+    });
   }
   ngOnDestroy() {
   }

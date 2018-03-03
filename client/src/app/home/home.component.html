@@ -1,4 +1,27 @@
 <div class="header-slider">
+  <div ng2-carouselamos
+       class="slides-wrapper"
+       [items]="bestsellers$"
+       [width]="2000"
+       [$prev]="prev"
+       [$next]="next"
+       [$item]="item"
+  >
+  </div>
+
+  <ng-template #prev>
+    x
+  </ng-template>
+  <ng-template #next>
+    y
+  </ng-template>
+  <ng-template #item let-item let-i="index">
+
+    <div class="items">
+      <img class="document-thumb" src="{{ item.cover }}">
+    </div>
+
+  </ng-template>
 
 </div>
 <main class="body">

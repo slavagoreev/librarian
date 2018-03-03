@@ -30,7 +30,7 @@ export class OrderListComponent implements OnInit {
     this.userService.setStatusForOrder(id, status).subscribe(res => {
       this.observeOrders();
     });
-    this.userService.getAllOrders().subscribe();
+    this.userService.getAllOrders();
   }
 
   statusStr(status: number){

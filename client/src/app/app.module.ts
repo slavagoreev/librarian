@@ -35,6 +35,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AdminModule } from './admin/admin.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Ng2CarouselamosModule } from 'ng2-carouselamos';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AuthModule,
     DocumentModule,
     CoreModule,
-    SharedModule
+    SharedModule,
+    NgbModule,
+    Ng2CarouselamosModule
   ],
   providers: [
   ],
