@@ -195,6 +195,15 @@ class Booking(APIView):
         try:
             document = Document.objects.get(pk=document_id)
 
+            orders = Order.objects.all().filter(user=User.get_instance(request))
+
+            for i in orders:
+                if i.copy.document.document_id == document.document_id:
+                    if i.status != 3:
+                        result['status'] = misc.HTTP_400_BAD_REQUEST
+                        result['data'] = {'details': 'you already booked this document'}
+                        return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
             if document.copies_available == 0:
                 result['status'] = misc.HTTP_400_BAD_REQUEST
                 result['data'] = {'details': 'document is not available (run out of copies)'}
