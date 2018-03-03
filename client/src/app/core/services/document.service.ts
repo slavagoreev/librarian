@@ -39,6 +39,26 @@ export class DocumentService {
       });
   }
 
+  getBestsellers(): Observable<Document[]> {
+    return this.http.get(`documents/bestsellers/`)
+      .map(res => {
+        const _res = res.json();
+        if (_res.data) {
+          return _res.data;
+        } else {
+          this.http.loading.next({
+            loading: true,
+            error: {
+              title: 'Loading error',
+              message: 'Could not load documents from server',
+              delay: 20000
+            }
+          });
+          return null;
+        }
+      });
+  }
+
   getCopy(id: number): Observable<Document> {
     return this.http.get(`documents/copy/${id.toString()}`)
       .map(res => {
