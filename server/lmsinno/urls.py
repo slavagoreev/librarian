@@ -16,6 +16,7 @@ urlpatterns = [
         url='/api/', permanent=False)),
 
     url(r'^api/documents/(?P<document_id>[0-9]+)[/]?$', documents_views.DocumentDetailByDocumentID.as_view()),
+    url(r'^api/documents/bestsellers/$', documents_views.Bestsellers.as_view()),
     url(r'^api/documents/copy/(?P<copy_id>[0-9]+)[/]?$', documents_views.DocumentDetailByCopyID.as_view()),
     url(r'^api/documents/$',    documents_views.DocumentsByCriteria.as_view()),
 
