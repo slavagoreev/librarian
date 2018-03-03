@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from ..models import Copy
-from ..documents.documents_serializers import DocumentSerializer
+from ..models import Copy, Order
+from ..documents import documents_serializers
+from ..users import users_serializers
 
 
 class CopyDetailSerializer(serializers.ModelSerializer):
@@ -19,7 +20,7 @@ class CopyDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_document(obj):
-        serializer = DocumentSerializer(obj.document)
+        serializer = documents_serializers.DocumentSerializer(obj.document)
         return serializer.data
 
     # TODO Return with copy a user
@@ -28,7 +29,10 @@ class CopyDetailSerializer(serializers.ModelSerializer):
         if obj.status == 0:
             return None
         else:
-            pass
+            orders = Order.objects.filter(copy=obj)
+            for order in orders:
+                if order.status != 3:
+                    return users_serializers.UserResponseDataSerializer(order.user).data
 
 
 class CopySerializer(serializers.ModelSerializer):

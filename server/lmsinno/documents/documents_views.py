@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 
-from .documents_serializers import DocumentSerializer
+from .documents_serializers import DocumentSerializer, DocumentResponseSerializer
 from ..models import Copy, Document, Tag, TagOfDocument, Author, DocumentOfAuthor
 from ..permissions import DocumentPermission
 from .. import misc
@@ -35,7 +35,7 @@ class DocumentDetailByDocumentID(APIView):
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = DocumentSerializer(document)
+        serializer = DocumentResponseSerializer(document)
         result['status'] = misc.HTTP_200_OK
         result['data'] = serializer.data
 
