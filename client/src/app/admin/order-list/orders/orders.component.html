@@ -29,7 +29,7 @@
             </span>
           </td>
           <td>
-            <div *ngIf="order.status == 1">
+            <div *ngIf="order.status == 1 && !order.document.is_bestseller">
               <button class="btn btn-link" (click)="extendOrder(order.order_id)">Extend</button>
             </div>
           </td>
@@ -44,7 +44,8 @@
             {{order.date_return}}
           </td>
           <td>
-            {{order.overdue_sum}}
+            <span *ngIf="order.overdue_sum > 0; else overdueZero">{{order.overdue_sum}}<b>₽</b></span>
+            <ng-template #overdueZero>-</ng-template>
           </td>
         </tr>
         </tbody>

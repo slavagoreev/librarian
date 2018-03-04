@@ -113,7 +113,7 @@ class UserDetail(APIView):
 
         if user_id:
             try:
-                user = User.objects.get(pk=user_id).delete()
+                user = User.objects.get(pk=user_id)
             except User.DoesNotExist:
                 return Response({'status': misc.HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
             serializer = UserResponseDataSerializer(user)
