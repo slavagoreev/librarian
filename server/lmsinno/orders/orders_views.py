@@ -154,7 +154,7 @@ class MyOrders(APIView):
             if order.user != User.get_instance(request=request):
                 raise KeyError
 
-            new_status = int(request.META['HTTP_STATUS'])
+            new_status = int(request.data['status'])
             if new_status != 4 or order.status == 4 or order.copy.document.is_bestseller:
                 raise KeyError
 
