@@ -86,3 +86,4 @@ request = rq.get("https://trainno.ru/api/documents/", headers={"BEARER": admin})
 data = request['data']
 status = request['status']
 print(data, status)
+```
