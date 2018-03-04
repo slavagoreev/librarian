@@ -101,6 +101,27 @@ class UserDetail(APIView):
 
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
+    @staticmethod
+    def delete(request, user_id):
+        """
+        DELETE request: delete one particular user by ID
+        :param request:
+        :return: HTTP_200_OK: if user was deleted success
+                 HTTP_404_NOT_FOUND: if user with such id not found
+                 HTTP_400_BAD_REQUEST: if wrong format of input data
+        """
+
+        if user_id:
+            try:
+                user = User.objects.get(pk=user_id).delete()
+            except User.DoesNotExist:
+                return Response({'status': misc.HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
+            serializer = UserResponseDataSerializer(user)
+            user.delete()
+            return Response({'status': misc.HTTP_200_OK, 'data': serializer.data})
+        else:
+            return Response({'status': misc.HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class MyDetail(APIView):
     """
