@@ -8,6 +8,7 @@
         <tr>
           <th width="5%"></th>
           <th width="35%"></th> <!-- 40% -->
+          <th width="5%"></th>
           <th width="4%">Status</th>
           <th width="10%">Accepted</th> <!-- 70% -->
           <th width="10%">Return</th>
@@ -26,6 +27,11 @@
             <span class="document-type">{{order.document.type | documentType}}
                   {{order.document.authors.length ? 'by ' + order.document.authors[0].name : ''}}
             </span>
+          </td>
+          <td>
+            <div *ngIf="order.status == 1">
+              <button class="btn btn-link" (click)="extendOrder(order.order_id)">Extend</button>
+            </div>
           </td>
           <td>
             {{statusStr(order.status)}}

@@ -20,12 +20,16 @@ export class OrdersComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.reloadState();
+  }
+
+  reloadState() {
     this.userService.getOrders().subscribe(res => {
         this.orders$ = Observable.of(res);
       }
     );
   }
-  statusStr(status: number){
+  statusStr(status: number) {
     if (status == 0) return 'Requested';
     if (status == 1) return 'Booked';
     if (status == 2) return 'Overdue';
@@ -33,4 +37,10 @@ export class OrdersComponent implements OnInit {
     if (status == 4) return 'Extended';
   }
 
+  extendOrder(id: number) {
+    this.userService.setStatusForMyOrder(id, 4).subscribe(res => {
+      this.reloadState()
+    });
+    this.reloadState();
+  }
 }

@@ -166,6 +166,17 @@ export class UserService {
     });
   }
 
+  setStatusForMyOrder(order_id: number, status: number): Observable<Order> {
+    // options.body.set('status', status.toString());
+    return this.http.patch(`myorders/${order_id}`, {'status': status})
+      .map(res => {
+        const _res = res.json();
+        // return _res.data;
+        // console.error ("TODO");
+        return null;
+      });
+  }
+
   removeUser(id: number) {
     return this.http.delete(`users/${id.toString()}/`)
       .map((res) => {

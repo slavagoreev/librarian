@@ -2,7 +2,6 @@ import { Component, HostListener, Inject, Input, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { WINDOW } from "../../../shared/services/scroll.service";
 import { Document as DocumentModel } from '../../../shared/models/documents.model';
-import { $ } from 'protractor';
 import { getUserRole } from '../../../auth/reducers/selectors';
 import {UserService} from "../../../core/services/user.service";
 import {Router} from "@angular/router";
