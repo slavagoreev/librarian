@@ -56,7 +56,11 @@
                 </span>
               </a>
             </td>
-            <td>{{document.publisher}}</td>
+            <td>
+              {{document.publisher}}
+              <span *ngIf="document.is_bestseller" class="badge badge-warning" style="margin-left: 5px;">bestseller</span>
+              <span *ngIf="document.is_reference" class="badge badge-secondary">reference book</span>
+            </td>
             <td class="float-right">
               <span class="table-link" [routerLink]="'/documents/'+document.document_id+''"><i class="edit"></i> </span>
               <span class="table-link" (click)="openModal(deleteDocument, document)"><i class="remove"></i></span>
