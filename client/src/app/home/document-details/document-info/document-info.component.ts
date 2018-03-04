@@ -5,6 +5,7 @@ import { Document as DocumentModel } from '../../../shared/models/documents.mode
 import { getUserRole } from '../../../auth/reducers/selectors';
 import {UserService} from "../../../core/services/user.service";
 import {Router} from "@angular/router";
+import {DocumentService} from '../../../core/services/document.service';
 
 @Component({
   selector: 'app-document-info',
@@ -21,6 +22,7 @@ export class DocumentInfoComponent implements OnInit {
     @Inject(DOCUMENT) private documentEl: Document,
     @Inject(WINDOW) private window,
     private userService: UserService,
+    private documentService: DocumentService,
     private router: Router,
   ) { }
 
@@ -36,6 +38,14 @@ export class DocumentInfoComponent implements OnInit {
   extendDescription($event) {
     this.description = this.document.description;
     $event.target.style.setProperty('display', 'none');
+  }
+
+  addCopy(document: DocumentModel) {
+    this.documentService.addCopy(document, 1, 'A').subscribe(res => {
+      this.documentService.getDocument(this.document.document_id).subscribe(data => {
+        this.document = data;
+      });
+    });
   }
 
   /*@HostListener("window:scroll", [])

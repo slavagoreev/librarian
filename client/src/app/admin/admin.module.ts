@@ -16,6 +16,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { OrderListComponent } from './order-list/order-list.component';
 import { ReversePipe } from './order-list/reverse.pipe';
 import { OrdersComponent } from './order-list/orders/orders.component';
+import { AddComponent } from './document-list/add/add.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { OrdersComponent } from './order-list/orders/orders.component';
     UserEditComponent,
     OrderListComponent,
     ReversePipe,
-    OrdersComponent
+    OrdersComponent,
+    AddComponent
   ]
 })
 export class AdminModule { }

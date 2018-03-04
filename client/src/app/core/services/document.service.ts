@@ -59,6 +59,14 @@ export class DocumentService {
       });
   }
 
+  addCopy(document: Document, hall: number, shelf: string): Observable<any> {
+    return this.http.post(`copies/`,
+      {'document': document.document_id, 'place_hall_number': hall, 'place_shelf_letter': shelf})
+      .map(res => {
+        return res.json().data;
+      });
+  }
+
   getCopy(id: number): Observable<Document> {
     return this.http.get(`documents/copy/${id.toString()}`)
       .map(res => {
