@@ -20,22 +20,27 @@ First of all, you should download and unpack repository from here: https://githu
 4. You need to be sure about where is your .sock of MySQL.
 
 ### Migrations
-Let`s make begining preparation for Data Base (make migrations)
-1. Go to ```project_path/librarian-master/server```
+Let's make begining preparation for Data Base (make migrations)
+1. Go to ```librarian/server/```
 2. Open console here and type:
       ```
       python manage.py makemigrations lmsinno
       python manage.py migrate
       ```
-      
+3. Now we need to go to to ```../librarian/client/```, and do following in console:
+      ```
+      npm install -g @angular/cli
+      npm install
+      ```
+
 ### Admin
-Let`s create local super user
+Let's create local super user
 1. Go to ```project_path/librarian-master/server```
 2. Open console here and type:
       ```
       python manage.py createsuperuser
       ```
- 3. After that you should input username, email and password
+3. After that you should input username, email and password
       
 ### Running
 Finally, let`s run our server on local machine:
