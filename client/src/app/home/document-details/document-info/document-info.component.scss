@@ -91,3 +91,27 @@
     top: -7px;
   }
 }
+
+
+@media only screen and (max-width: 652px) {
+  /* For mobile phones: */
+  [class*="document"] {
+    // margin: 0px 0;
+    width: 100%;
+    [class*="document-info"] {
+      left: 3vw;
+    }
+    [class*="document-cover"] {
+      display: none;
+      height: 100%;
+      width: auto;
+      margin-bottom: 25px;
+      z-index: -1;
+      margin-right: -50px;
+      [class*="document-thumb-image"] {
+        //width: 100%;
+        z-index: -1;
+      }
+    }
+  }
+}
