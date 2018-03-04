@@ -4,12 +4,15 @@ import { Observable } from 'rxjs/Observable';
 import { User } from '../../shared/models/users.model';
 import { Order } from '../../shared/models/orders.model';
 import { Headers, RequestMethod, RequestOptions } from '@angular/http';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../interfaces';
 
 @Injectable()
 export class UserService {
 
   constructor(
-    private http: HttpService
+    private http: HttpService,
+    private store: Store<AppState>
   ) { }
 
   getUserData(id: number): Observable<User> {
@@ -153,15 +156,21 @@ export class UserService {
   }
 
   setStatusForOrder(order_id: number, status: number): Observable<Order> {
-    //options.body.set('status', status.toString());
+    // options.body.set('status', status.toString());
     return this.http.patch(`orders/${order_id}`, {'status': status})
       .map(res => {
         const _res = res.json();
-        //return _res.data;
-        //console.error ("TODO");
+        // return _res.data;
+        // console.error ("TODO");
         return null;
     });
-}
+  }
 
-
+  removeUser(id: number) {
+    return this.http.delete(`users/${id.toString()}/`)
+      .map((res) => {
+        // return this.store.dispatch(this.actions.removeDocumentSuccess(id))
+        return null;
+      });
+  }
 }

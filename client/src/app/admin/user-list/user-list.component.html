@@ -25,7 +25,7 @@
           <td>{{user.email}}</td>
           <td>
             <span class="table-link" [routerLink]="'/librarian/user/'+user.id+'/edit'"><i class="user-edit"></i> </span>
-            <span class="table-link" (click)="openModal(deleteUser, user)"><i class="user-delete"></i></span>
+            <span class="table-link" (click)="deleteUser(user.id)"><i class="user-delete"></i></span>
           </td>
         </tr>
         </tbody>
@@ -33,15 +33,3 @@
     </div>
   </div>
 </main>
-<ng-template #deleteUser let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4 class="modal-title">Are you sure?</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn" (click)="c('Close click')">Cancel</button>
-    <button type="button" class="btn btn-primary" (click)="c('Confirm')">Confirm</button>
-  </div>
-</ng-template>

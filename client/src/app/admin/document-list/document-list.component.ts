@@ -52,6 +52,6 @@ export class DocumentListComponent implements OnInit {
     const innerHTML = results.innerHTML;
     results.innerHTML = innerHTML.replace(text, `<span class="highlight">${text}</span>`);
 
-}
+  }
 
 }

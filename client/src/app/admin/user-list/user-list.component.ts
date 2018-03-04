@@ -22,7 +22,7 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(id: number) {
-    // TODO delete user
+    this.userService.removeUser(id).subscribe(res => {});
   }
 
   openModal(content, user: User) {
