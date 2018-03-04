@@ -1,0 +1,163 @@
+@import "../../../../sass/variables";
+.document-list {
+  margin: 50px 0;
+
+  .table thead th {
+    border-top: 0;
+  }
+  .search-btn {
+    padding: 8px 20px 8px 10px;
+    cursor: pointer;
+    float: right;
+    height: 34px;
+
+    .loupe {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+    }
+  }
+  .dropdown-toggle {
+    background: none;
+    border: 0;
+    line-height: 10px;
+    width: 50px;
+    outline: none;
+    position: relative;
+
+
+    &:after {
+      top: 8px;
+      right: 10px;
+      position: absolute;
+    }
+  }
+  .input-group-append {
+    height: 34px;
+    margin: 0 10px 0 0;
+
+    .dropdown {
+      float: left;
+    }
+  }
+  #documentSearchProps {
+    width: 100px;
+    height: 20px;
+    padding: 0;
+    padding-right: 27px;
+    margin-right: 15px;
+    margin-top: 8px;
+    border-right: 1px solid #dee2e6;
+    .badge {
+      float: right;
+    }
+  }
+  .dropdown-menu {
+    right: 22px !important;
+    top: 32px !important;
+  }
+  #documentSearch {
+    padding-right: 165px;
+  }
+  .thumb-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 3px;
+    box-shadow: 0 3px 5px #eee;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .table-responsive {
+    background: #fff;
+    padding: 40px;
+    /*
+    thead {
+      height: 0;
+      overflow: hidden;
+    }
+    thead th {
+      padding: 0 !important;
+      border: 0 !important;
+    }
+    tr {
+      border-bottom: 1px solid #dee2e6;
+    }
+    td {
+      border: none;
+      vertical-align: middle;
+    }
+    */
+  }
+
+
+  tbody tr:first-child td {
+    border-top: none;
+  }
+  .document-authors {
+    padding: 0;
+    margin-bottom: 5px;
+    color: #777;
+
+
+    .document-author {
+      list-style: none;
+      padding: 0;
+      display: block;
+    }
+  }
+  .document-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .document-title {
+    width: 100%;
+    float: left;
+    color: #7b79b7;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .document-type {
+    font-size: 15px;
+    color: #777;
+  }
+  .table-link {
+    float: left;
+    margin: 9px;
+    cursor: pointer;
+    outline: none;
+    opacity: 0.2;
+    transition: opacity .2s;
+
+    &:hover {
+      opacity: 0.5 !important;
+    }
+  }
+  tr:hover {
+    .table-link {
+      opacity: 0.3;
+    }
+  }
+  .highlight {
+    background-color: yellow;
+  }
+
+  #orderStatus {
+    width: 100px;
+    height: 20px;
+    padding: 0px;
+    padding-right: 27px;
+    //margin-left: 15px;
+    margin-top: 8px;
+    //border-right: 1px solid #dee2e6;
+    .badge {
+      float: right;
+    }
+  }
+}

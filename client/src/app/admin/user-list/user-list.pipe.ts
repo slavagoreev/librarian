@@ -9,7 +9,7 @@ export class UserRolePipe implements PipeTransform {
   transform(value: number): SafeHtml {
     switch (value) {
       case 0: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-secondary">Patron</span>`);
-      case 1: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-success">Facility</span>`);
+      case 1: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-success">Faculty</span>`);
       case 2: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-warning">Librarian</span>`);
     }
   }
@@ -22,8 +22,8 @@ export class PlainUserRolePipe implements PipeTransform {
   }
   transform(value: number): string {
     switch (value) {
-      case 0: return "";
-      case 1: return "Facility";
+      case 0: return "Student";
+      case 1: return "Faculty";
       case 2: return "Librarian";
     }
   }

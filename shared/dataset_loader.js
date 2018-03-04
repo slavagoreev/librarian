@@ -21,8 +21,9 @@ function post(dataset) {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': Buffer.byteLength(post_data),
-            'Bearer': "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNsYXZhZ29yZWV2QHJlZXNwYWNlLnJ1Iiwicm9sZSI6MiwiZXhwIjoxNTE5NTA1NDMyLCJvcmlnX2lhdCI6MTUxODkwMDYzMn0.h8a3I-ryQcBhuPUTdCTG2ccEgRzxBvpoE5FUn-iWy3s"
-        }
+            //'Bearer': "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNsYXZhZ29yZWV2QHJlZXNwYWNlLnJ1Iiwicm9sZSI6MiwiZXhwIjoxNTE5NTA1NDMyLCJvcmlnX2lhdCI6MTUxODkwMDYzMn0.h8a3I-ryQcBhuPUTdCTG2ccEgRzxBvpoE5FUn-iWy3s"
+            'Bearer': 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImZmQGZmLmZmIiwicm9sZSI6MiwiZXhwIjoxNTIwNDE5MzI2LCJvcmlnX2lhdCI6MTUxOTgxNDUyNn0.CJQwa6Bl9y8GQSsjI9y0Q588dBONLXkH4qCyy9BkiFs'
+	}
     };
     //console.log (post_data)
     let post_req = http.request(post_options, function(res) {

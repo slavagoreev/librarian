@@ -21,6 +21,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   documents$: Observable<Document[]>;
   loading$: Subject<{loading: boolean, error: any}>;
+  // bestsellers$: Observable<Document[]>;
+  bestsellers$: Document[];
   permission: boolean;
 
   constructor(
@@ -33,12 +35,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.store.select(getUserRole).subscribe(res => this.permission = res == 2);
     this.documents$ = this.store.select(getDocuments)
       .map(res => { res.map(doc => doc as Document); return res});
-
     this.loading$ = this.http.loading;
   }
 
   ngOnInit() {
-
+    this.documentService.getBestsellers().subscribe(res => {
+      this.bestsellers$ = res;
+    });
   }
   ngOnDestroy() {
   }

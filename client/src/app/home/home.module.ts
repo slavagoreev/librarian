@@ -16,6 +16,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentDetailsComponent } from './document-details/document-details.component';
 import { DocumentInfoComponent } from './document-details/document-info/document-info.component';
 import { DocumentModule } from '../document/document.module';
+import { Ng2CarouselamosModule } from 'ng2-carouselamos';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { DocumentModule } from '../document/document.module';
     CommonModule,
     SharedModule,
     DocumentModule,
-    NgbModule
+    NgbModule,
+    Ng2CarouselamosModule
   ],
   providers: [
     DocumentActions,

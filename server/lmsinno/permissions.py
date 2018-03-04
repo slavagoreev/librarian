@@ -1,3 +1,4 @@
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.authtoken.models import Token
 from rest_framework.views import exception_handler
 from rest_framework import permissions
@@ -50,6 +51,7 @@ class AuthenticatedUserPermission(permissions.BasePermission):
 class LibrariantPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
+
         user = User.get_instance(request)
 
         if not user:
@@ -77,15 +79,22 @@ class UserDetailPermission(permissions.BasePermission):
         if not user:
             return False
 
-        if request.method == 'GET' and user.role == 2:
+        if request.method == 'GET' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1]) or user.role == 2):
             result = True
-        elif request.method == 'POST' and user.role == 2:
+        elif request.method == 'POST' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1]) or user.role == 2):
             result = True
         elif request.method == 'DELETE' and user.role == 2:
             result = True
         elif request.method == 'PATCH':
-            if user.role == 2 or user.pk == int(request.META['PATH_INFO'].split('/')[-1]):
+            if user.role == 2:
                 result = True
+            elif user.pk == int(request.META['PATH_INFO'].split('/')[-1]):
+                result = True
+                try:
+                    request.data['role']
+                    result = False
+                except MultiValueDictKeyError:
+                    pass
             else:
                 result = False
         else:

@@ -17,7 +17,7 @@ import sys
 
 from django.conf import settings
 
-APPEND_SLASH=False
+APPEND_SLASH = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
@@ -31,7 +31,7 @@ SECRET_KEY = '@!s!f%xjyvsd-ym%t#&s0t9!p4x71&dmf=ws7!*7#nej)3eag*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru']
+ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru', 'localhost']
 
 # Application definition
 
@@ -45,10 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'rest_framework',
-    'rest_framework.authtoken',
     'rest_auth',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth.registration',
     'corsheaders',
     'rest_framework_swagger',
@@ -66,12 +66,12 @@ JWT_AUTH = {
 }
 
 REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": 'lmsinno.serializer.UserResponceDataSerializer',
+    "USER_DETAILS_SERIALIZER": 'lmsinno.users.users_serializers.UserResponseDataSerializer',
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": 'lmsinno.serializer.UserSafeSerializer'
+    "REGISTER_SERIALIZER": 'lmsinno.users.users_serializers.UserSafeSerializer'
 }
 
 SITE_ID = 1
@@ -89,6 +89,7 @@ MIDDLEWARE = [
 ]
 CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
+    'localhost:8000',
     '127.0.0.1:4200',
     'trainno.ru',
     'www.trainno.ru'
@@ -113,6 +114,7 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
     'bearer',
+    'status',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -143,7 +145,7 @@ DATABASES = {
         'NAME': 'librarian',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '/var/run/mysqld/mysqld.sock'
+        'HOST': '/tmp/mysql.sock'
     }
 }
 

@@ -1,0 +1,55 @@
+<main class="body">
+  <div class="document-list col-lg-10 col-12 px-0 row mx-auto">
+    <app-navbar></app-navbar>
+    <div class="table-responsive">
+      <p class="text-muted italic">Order list:</p>
+      <table class="table">
+        <thead>
+        <tr>
+          <th width="5%"></th>
+          <th width="35%"></th> <!-- 40% -->
+          <th width="5%"></th>
+          <th width="4%">Status</th>
+          <th width="10%">Accepted</th> <!-- 70% -->
+          <th width="10%">Return</th>
+          <th width="10%">Overdue sum</th>
+        </tr>
+        </thead>
+        <tbody id="searchResults">
+        <tr *ngFor="let order of (orders$ | async | reverse)">
+          <td>
+            <div class="thumb-wrap">
+              <img src="{{order.document.cover.substr(0, order.document.cover.length-1)}}1" alt="{{order.document.title}}">
+            </div>
+          </td>
+          <td>
+            <span class="document-title">{{order.document.title}}</span>
+            <span class="document-type">{{order.document.type | documentType}}
+                  {{order.document.authors.length ? 'by ' + order.document.authors[0].name : ''}}
+            </span>
+          </td>
+          <td>
+            <div *ngIf="order.status == 1 && !order.document.is_bestseller">
+              <button class="btn btn-link" (click)="extendOrder(order.order_id)">Extend</button>
+            </div>
+          </td>
+          <td>
+            {{statusStr(order.status)}}
+          </td>
+          <!-- 4..6 -->
+          <td>
+            {{order.date_accepted}}
+          </td>
+          <td>
+            {{order.date_return}}
+          </td>
+          <td>
+            <span *ngIf="order.overdue_sum > 0; else overdueZero">{{order.overdue_sum}}<b>₽</b></span>
+            <ng-template #overdueZero>-</ng-template>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
