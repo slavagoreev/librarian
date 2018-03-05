@@ -68,3 +68,34 @@ class CopyDetail(APIView):
         result['data'] = serializer.data
 
         return Response(result, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def delete(request, copy_id):
+        """
+        Delete Copy bi ID
+        :param request:
+        :param copy_id:
+        :return: HTTP_200_OK and JSON-Copy: if deleted
+                 HTTP_404_NOT_FOUND: no copes or document DoesNotExist
+        """
+
+        result = {'status': '', 'data': {}}
+
+        try:
+            document = Document.objects.get(document_id=copy_id)
+            copies = Copy.objects.filter(document=document).filter(status=0)
+            if not copies:
+                raise FileNotFoundError
+
+            copy = copies.first()
+            copy.delete()
+
+        except Document.DoesNotExist:
+            result['status'] = misc.HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+        except FileNotFoundError:
+            result['status'] = misc.HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        result['status'] = misc.HTTP_200_OK
+        return Response(result, status=status.HTTP_200_OK)
