@@ -160,13 +160,12 @@ export class HttpService extends Http {
     }
 
     if (options.headers == null) {
-      const user = localStorage.getItem('user') != "undefined" ? JSON.parse(localStorage.getItem('user')) : null;
-      const token = localStorage.getItem("token");
-      options.headers = new Headers({
-        'Content-Type': 'application/json',
-        'Bearer': "JWT " + token
-      });
+      options.headers = new Headers();
     }
+    const user = localStorage.getItem('user') != "undefined" ? JSON.parse(localStorage.getItem('user')) : null;
+    const token = localStorage.getItem("token");
+    options.headers.set('Content-Type', 'application/json');
+    options.headers.set('Bearer', "JWT " + token);
     return options;
   }
 

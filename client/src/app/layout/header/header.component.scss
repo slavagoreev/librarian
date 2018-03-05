@@ -255,16 +255,22 @@ input[type="search"] { /* reset normalize */
 }
 
 .morphsearch-content {
-  color: #333;
+  color: #bbb;
   margin-top: 4.5em;
   width: 100%;
   height: 0;
   overflow: hidden;
   padding: 0 10.5%;
-  background: #f1f1f1;
+  font-size: 18pt;
+  // background: #f1f1f1;
   position: absolute;
   pointer-events: none;
   opacity: 0;
+
+  .morphsearch-content-element:hover {
+    color: #9a9a9a;
+  }
+
 }
 
 .navbar.open .morphsearch .morphsearch-content {

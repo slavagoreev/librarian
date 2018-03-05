@@ -9,6 +9,9 @@
       <button class="morphsearch-submit" type="submit">Search</button>
     </form>
     <div class="morphsearch-content">
+      <div *ngFor="let document of (documents$ | async)">
+        <div class="morphsearch-content-element">{{document.title}}</div>
+      </div>
     </div>
     <span class="morphsearch-close" (click)="setSearchState(false)"></span>
   </div>
