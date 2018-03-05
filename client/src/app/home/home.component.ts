@@ -10,6 +10,7 @@ import { HttpService } from '../core/services/http.service';
 import { LoaderComponent } from '../shared/components/loader/loader.component';
 import { Subject } from 'rxjs/Subject';
 import { getUserRole } from '../auth/reducers/selectors';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private store: Store<AppState>,
     private actions: DocumentActions,
     private http: HttpService,
+    private router: Router,
     private documentService: DocumentService
   ) {
     this.store.dispatch(this.actions.getAllDocuments());
@@ -46,6 +48,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.documentService.getBestsellers().subscribe(res => {
       this.bestsellers$ = res;
     });
+  }
+  selectDocument(document_id: number){
+    console.log (document_id);
+    this.store.dispatch(this.actions.getDocumentDetail(document_id));
+    this.router.navigate(['/documents/', document_id.toString()])
   }
   ngOnDestroy() {
   }

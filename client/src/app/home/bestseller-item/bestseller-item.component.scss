@@ -1,9 +1,10 @@
 @import "../../../sass/variables";
 .bestseller {
-  width: 450px;
   float: left;
   border: none;
-  padding: 20px 0px 50px;
+  overflow: hidden;
+  height: 310px;
+  padding: 20px 0 0;
   font-size: 14px;
   -webkit-transition: .5s all;
   transition: .5s all;
@@ -70,18 +71,16 @@
 }
 
 
-@media only screen and (max-width: 758px) {
-  /* For mobile phones: */
-  [class*="document"] {
-    width: 88%;
-    [class*="document-thumb"] {
-      height: 100vw;
-      width: 100%;
-      margin-bottom: 25px;
-      [class*="document-thumb-image"] {
-        max-height: 758px;
-        width: auto;
-      }
-    }
+@media only screen and (min-width: 800px) {
+  .bestseller {
+    width: 450px !important;
+  }
+}
+@media only screen and (max-width: 500px) {
+  .bestseller {
+    max-width: 240px;
+  }
+  .document-MetaInfo {
+    display: none;
   }
 }
