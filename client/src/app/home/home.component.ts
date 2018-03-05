@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { DocumentActions } from '../document/reducers/document.actions';
@@ -18,7 +18,7 @@ import { getUserRole } from '../auth/reducers/selectors';
   encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements OnInit, OnDestroy {
-
+  innerWidth: number;
   documents$: Observable<Document[]>;
   loading$: Subject<{loading: boolean, error: any}>;
   // bestsellers$: Observable<Document[]>;
@@ -36,8 +36,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.documents$ = this.store.select(getDocuments)
       .map(res => { res.map(doc => doc as Document); return res});
     this.loading$ = this.http.loading;
+    this.innerWidth = window.innerWidth;
   }
-
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
+  }
   ngOnInit() {
     this.documentService.getBestsellers().subscribe(res => {
       this.bestsellers$ = res;

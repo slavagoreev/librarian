@@ -149,21 +149,6 @@ export class HttpService extends Http {
   }
 
 
-  patch(url: string, options?: RequestOptionsArgs): Observable<any> {
-    this.requestInterceptor();
-    return super.patch(this.getFullUrl(url), this.requestOptions(options))
-      .catch(this.onCatch.bind(this))
-      .do((res: Response) => {
-        this.onSubscribeSuccess(res);
-      }, (error: any) => {
-        this.onSubscribeError(error);
-      })
-      .finally(() => {
-        this.onFinally();
-      });
-  }
-
-
   /**
    * Request options.
    * @param options
