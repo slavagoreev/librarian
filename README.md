@@ -20,22 +20,27 @@ First of all, you should download and unpack repository from here: https://githu
 4. You need to be sure about where is your .sock of MySQL.
 
 ### Migrations
-Let`s make begining preparation for Data Base (make migrations)
-1. Go to ```project_path/librarian-master/server```
+Let's make begining preparation for Data Base (make migrations)
+1. Go to ```librarian/server/```
 2. Open console here and type:
       ```
       python manage.py makemigrations lmsinno
       python manage.py migrate
       ```
-      
+3. Now we need to go to to ```../librarian/client/```, and do following in console:
+      ```
+      npm install -g @angular/cli
+      npm install
+      ```
+
 ### Admin
-Let`s create local super user
+Let's create local super user
 1. Go to ```project_path/librarian-master/server```
 2. Open console here and type:
       ```
       python manage.py createsuperuser
       ```
- 3. After that you should input username, email and password
+3. After that you should input username, email and password
       
 ### Running
 Finally, let`s run our server on local machine:
@@ -73,13 +78,12 @@ To check orders and their statuses you may log in by librarian first, then type:
 ```python
 import requests as rq
 
-admin = "JWT " + rq.post("http://trainno.ru:41000/api/users/login/", data={"username": "librarian", "password": "librarian"}).json()['token']
-student = "JWT " + rq.post("http://trainno.ru:41000/api/users/login/", data={"username": "john.doe", "password": "FXM-HC3-JKc-WXa"}).json()['token']
-faculty = "JWT " + rq.post("http://trainno.ru:41000/api/users/login/", data={"username": "joseph.brown", "password": "joseph.brown"}).json()['token']
+admin = "JWT " + rq.post("https://trainno.ru/api/users/login/", data={"username": "librarian", "password": "librarian"}).json()['token']
+student = "JWT " + rq.post("https://trainno.ru/api/users/login/", data={"username": "john.doe", "password": "FXM-HC3-JKc-WXa"}).json()['token']
+faculty = "JWT " + rq.post("https://trainno.ru/api/users/login/", data={"username": "joseph.brown", "password": "joseph.brown"}).json()['token']
       
-request = rq.get("http://trainno.ru:41000/api/documents/", headers={"BEARER": admin}).json()
+request = rq.get("https://trainno.ru/api/documents/", headers={"BEARER": admin}).json()
 data = request['data']
 status = request['status']
 print(data, status)
 ```
-      

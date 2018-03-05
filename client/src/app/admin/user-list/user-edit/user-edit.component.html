@@ -19,7 +19,7 @@
             <td>
               <input type="email" class="form-control"
                      id="email" formControlName="email"
-                     value="{{user.email}}"
+                     value="{{user.email}}" #editEmail
                      placeholder="Email"
                      [ngClass]="{
                             'is-invalid' : userEditInfoForm.get('email').errors && userEditInfoForm.get('email').dirty
@@ -34,7 +34,7 @@
             <td>
               <input type="text" class="form-control"
                      id="username" formControlName="username"
-                     value="{{user.username}}"
+                     value="{{user.username}}" #editUsername
                      placeholder="Username"
                      [ngClass]="{
                           'is-invalid' : userEditInfoForm.get('username').errors && userEditInfoForm.get('username').dirty
@@ -48,13 +48,13 @@
             <td class="bold">Role</td>
             <td>
               <select class="form-control"
-                     id="role" formControlName="role"
+                     id="role" formControlName="role" #editRole
                      [ngClass]="{
                           'is-invalid' : userEditInfoForm.get('username').errors && userEditInfoForm.get('username').dirty
                        }">
                 <option value="0" [selected]="user.role === 0">Patron</option>
                 <option value="1" [selected]="user.role === 1">Faculty</option>
-                <option value="2" [selected]="user.role === 2">Patron</option>
+                <option value="2" [selected]="user.role === 2">Librarian</option>
               </select>
               <div class="invalid-feedback">
                 {{userEditInfoForm.get('username')?.errors?.msg || 'Enter valid username!'}}
@@ -75,7 +75,7 @@
               <input type="text" class="form-control"
                      id="phone" formControlName="phone"
                      placeholder="Phone number"
-                     value="{{user.phone}}"
+                     value="{{user.phone}}" #editPhone
                      [ngClass]="{
                           'is-invalid' : userEditInfoForm.get('phone').errors && userEditInfoForm.get('phone').dirty
                        }">
@@ -89,7 +89,7 @@
             <td>
               <input type="address" class="form-control"
                      id="address" formControlName="address"
-                     value="{{user.address}}"
+                     value="{{user.address}}" #editAddress
                      placeholder="Address"
                      [ngClass]="{
                             'is-invalid' : userEditInfoForm.get('address').errors && userEditInfoForm.get('address').dirty
@@ -105,7 +105,7 @@
               <input type="text" class="form-control"
                      id="firstName" formControlName="first_name"
                      placeholder="First name"
-                     value="{{user.first_name}}"
+                     value="{{user.first_name}}" #editFirstName
                      [ngClass]="{
                           'is-invalid' : userEditInfoForm.get('first_name').errors && userEditInfoForm.get('first_name').dirty
                        }">
@@ -120,7 +120,7 @@
               <input type="text" class="form-control"
                      id="lastName" formControlName="last_name"
                      placeholder="Last name"
-                     value="{{user.last_name}}"
+                     value="{{user.last_name}}" #editLastName
                      [ngClass]="{
                           'is-invalid' : userEditInfoForm.get('last_name').errors && userEditInfoForm.get('last_name').dirty
                        }">
@@ -131,7 +131,7 @@
           </tr>
           </tbody>
         </table>
-        <button class="btn btn-primary" type="submit">Submit changes</button>
+        <button class="btn btn-primary" type="submit" (click)="submitForm()">Submit changes</button>
       </form>
       <form class="user-change-password-form" novalidate="" [formGroup]="userChangePasswordForm" (ngSubmit)="onPasswordChange()">
         <p class="text-muted italic">Change password</p>

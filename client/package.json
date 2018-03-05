@@ -36,6 +36,7 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.5",
     "moment": "^2.20.1",
+    "ng2-carouselamos": "^3.2.0",
     "ngrx-store-freeze": "^0.2.1",
     "ngx-flickity": "0.0.9",
     "ngx-text-overflow-clamp": "0.0.1",

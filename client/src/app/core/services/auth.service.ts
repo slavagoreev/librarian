@@ -83,7 +83,7 @@ export class AuthService {
       const _data = res.json();
       if (_data.token) {
         // Setting token after login
-        console.log (res);
+        // console.log (res);
         this.setLocalData(res.json());
         this.store.dispatch(this.actions.loginSuccess(_data));
         this.notifications.sendMessage('Registration', 'success', 'Signed up successfully', 5000)
@@ -109,7 +109,7 @@ export class AuthService {
    */
 
   logout() {
-    return this.http.post('users/logout', {})
+    return this.http.post('users/logout/', {})
       .map((res: Response) => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");

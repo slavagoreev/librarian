@@ -61,6 +61,27 @@ export class HttpService extends Http {
       });
   }
 
+  /**
+   * Performs a request with `get` http method.
+   * @param url
+   * @param options
+   * @returns {Observable<>}
+   */
+  patch(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
+    this.requestInterceptor();
+    return super.patch(this.getFullUrl(url), body, this.requestOptions(options))
+    //.delay(1000)
+      .catch(this.onCatch.bind(this))
+      .do((res: Response) => {
+        this.onSubscribeSuccess(res);
+      }, (error: any) => {
+        this.onSubscribeError(error);
+      })
+      .finally(() => {
+        this.onFinally();
+      });
+  }
+
   getLocal(url: string, options?: RequestOptionsArgs): Observable<any> {
     return super.get(url, options);
   }

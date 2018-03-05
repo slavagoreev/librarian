@@ -40,6 +40,7 @@ export class DocumentListComponent implements OnInit {
   search() {
     const options = { size: 30 },
           value = this.input.nativeElement.value;
+    console.error(this.input.nativeElement.value);
     options[this.type] = value;
     this.documents$ = this.documentService.searchDocuments(options);
   }
@@ -51,6 +52,6 @@ export class DocumentListComponent implements OnInit {
     const innerHTML = results.innerHTML;
     results.innerHTML = innerHTML.replace(text, `<span class="highlight">${text}</span>`);
 
-}
+  }
 
 }

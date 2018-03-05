@@ -1,5 +1,6 @@
 @import "../../../sass/variables";
 nav {
+  //-webkit-user-select: none;
   height: 70px;
   width: 100%;
   position: inherit;
@@ -305,5 +306,12 @@ input[type="search"] { /* reset normalize */
   .navbar.open .morphsearch .morphsearch-submit {
     -webkit-transform: translate3d(0,-50%,0) scale3d(0.5,0.5,1);
     transform: translate3d(0,-50%,0) scale3d(0.5,0.5,1);
+  }
+}
+
+@media only screen and (max-width: 758px) {
+  /* For mobile phones: */
+  [class*="morphsearch"] {
+    display: none;
   }
 }

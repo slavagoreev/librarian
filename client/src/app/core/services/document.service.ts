@@ -38,6 +38,55 @@ export class DocumentService {
       });
   }
 
+  getBestsellers(): Observable<Document[]> {
+    return this.http.get(`documents/bestsellers/`)
+      .map(res => {
+        const _res = res.json();
+        if (_res.data) {
+          return _res.data;
+        } else {
+          this.http.loading.next({
+            loading: true,
+            error: {
+              title: 'Loading error',
+              message: 'Could not load documents from server',
+              delay: 20000
+            }
+          });
+          return null;
+        }
+      });
+  }
+
+  addCopy(document: Document, hall: number, shelf: string): Observable<any> {
+    return this.http.post(`copies/`,
+      {'document': document.document_id, 'place_hall_number': hall, 'place_shelf_letter': shelf})
+      .map(res => {
+        return res.json().data;
+      });
+  }
+
+  getCopy(id: number): Observable<Document> {
+    return this.http.get(`documents/copy/${id.toString()}`)
+      .map(res => {
+        const _res = res.json();
+        console.log (_res.data)
+        if (!_.isEmpty(_res.data)) {
+          return _res.data as Document;
+        } else {
+          this.http.loading.next({
+            loading: true,
+            error: {
+              title: 'Loading error',
+              message: 'There is no document with this ID',
+              delay: 20000
+            }
+          });
+          return null;
+        }
+      });
+  }
+
   getDocuments(): Observable<Document[]> {
     return this.http.get(`documents/?size=30&year=2018`)
       .map(res => {

@@ -27,6 +27,9 @@
             </div>
           </label>-->
         </div>
+        <div>
+          <button class="btn btn-light" style="left: 30px;" [routerLink]="'/librarian/document-list/add/'">Add book</button>
+        </div>
       </div>
       <p class="text-muted italic">Documents by criteria:</p>
         <table class="table">
@@ -46,16 +49,20 @@
               </div>
             </td>
             <td>
-              <a class="document-link" [routerLink]="'/admin/document/'+document.document_id">
+              <a class="document-link" [routerLink]="'/documents/'+document.document_id">
                 <span class="document-title">{{document.title.substr(0, 50)}}</span>
                 <span class="document-type">{{document.type | documentType}}
                   {{document.authors.length ? 'by ' + document.authors[0].name : ''}}
                 </span>
               </a>
             </td>
-            <td>{{document.publisher}}</td>
+            <td>
+              {{document.publisher}}
+              <span *ngIf="document.is_bestseller" class="badge badge-warning" style="margin-left: 5px;">bestseller</span>
+              <span *ngIf="document.is_reference" class="badge badge-secondary">reference book</span>
+            </td>
             <td class="float-right">
-              <span class="table-link" [routerLink]="'/admin/document/'+document.document_id+'/edit'"><i class="edit"></i> </span>
+              <span class="table-link" [routerLink]="'/documents/'+document.document_id+''"><i class="edit"></i> </span>
               <span class="table-link" (click)="openModal(deleteDocument, document)"><i class="remove"></i></span>
             </td>
           </tr>

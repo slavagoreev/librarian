@@ -1,6 +1,29 @@
 <div class="header-slider">
+  <div ng2-carouselamos
+       class="slides-wrapper"
+       [items]="bestsellers$"
+       [width]="1800"
+       [$prev]="prev"
+       [$next]="next"
+       [$item]="item"
+  >
+  </div>
 
+  <ng-template #prev>
+    <
+  </ng-template>
+  <ng-template #next>
+    >
+  </ng-template>
+  <ng-template #item let-item let-i="index">
+
+    <div class="items">
+      <a href="/documents/{{ item.document_id }}"><img class="document-thumb" src="{{ item.cover }}"></a>
+    </div>
+
+  </ng-template>
 </div>
+
 <main class="body">
   <div class="documents">
     <div class="container-fluid px-lg-1 pr-lg-5">

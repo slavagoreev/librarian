@@ -11,11 +11,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 from os import path
+
 import datetime
 import sys
 
-import datetime
 from django.conf import settings
+
+APPEND_SLASH = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
@@ -29,8 +31,8 @@ SECRET_KEY = '@!s!f%xjyvsd-ym%t#&s0t9!p4x71&dmf=ws7!*7#nej)3eag*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru', 'localhost', 'localhost:4200', 'localhost:8000']
-#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['trainno.ru', 'www.trainno.ru', 'localhost']
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,18 +48,16 @@ INSTALLED_APPS = [
     'rest_auth',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth.registration',
     'corsheaders',
-    
+    'rest_framework_swagger',
     'lmsinno',
 
 ]
 
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(weeks=1)
-}
-
 REST_USE_JWT = True
+
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'lmsinno.jwt.jwt_response_payload_handler',
     'JWT_PAYLOAD_HANDLER': 'lmsinno.jwt.jwt_payload_handler',
@@ -66,12 +66,12 @@ JWT_AUTH = {
 }
 
 REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": 'lmsinno.serializer.UserResponceDataSerializer',
+    "USER_DETAILS_SERIALIZER": 'lmsinno.users.users_serializers.UserResponseDataSerializer',
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": 'lmsinno.serializer.UserSafeSerializer'
+    "REGISTER_SERIALIZER": 'lmsinno.users.users_serializers.UserSafeSerializer'
 }
 
 SITE_ID = 1
@@ -88,9 +88,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 CORS_ORIGIN_WHITELIST = (
-    'localhost',
-    '127.0.0.1',
-    'trainno.ru'
+    'localhost:4200',
+    'localhost:8000',
+    '127.0.0.1:4200',
+    'trainno.ru',
+    'www.trainno.ru'
 )
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -112,6 +114,7 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
     'bearer',
+    'status',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -142,7 +145,7 @@ DATABASES = {
         'NAME': 'librarian',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '/Applications/MAMP/tmp/mysql/mysql.sock'
+        'HOST': '/tmp/mysql.sock'
     }
 }
 
@@ -153,7 +156,7 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-    #'EXCEPTION_HANDLER': 'lmsinno.permissions.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'lmsinno.permissions.custom_exception_handler'
 }
 
 AUTHENTICATION_BACKENDS = (
