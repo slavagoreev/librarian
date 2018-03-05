@@ -18,15 +18,20 @@
   letter-spacing: 0;
   font-weight: 400;
   font-style: normal;
-  border: 0;
-  border-bottom: 1px solid rgba(0,0,0,.15);
+  border-width: 0 0 1px 0 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, .15) !important;
   -webkit-border-radius: 0;
   border-radius: 0;
+  box-shadow: none !important;
 
   &.is-invalid {
     border-color: #dc3545 !important;
   }
+  &:focus {
+    outline: 0;
+  }
 }
+
 textarea.form-control {
   padding: 15px;
   margin: 15px 0 30px;
@@ -80,7 +85,7 @@ textarea.form-control {
 
 @media all and (max-width: 767px) {
   .form-control--jumbo {
-    font-size:34px;
+    font-size: 34px;
     height: 50px
   }
 
@@ -90,7 +95,6 @@ textarea.form-control {
     padding: 0 10px
   }
 }
-
 
 .form-row {
   display: flex;
@@ -152,6 +156,7 @@ textarea.form-control {
     }
   }
 }
+
 @mixin form-validation-state($state, $color) {
   .#{$state}-feedback {
     display: none;
@@ -177,18 +182,20 @@ textarea.form-control {
     border-radius: .2rem;
   }
 }
+
 @include form-validation-state("valid", #28a745);
 @include form-validation-state("invalid", #dc3545);
 
-.form-control.is-invalid~.invalid-feedback {
+.form-control.is-invalid ~ .invalid-feedback {
   display: block;
 }
+
 .input-group-text {
   position: absolute;
 }
 
 .input-group-prepend ~ .form-control {
-  padding-left:  40px;
+  padding-left: 40px;
 }
 
 .input-group-prepend {

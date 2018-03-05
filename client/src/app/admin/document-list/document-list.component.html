@@ -4,7 +4,7 @@
     <div class="table-responsive">
       <div class="form-row">
         <div class="input-group mb-1 document-search col-5">
-          <input type="search" id="documentSearch" (onEnter)="search()"
+          <input type="search" id="documentSearch" (keyup.enter)="search()"
                  class="form-control form-control-lg" #searchInput
                  placeholder="Search documents">
           <div class="input-group-append">
@@ -31,7 +31,7 @@
           <button class="btn btn-light" style="left: 30px;" [routerLink]="'/librarian/document-list/add/'">Add book</button>
         </div>
       </div>
-      <p class="text-muted italic">Documents by criteria:</p>
+      <p class="text-muted italic mt-3">Documents by criteria:</p>
         <table class="table">
           <thead>
           <tr>

@@ -6,7 +6,6 @@ import { StoreModule } from '@ngrx/store';
 import { RouterModule, PreloadAllModules } from '@angular/router';
 import { AppComponent } from './app.component';
 import { EffectsModule } from '@ngrx/effects';
-
 import { routes } from './app.routes';
 import { environment } from './../environments/environment.prod';
 

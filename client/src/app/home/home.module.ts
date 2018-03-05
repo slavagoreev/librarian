@@ -17,6 +17,7 @@ import { DocumentDetailsComponent } from './document-details/document-details.co
 import { DocumentInfoComponent } from './document-details/document-info/document-info.component';
 import { DocumentModule } from '../document/document.module';
 import { Ng2CarouselamosModule } from 'ng2-carouselamos';
+import { BestsellerItemComponent } from './bestseller-item/bestseller-item.component';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { Ng2CarouselamosModule } from 'ng2-carouselamos';
     DocumentItemComponent,
     GenreNavComponent,
     DocumentDetailsComponent,
-    DocumentInfoComponent
+    DocumentInfoComponent,
+    BestsellerItemComponent
   ]
 })
 export class HomeModule { }

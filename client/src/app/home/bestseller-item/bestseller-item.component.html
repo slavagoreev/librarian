@@ -1,0 +1,27 @@
+<li class="bestseller card" id="{{document.document_id}}" itemscope [style.width.px]="width - 40"
+    (click)="selectDocument(document.document_id)" (onTap)="selectDocument(document.document_id)"
+    itemtype="https://schema.org/CreativeWork">
+  <div class="card-body">
+    <a class="document-thumb image-shadow">
+      <img itemprop="image"
+           class="document-thumb-image"
+           alt="{{document.title}}"
+           [src]="document.cover.substr(0, document.cover.length - 1) + '2'">
+    </a>
+    <div class="document-MetaInfo">
+      <div itemprop="headline" class="document-title card-title">
+        <a>
+          {{ document.title }}
+        </a>
+      </div>
+      <ul class="document-authors">
+        <li *ngFor="let author of document.authors"
+            itemprop="author" class="document-author">{{ author.name }}</li>
+      </ul>
+      <div *ngIf="document.description.length > 0" itemprop="description"
+           class="document-description card-text">
+        {{ document.description }}
+      </div>
+    </div>
+  </div>
+</li>
