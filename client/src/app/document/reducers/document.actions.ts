@@ -9,6 +9,7 @@ export class DocumentActions {
   static CLEAR_SELECTED_DOCUMENT = 'CLEAR_SELECTED_DOCUMENT';
   static REMOVE_DOCUMENT = 'REMOVE_DOCUMENT';
   static REMOVE_DOCUMENT_SUCCESS = 'REMOVE_DOCUMENT_SUCCESS';
+  static CLEAR_DOCUMENTS = 'CLEAR_DOCUMENTS';
 
 
   getDocumentDetail(id: number) {
@@ -24,11 +25,14 @@ export class DocumentActions {
     };
   }
 
-  getAllDocuments() {
-    return { type: DocumentActions.GET_ALL_DOCUMENTS };
+  getDocumentsWithOffset(query: { offset: number }) {
+    return {
+      type: DocumentActions.GET_ALL_DOCUMENTS,
+      payload: query
+    };
   }
 
-  getAllDocumentsSuccess(documents: Document[]) {
+  getDocumentsWithOffsetSuccess(documents: Document[]) {
     return {
       type: DocumentActions.GET_ALL_DOCUMENTS_SUCCESS,
       payload: documents
@@ -38,6 +42,9 @@ export class DocumentActions {
 
   clearSelectedDocument() {
     return { type: DocumentActions.CLEAR_SELECTED_DOCUMENT };
+  }
+  clearDocuments() {
+    return { type: DocumentActions.CLEAR_DOCUMENTS };
   }
 
   removeDocument(documentId: number) {

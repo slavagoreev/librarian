@@ -42,7 +42,8 @@
           </tr>
           </thead>
           <tbody id="searchResults">
-          <tr *ngFor="let document of (documents$ | async)">
+          <tr
+              *ngFor="let document of documents">
             <td class="pr-0">
               <div class="thumb-wrap">
                 <img src="{{document.cover.substr(0, document.cover.length-1)}}1" alt="{{document.title}}">

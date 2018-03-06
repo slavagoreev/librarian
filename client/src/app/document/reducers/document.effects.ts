@@ -17,8 +17,8 @@ export class DocumentEffects {
   @Effect()
   GetAllDocuments$: Observable<Action> = this.actions$
     .ofType(DocumentActions.GET_ALL_DOCUMENTS)
-    .switchMap((action: any) => this.documentService.getDocuments())
-    .map((data: Document[]) => this.documentActions.getAllDocumentsSuccess(data));
+    .switchMap((action: any) => this.documentService.searchDocuments(action.payload))
+    .map((data: Document[]) => this.documentActions.getDocumentsWithOffsetSuccess(data));
 
   @Effect()
   GetDocumentDetail$: Observable<Action> = this.actions$

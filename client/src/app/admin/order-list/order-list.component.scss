@@ -159,4 +159,16 @@
       float: right;
     }
   }
+  td {
+    vertical-align: middle;
+  }
+  .dropdown-toggle {
+    margin-top: 0 !important;
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+  overflow: inherit;
+  min-width: 830px;
 }

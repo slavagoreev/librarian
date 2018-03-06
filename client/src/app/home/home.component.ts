@@ -24,7 +24,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   loading$: Subject<{loading: boolean, error: any}>;
   // bestsellers$: Observable<Document[]>;
   bestsellers$: Document[];
+  currentPage: number = 0;
+  scrollCallback: any;
   permission: boolean;
+  allowToLoadCallback;
 
   constructor(
     private store: Store<AppState>,
@@ -33,13 +36,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private documentService: DocumentService
   ) {
-    this.store.dispatch(this.actions.getAllDocuments());
     this.store.select(getUserRole).subscribe(res => this.permission = res == 2);
-    this.documents$ = this.store.select(getDocuments)
-      .map(res => { res.map(doc => doc as Document); return res});
     this.loading$ = this.http.loading;
     this.innerWidth = window.innerWidth;
+    this.scrollCallback = this.getDocuments.bind(this);
+    this.documents$ = this.store.select(getDocuments)
+      .map(res => { res.map(doc => doc as Document); return res})
+      .do(this.processData);
+    this.getDocuments(() => {});
   }
+  getDocuments(cb) {
+    // console.error ('should load')
+    this.store.dispatch(this.actions.getDocumentsWithOffset({ offset: this.currentPage * 30}));
+    this.allowToLoadCallback = cb;
+  }
+  private processData = (data) => {
+    // onsole.error ("proceed", data);
+    this.currentPage++;
+    this.allowToLoadCallback();
+  };
+
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = window.innerWidth;
@@ -50,10 +66,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
   selectDocument(document_id: number){
-    console.log (document_id);
     this.store.dispatch(this.actions.getDocumentDetail(document_id));
     this.router.navigate(['/documents/', document_id.toString()])
   }
   ngOnDestroy() {
+    this.store.dispatch(this.actions.clearDocuments());
   }
 }
