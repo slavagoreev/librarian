@@ -106,6 +106,23 @@ export class DocumentService {
         }
       });
   }
+
+  addDocument(d: Document): Observable<any> {
+    return this.http.post('documents/', {
+      'title': d.title,
+      'publisher': d.publisher,
+      'authors': d.authors,
+      'year': Number(d.year),
+      'description': d.description,
+      'cover': d.cover,
+      'type': Number(d.document_type),
+      'price': Number(d.price),
+      'is_reference': d.is_reference,
+      'is_bestseller': d.is_bestseller,
+      'tags': d.tags
+    });
+  }
+
   searchDocuments(
     options: {
       title?: string,

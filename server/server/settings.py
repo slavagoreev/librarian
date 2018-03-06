@@ -145,7 +145,7 @@ DATABASES = {
         'NAME': 'librarian',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '/Applications/MAMP/tmp/mysql/mysql.sock'
+        'HOST': '/tmp/mysql.sock'
     }
 }
 
