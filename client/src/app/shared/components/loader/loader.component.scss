@@ -1,17 +1,10 @@
 @import "../../../../sass/variables";
-.loader-overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background: rgba(255, 255, 255, 0.3);
-}
+
 .image-loader{
+  float: left;
+  width: 100%;
+  height: 200px;
   padding: 12.5px 0;
-  position: absolute;
-  top: 46.5%;
-  left: 46.5%;
   -webkit-filter: url("#goo");
   filter: url("#goo");
 }

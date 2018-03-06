@@ -5,6 +5,7 @@ import { DocumentEffects } from './reducers/document.effects';
 import { DocumentActions } from './reducers/document.actions';
 import { DocumentTypePipe } from './document.pipe';
 import { DocumentTypeClassPipe } from './document.pipe';
+import { InfiniteScrollerDirective } from "./directives/infinite-scroller.directive";
 
 @NgModule({
   imports: [
@@ -13,14 +14,16 @@ import { DocumentTypeClassPipe } from './document.pipe';
   ],
   exports: [
     DocumentTypePipe,
-    DocumentTypeClassPipe
+    DocumentTypeClassPipe,
+    InfiniteScrollerDirective
   ],
   declarations: [
     DocumentTypePipe,
-    DocumentTypeClassPipe
+    DocumentTypeClassPipe,
+    InfiniteScrollerDirective
   ],
   providers: [
-    DocumentActions,
+    DocumentActions
   ]
 })
 export class DocumentModule { }
