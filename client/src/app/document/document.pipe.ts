@@ -10,3 +10,14 @@ export class DocumentTypePipe implements PipeTransform {
     }
   }
 }
+
+@Pipe({name: 'documentTypeClass'})
+export class DocumentTypeClassPipe implements PipeTransform {
+  transform(value: number): string {
+    switch (value) {
+      case 0: return "book";
+      case 1: return "journal";
+      case 2: return "av";
+    }
+  }
+}

@@ -1,4 +1,6 @@
 @import "../../../../sass/variables";
+@import "../../../../sass/icons";
+@import "../../../../sass/mixins";
 .document {
   width: calc(50% - 40px);
   float: left;
@@ -105,6 +107,39 @@
   }
   .dropdown-menu-right {
     margin-left: -148px;
+  }
+  .document-type-icon {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: -moz-linear-gradient(45deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 51%, rgba(0,0,0,0) 100%);
+    background: -webkit-linear-gradient(45deg, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 51%,rgba(0,0,0,0) 100%);
+    background: linear-gradient(45deg, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 51%,rgba(0,0,0,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
+
+    i {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 50px;
+      margin-left: 10px;
+    }
+    .book {
+      background: url('/assets/icons/book-white.svg') no-repeat center;
+    }
+    .journal {
+      background: url('/assets/icons/article.svg') no-repeat center;
+    }
+    .av {
+      background: url('/assets/icons/disk.svg') no-repeat center;
+      opacity: 0.8;
+    }
+    .av, .journal {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+    }
   }
 
 }

@@ -7,6 +7,10 @@
            class="document-thumb-image"
            alt="{{document.title}}"
            [src]="document.cover">
+      <span class="document-type-icon">
+        <i placement="right" ngbTooltip="{{document.type | documentType}}"
+           class="{{document.type | documentTypeClass}}" ></i>
+      </span>
     </a>
     <div class="document-MetaInfo">
       <div itemprop="headline" class="document-title card-title">

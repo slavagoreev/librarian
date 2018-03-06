@@ -4,6 +4,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { DocumentEffects } from './reducers/document.effects';
 import { DocumentActions } from './reducers/document.actions';
 import { DocumentTypePipe } from './document.pipe';
+import { DocumentTypeClassPipe } from './document.pipe';
 
 @NgModule({
   imports: [
@@ -11,9 +12,13 @@ import { DocumentTypePipe } from './document.pipe';
     EffectsModule.forFeature([DocumentEffects])
   ],
   exports: [
-    DocumentTypePipe
+    DocumentTypePipe,
+    DocumentTypeClassPipe
   ],
-  declarations: [DocumentTypePipe],
+  declarations: [
+    DocumentTypePipe,
+    DocumentTypeClassPipe
+  ],
   providers: [
     DocumentActions,
   ]

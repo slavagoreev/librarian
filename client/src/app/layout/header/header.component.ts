@@ -10,7 +10,7 @@ import { AuthActions } from "../../auth/actions/auth.actions";
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../shared/models/users.model';
 import {DocumentService} from '../../core/services/document.service';
-import {Document} from '../../shared/models/documents.model';
+import {Document as Doc} from '../../shared/models/documents.model';
 //import { Http } from '@angular/http';
 
 @Component({
@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
   searchOpen: boolean = false;
   isAuthenticated: boolean;
   user$: User;
-  documents$: Observable<Document[]>;
+  documents$: Observable<Doc[]>;
   isAdmin: boolean;
 
   constructor(
