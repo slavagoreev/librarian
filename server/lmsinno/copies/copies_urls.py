@@ -1,8 +1,8 @@
 from django.conf.urls import url
 
-from .copies_views import CopyDetail
+from . import copies_views
 
 urlpatterns = [
-    url(r'^$', CopyDetail.as_view()),
-    url(r'^(?P<copy_id>[0-9]+)[/]?$', CopyDetail.as_view()),
+    url(r'^$', copies_views.CopyDetail.as_view()),
+    url(r'^(?P<copy_id>[0-9]+)[/]?$', copies_views.CopyDetail.as_view()),
 ]
