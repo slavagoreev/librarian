@@ -15,6 +15,7 @@
         <div ngbDropdownToggle class="document-options"></div>
         <div ngbDropdownMenu class="dropdown-menu-right">
           <button class="dropdown-item" (click)="addCopy(document)">Add copy</button>
+          <button class="dropdown-item" (click)="deleteCopy(document.document_id)">Remove copy</button>
           <button class="dropdown-item" [routerLink]="['../../admin', 'documents', document.document_id, 'edit']">Edit document</button>
           <button class="dropdown-item" (click)="deleteDocument(document.document_id)">Delete document</button>
         </div>

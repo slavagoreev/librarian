@@ -1,6 +1,10 @@
 .document-list {
   margin: 50px 0;
 
+  a.user {
+    font-size: 15px;
+    color: #777;
+  }
   .table thead th {
     border-top: 0;
   }

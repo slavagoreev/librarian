@@ -87,6 +87,13 @@ export class DocumentService {
       });
   }
 
+  removeCopy(id: number) {
+    return this.http.delete(`copies/${id.toString()}`)
+      .map((res) => {
+        return null;
+      });
+  }
+
   getDocuments(): Observable<Document[]> {
     return this.http.get(`documents/?size=30&year=2018`)
       .map(res => {

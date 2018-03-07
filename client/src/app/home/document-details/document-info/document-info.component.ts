@@ -48,6 +48,14 @@ export class DocumentInfoComponent implements OnInit {
     });
   }
 
+  deleteCopy(id: number) {
+    this.documentService.removeCopy(id).subscribe(res => {
+      this.documentService.getDocument(this.document.document_id).subscribe(data => {
+        this.document = data;
+      });
+    });
+  }
+
   /*@HostListener("window:scroll", [])
   onWindowScroll() {
     let number = this.window.pageYOffset || this.documentEl.documentElement.scrollTop || this.documentEl.body.scrollTop || 0;

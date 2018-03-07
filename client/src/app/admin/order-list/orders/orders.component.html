@@ -23,10 +23,12 @@
             </div>
           </td>
           <td>
+            <a href="/documents/{{order.document.document_id}}">
             <span class="document-title">{{order.document.title}}</span>
             <span class="document-type">{{order.document.type | documentType}}
                   {{order.document.authors.length ? 'by ' + order.document.authors[0].name : ''}}
             </span>
+            </a>
           </td>
           <td>
             <div *ngIf="order.status == 1 && !order.document.is_bestseller">

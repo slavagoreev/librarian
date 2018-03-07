@@ -22,8 +22,10 @@
             </div>
           </td>
           <td>
-            <span class="document-title">{{order.document.title}}</span>
-            <span class="document-type">Booked by {{order.user.first_name}} {{order.user.last_name}}</span>
+            <a href="/documents/{{order.document.document_id}}">
+              <span class="document-title">{{order.document.title}}</span>
+            </a>
+            <span class="document-type">Booked by <a class="user" href="/librarian/user/{{order.user.id}}">{{order.user.first_name}} {{order.user.last_name}}</a></span>
           </td>
           <td>
             <div ngbDropdown>

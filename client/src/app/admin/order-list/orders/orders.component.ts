@@ -39,8 +39,10 @@ export class OrdersComponent implements OnInit {
 
   extendOrder(id: number) {
     this.userService.setStatusForMyOrder(id, 4).subscribe(res => {
-      this.reloadState()
+      this.userService.getOrders().subscribe(data => {
+        this.orders$ = Observable.of(data);
+        this.reloadState();
+      });
     });
-    this.reloadState();
   }
 }
