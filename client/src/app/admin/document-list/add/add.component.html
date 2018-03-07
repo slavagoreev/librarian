@@ -1,12 +1,11 @@
 <main class="body">
   <div class="user-edit-page col-lg-10 col-12 px-0 row mx-auto">
     <app-navbar></app-navbar>
-    <div *ngIf="user != null; else userNotFound" class="user">
+    <div class="document">
       <div class="user-username">
-        <h2>{{ user.first_name ? user.first_name + " " + user.last_name : user.username }}</h2>
       </div>
       <p class="text-muted italic" [routerLink]="['../']">
-        <i class="left-chevron"></i> Go back to profile
+        <i class="left-chevron"></i> Go back to documents
       </p>
       <form class="user-edit-form" novalidate="" [formGroup]="userEditInfoForm" (ngSubmit)="onSubmit()">
         <table class="user-data col-lg-8">
@@ -15,49 +14,94 @@
           </thead>
           <tbody>
           <tr>
-            <td class="bold">Email</td>
-            <td>
-              <input type="email" class="form-control"
-                     id="email" formControlName="email"
-                     value="{{user.email}}" #editEmail
-                     placeholder="Email"
-                     [ngClass]="{
-                            'is-invalid' : userEditInfoForm.get('email').errors && userEditInfoForm.get('email').dirty
-                         }">
-              <div class="invalid-feedback">
-                {{userEditInfoForm.get('email')?.errors?.msg || 'Enter valid email address!'}}
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="bold">Username</td>
+            <td class="bold">Title</td>
             <td>
               <input type="text" class="form-control"
-                     id="username" formControlName="username"
-                     value="{{user.username}}" #editUsername
-                     placeholder="Username"
+                     id="title" formControlName="title"
+                     value="" #addTitle
+                     placeholder="Java The Programming Language"
                      [ngClass]="{
-                          'is-invalid' : userEditInfoForm.get('username').errors && userEditInfoForm.get('username').dirty
-                       }">
+                            'is-invalid' : userEditInfoForm.get('title').errors && userEditInfoForm.get('title').dirty
+                         }">
               <div class="invalid-feedback">
-                {{userEditInfoForm.get('username')?.errors?.msg || 'Enter valid username!'}}
+                {{userEditInfoForm.get('title')?.errors?.msg || 'This field is necessary'}}
               </div>
             </td>
           </tr>
           <tr>
-            <td class="bold">Role</td>
+            <td class="bold">Authors</td>
+            <td>
+              <input type="text" class="form-control"
+                     id="authors" formControlName="authors"
+                     value="" #addAuthors
+                     placeholder="e.g John Doe"
+                     [ngClass]="{
+                          'is-invalid' : userEditInfoForm.get('authors').errors && userEditInfoForm.get('authors').dirty
+                       }">
+              <div class="invalid-feedback">
+                {{userEditInfoForm.get('authors')?.errors?.msg || 'This field is necessary'}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="bold">Publisher</td>
+            <td>
+              <input type="text" class="form-control"
+                     id="publisher" formControlName="publisher"
+                     value="" #addPublisher
+                     placeholder="MIT Press"
+                     [ngClass]="{
+                            'is-invalid' : userEditInfoForm.get('publisher').errors && userEditInfoForm.get('publisher').dirty
+                         }">
+              <div class="invalid-feedback">
+                {{userEditInfoForm.get('publisher')?.errors?.msg || 'This field is necessary'}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="bold">Document Type</td>
             <td>
               <select class="form-control"
-                      id="role" formControlName="role" #editRole
+                      id="document_type" formControlName="document_type" #addDocumentType
                       [ngClass]="{
-                          'is-invalid' : userEditInfoForm.get('username').errors && userEditInfoForm.get('username').dirty
+                          'is-invalid' : userEditInfoForm.get('document_type').errors && userEditInfoForm.get('document_type').dirty
                        }">
-                <option value="0" [selected]="user.role === 0">Patron</option>
-                <option value="1" [selected]="user.role === 1">Faculty</option>
-                <option value="2" [selected]="user.role === 2">Librarian</option>
+                <option value=0 [selected]="document.document_type === 0">Book</option>
+                <option value=1 [selected]="document.document_type === 1">AV Material</option>
+                <option value=2 [selected]="document.document_type === 2">Journal</option>
               </select>
               <div class="invalid-feedback">
-                {{userEditInfoForm.get('username')?.errors?.msg || 'Enter valid username!'}}
+                {{userEditInfoForm.get('document_type')?.errors?.msg || 'This field is necessary'}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="bold">Price</td>
+            <td>
+              <input type="text" class="form-control"
+                     id="price" formControlName="price"
+                     value="" #addPrice
+                     placeholder="1800"
+                     [ngClass]="{
+                            'is-invalid' : userEditInfoForm.get('price').errors && userEditInfoForm.get('price').dirty
+                         }">
+              <div class="invalid-feedback">
+                {{userEditInfoForm.get('price')?.errors?.msg || 'This field is necessary'}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="bold">Year</td>
+            <td>
+              <input type="text" class="form-control"
+                     id="year" formControlName="year"
+                     value="" #addYear
+                     placeholder="2018"
+                     [ngClass]="{
+                            'is-invalid' : userEditInfoForm.get('year').errors && userEditInfoForm.get('year').dirty
+                         }">
+              <div class="invalid-feedback">
+                {{userEditInfoForm.get('year')?.errors?.msg || 'This field is necessary'}}
               </div>
             </td>
           </tr>
@@ -70,121 +114,50 @@
           </thead>
           <tbody>
           <tr>
-            <td class="bold">Phone number</td>
+            <td class="bold">Description</td>
             <td>
               <input type="text" class="form-control"
-                     id="phone" formControlName="phone"
+                     id="description" formControlName="description"
                      placeholder="Phone number"
-                     value="{{user.phone}}" #editPhone
+                     value="" #addDescription
                      [ngClass]="{
-                          'is-invalid' : userEditInfoForm.get('phone').errors && userEditInfoForm.get('phone').dirty
+                          'is-invalid' : userEditInfoForm.get('description').errors && userEditInfoForm.get('description').dirty
                        }">
               <div class="invalid-feedback">
-                {{userEditInfoForm.get('phone')?.errors?.msg || 'Enter valid phone number!'}}
+                {{userEditInfoForm.get('description')?.errors?.msg || 'Enter valid phone number!'}}
               </div>
             </td>
           </tr>
           <tr>
-            <td class="bold">Address</td>
+            <td class="bold">Cover</td>
             <td>
-              <input type="address" class="form-control"
-                     id="address" formControlName="address"
-                     value="{{user.address}}" #editAddress
+              <input type="text" class="form-control"
+                     id="cover" formControlName="cover"
+                     value="" #addCover
                      placeholder="Address"
                      [ngClass]="{
-                            'is-invalid' : userEditInfoForm.get('address').errors && userEditInfoForm.get('address').dirty
+                            'is-invalid' : userEditInfoForm.get('cover').errors && userEditInfoForm.get('cover').dirty
                          }">
               <div class="invalid-feedback">
-                {{userEditInfoForm.get('address')?.errors?.msg || 'Enter valid address!'}}
+                {{userEditInfoForm.get('cover')?.errors?.msg || 'Enter valid cover!'}}
               </div>
             </td>
           </tr>
           <tr>
-            <td class="bold">First name</td>
+            <td class="bold">Is Reference</td>
             <td>
-              <input type="text" class="form-control"
-                     id="firstName" formControlName="first_name"
-                     placeholder="First name"
-                     value="{{user.first_name}}" #editFirstName
-                     [ngClass]="{
-                          'is-invalid' : userEditInfoForm.get('first_name').errors && userEditInfoForm.get('first_name').dirty
-                       }">
-              <div class="invalid-feedback">
-                {{userEditInfoForm.get('first_name')?.errors?.msg || 'Enter valid first name!'}}
-              </div>
+              <input class="checkbox" type="checkbox" (change)="onReferenceChange()" #addReference>
             </td>
           </tr>
           <tr>
-            <td class="bold">Last name</td>
+            <td class="bold">Is Bestseller</td>
             <td>
-              <input type="text" class="form-control"
-                     id="lastName" formControlName="last_name"
-                     placeholder="Last name"
-                     value="{{user.last_name}}" #editLastName
-                     [ngClass]="{
-                          'is-invalid' : userEditInfoForm.get('last_name').errors && userEditInfoForm.get('last_name').dirty
-                       }">
-              <div class="invalid-feedback">
-                {{userEditInfoForm.get('last_name')?.errors?.msg || 'Enter valid last name!'}}
-              </div>
+              <input class="checkbox" type="checkbox" (change)="onBestsellerChange()" #addBestseller>
             </td>
           </tr>
           </tbody>
         </table>
-        <button class="btn btn-primary" type="submit" (click)="submitForm()">Submit changes</button>
-      </form>
-      <form class="user-change-password-form" novalidate="" [formGroup]="userChangePasswordForm" (ngSubmit)="onPasswordChange()">
-        <p class="text-muted italic">Change password</p>
-        <table class="user-data col-lg-8">
-          <thead>
-          <tr><th width="20%"></th><th width="30%"></th></tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td class="bold">Old password</td>
-            <td>
-              <input type="password" class="form-control"
-                     id="password" autocomplete="off" formControlName="password"
-                     placeholder="Old password"
-                     [ngClass]="{
-                     'is-invalid' : userChangePasswordForm.get('password').errors && userChangePasswordForm.get('password').dirty
-                     }">
-              <div class="invalid-feedback">
-                {{userChangePasswordForm.get('password1')?.errors?.msg || 'Old password is incorrect!'}}
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="bold">New password</td>
-            <td>
-              <input type="password" class="form-control"
-                     id="password1" autocomplete="off" formControlName="password1"
-                     placeholder="New password"
-                     [ngClass]="{
-                     'is-invalid' : userChangePasswordForm.get('password1').errors && userChangePasswordForm.get('password1').dirty
-                     }">
-              <div class="invalid-feedback">
-                {{userChangePasswordForm.get('password1')?.errors?.msg || 'Password must be at least 8 symbols!'}}
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="bold">Password confirmation</td>
-            <td>
-              <input type="password" class="form-control"
-                     id="password2" autocomplete="off" formControlName="password2"
-                     placeholder="Password confirmation"
-                     [ngClass]="{
-                          'is-invalid' : userChangePasswordForm.get('password2').errors && userChangePasswordForm.get('password2').dirty
-                       }">
-              <div class="invalid-feedback">
-                {{userChangePasswordForm.get('password2')?.errors?.msg || 'Password must match!'}}
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <button class="btn btn-primary" type="submit">Change password</button>
+        <button class="btn btn-primary" type="submit" (click)="submitForm()">Add document</button>
       </form>
     </div>
   </div>

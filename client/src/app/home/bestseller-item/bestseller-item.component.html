@@ -1,16 +1,16 @@
-<li class="bestseller card" id="{{document.document_id}}" itemscope
+<li class="bestseller card" id="{{document.document_id}}" itemscope [style.width.px]="width - 40"
+    (click)="selectDocument(document.document_id)" (onTap)="selectDocument(document.document_id)"
     itemtype="https://schema.org/CreativeWork">
   <div class="card-body">
-    <a class="document-thumb image-shadow"
-       (click)="selectDocument(document.document_id)">
+    <a class="document-thumb image-shadow">
       <img itemprop="image"
            class="document-thumb-image"
            alt="{{document.title}}"
-           [src]="document.cover.substr(0, document.cover.length - 1) + '2'">
+           [src]="document.cover">
     </a>
     <div class="document-MetaInfo">
       <div itemprop="headline" class="document-title card-title">
-        <a (click)="selectDocument(document.document_id)">
+        <a>
           {{ document.title }}
         </a>
       </div>
@@ -18,7 +18,7 @@
         <li *ngFor="let author of document.authors"
             itemprop="author" class="document-author">{{ author.name }}</li>
       </ul>
-      <div (click)="selectDocument(document.document_id)" *ngIf="document.description.length > 0" itemprop="description"
+      <div *ngIf="document.description.length > 0" itemprop="description"
            class="document-description card-text">
         {{ document.description }}
       </div>

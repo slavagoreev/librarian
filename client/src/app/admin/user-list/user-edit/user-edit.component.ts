@@ -67,7 +67,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
 
     this.userEditInfoForm = this.fb.group({
         'email': [email, Validators.compose([Validators.required, Validators.email]) ],
-        'phone': [phone, Validators.compose([Validators.required, Validators.minLength(11), Validators.maxLength(11),Validators.pattern('[0-9]{11}')]) ],
+        'phone': [phone, Validators.compose([Validators.required, Validators.minLength(11), Validators.maxLength(11), Validators.pattern('[0-9]{11}')]) ],
         'first_name': [first_name],
         'last_name': [last_name],
         'username': [username, Validators.required],

@@ -32,19 +32,14 @@
   }
 
   app-loader {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    left: 0;
     & > div {
-     background: rgba(255, 255, 255, 0.3);
       width: 100%;
       height: 100%;
     }
   }
   .image-loader {
-    top: 200px !important;
+    left: calc(50% + 85px);
+    position: absolute;
   }
 }
 
@@ -86,7 +81,7 @@
 
 }
 .move-left, .move-right {
-  padding: 15px;
+  padding: 25px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.78);
   width: 50px;

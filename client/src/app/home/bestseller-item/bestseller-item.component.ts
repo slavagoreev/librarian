@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { DocumentActions } from '../../document/reducers/document.actions';
 import { AppState } from '../../interfaces';
 import { Store } from '@ngrx/store';
-import { DocumentService } from '../../core/services/document.service';
-import { UserService } from "../../core/services/user.service";
 
 @Component({
   selector: 'app-bestseller-item',
@@ -13,9 +11,8 @@ import { UserService } from "../../core/services/user.service";
 })
 export class BestsellerItemComponent implements OnInit {
   @Input() document: Document;
+  @Input() width: number;
   constructor(
-    private documentService: DocumentService,
-    private userService: UserService,
     private store: Store<AppState>,
     private actions: DocumentActions,
     private router: Router,
@@ -24,17 +21,10 @@ export class BestsellerItemComponent implements OnInit {
 
   ngOnInit() {
   }
-  deleteDocument(document_id: number){
-    this.documentService.removeDocument(document_id).subscribe();
-  }
   selectDocument(document_id: number){
+    console.log (document_id);
     this.store.dispatch(this.actions.getDocumentDetail(document_id));
     this.router.navigate(['/documents/', document_id.toString()])
-  }
-  bookDocument(documentId: number) {
-    this.userService.bookTheDocument(documentId).subscribe(() => {
-      this.router.navigate(['/user', 'orders'])
-    });
   }
 
 }
