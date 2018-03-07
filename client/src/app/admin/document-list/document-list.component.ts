@@ -17,7 +17,9 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   options: {
     size: number,
     offset: number,
-    type?: string
+    title?: string,
+    author_name?: string,
+    year?: number,
   } = { size: 30, offset: 0 };
   @ViewChild('searchInput')
   input: ElementRef;
@@ -34,16 +36,17 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
 
   getDocuments(cb = () => {}) {
-    if (!this.loading) {
-      console.error('should load', this.options);
-      this.subscription = this.documentService.searchDocuments(this.options)
-        .subscribe(data => this.processData(data))
-    }
+    console.error('should load', this.options);
+    this.subscription = this.documentService.searchDocuments(this.options)
+      .subscribe(data => this.processData(data))
   }
 
   private processData = (data) => {
     console.error("proceed");
-    this.documents = this.documents.concat(data);
+    if (this.options.offset == 0)
+      this.documents = data;
+    else
+        this.documents = this.documents.concat(data);
     this.loading = false;
     this.currentPage++;
     this.options.offset = this.options.size * this.currentPage;
@@ -63,7 +66,15 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   search() {
     const value = this.input.nativeElement.value;
     console.error(this.input.nativeElement.value);
-    this.options[this.type] = value;
+    this.options = {
+      size: 30,
+      offset: 0,
+    };
+    if (this.type == 'year')
+      this.options[this.type] = parseInt(value);
+    else
+      this.options[this.type] = value;
+    this.currentPage = 0;
     this.getDocuments()
   }
 
