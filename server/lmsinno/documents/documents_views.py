@@ -110,8 +110,9 @@ class DocumentsByCriteria(APIView):
                  HTTP_400_BAD_REQUEST and JSON-errors: if wrong format of input data
         """
 
+        # TODO change from POST to DATA
         tags_list = request.POST.get('tags', None)
-        authors_list = request.POST.get('authors', None)
+        authors_list = request.data.get('authors', None)
 
         doc_serializer = DocumentSerializer(data=request.data)
 
@@ -137,7 +138,7 @@ class DocumentsByCriteria(APIView):
 
             return Response({'status': misc.HTTP_202_ACCEPTED, 'data': {'document_id': doc_obj.document_id}},
                             status=status.HTTP_202_ACCEPTED)
-
+        print(doc_serializer.is_valid())
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod

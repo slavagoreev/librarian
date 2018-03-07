@@ -8,12 +8,12 @@ export class Document {
   description?: string = "";
   publisher?: string = "";
   year: number = 2018;
-  type: number;
+  document_type: number;
   price: number;
   is_reference: boolean;
   copies_available: number;
   cover?: string;
-  date_added: Date;
+  // date_added: Date;
   authors?: Author[] = [];
   tags?: Tag[];
   copies?: Copy[];
