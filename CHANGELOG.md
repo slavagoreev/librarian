@@ -1,0 +1,7 @@
+# CHANGELOG
+
+## 07.03.2018
+
+### ADDED
+### REMOVED
+### CHANGED
