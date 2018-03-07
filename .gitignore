@@ -17,6 +17,7 @@ settings.py# IDEs and editors
 /server/settings.py
 server/server/settings.py
 new.txt
+/env/
 .cache
 .npm
 .pycharm_helpers

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from ..models import Document, Author, Tag, Copy
 from ..tags.tags_serializers import TagSerializer
 from ..authors.authors_serializers import AuthorSerializer
-from ..copies.copies_serializers import CopyDetailSerializer
+from ..copies import copies_serializers
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -76,5 +76,5 @@ class DocumentResponseSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_copes(obj):
         copyes = Copy.objects.filter(document=obj)
-        serializer = CopyDetailSerializer(copyes, many=True)
+        serializer = copies_serializers.CopyDetailSerializer(copyes, many=True)
         return serializer.data

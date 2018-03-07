@@ -2,25 +2,26 @@
   <div ng2-carouselamos
        class="slides-wrapper"
        [items]="bestsellers$"
-       [width]="1800"
+       [width]="innerWidth"
        [$prev]="prev"
        [$next]="next"
        [$item]="item"
+       (onSelectedItem)="null"
   >
   </div>
 
   <ng-template #prev>
-    <
+    <div class="move-left">
+      <i class="left-chevron"></i>
+    </div>
   </ng-template>
   <ng-template #next>
-    >
+    <div class="move-right">
+      <i class="left-chevron rotated"></i>
+    </div>
   </ng-template>
   <ng-template #item let-item let-i="index">
-
-    <div class="items">
-      <a href="/documents/{{ item.document_id }}"><img class="document-thumb" src="{{ item.cover }}"></a>
-    </div>
-
+    <app-bestseller-item [width]="innerWidth" [document]="item"></app-bestseller-item>
   </ng-template>
 </div>
 
@@ -34,6 +35,9 @@
         <div class="content col-12 col-lg-9">
           <app-genre-nav></app-genre-nav>
           <app-document-list
+            appInfiniteScroller
+            [scrollPercent]="90"
+            [scrollCallback]="scrollCallback"
             [documents]="documents$ | async" [permission]="permission">
           </app-document-list>
         </div>

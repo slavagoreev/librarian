@@ -4,7 +4,7 @@
     <div class="table-responsive">
       <div class="form-row">
         <div class="input-group mb-1 document-search col-5">
-          <input type="search" id="documentSearch" (onEnter)="search()"
+          <input type="search" id="documentSearch" (keyup.enter)="search()"
                  class="form-control form-control-lg" #searchInput
                  placeholder="Search documents">
           <div class="input-group-append">
@@ -28,10 +28,10 @@
           </label>-->
         </div>
         <div>
-          <button class="btn btn-light" style="left: 30px;" [routerLink]="'/librarian/document-list/add/'">Add book</button>
+          <button class="btn btn-light" style="left: 30px;" [routerLink]="'/librarian/document-list/add/'">Add document</button>
         </div>
       </div>
-      <p class="text-muted italic">Documents by criteria:</p>
+      <p class="text-muted italic mt-3">Documents by criteria:</p>
         <table class="table">
           <thead>
           <tr>
@@ -42,7 +42,8 @@
           </tr>
           </thead>
           <tbody id="searchResults">
-          <tr *ngFor="let document of (documents$ | async)">
+          <tr
+              *ngFor="let document of documents">
             <td class="pr-0">
               <div class="thumb-wrap">
                 <img src="{{document.cover.substr(0, document.cover.length-1)}}1" alt="{{document.title}}">

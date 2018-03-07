@@ -22,7 +22,6 @@ export class DocumentService {
     return this.http.get(`documents/${id.toString()}`)
       .map(res => {
         const _res = res.json();
-        console.log (_res.data)
         if (!_.isEmpty(_res.data)) {
           return _res.data as Document;
         } else {
@@ -88,6 +87,13 @@ export class DocumentService {
       });
   }
 
+  removeCopy(id: number) {
+    return this.http.delete(`copies/${id.toString()}`)
+      .map((res) => {
+        return null;
+      });
+  }
+
   getDocuments(): Observable<Document[]> {
     return this.http.get(`documents/?size=30&year=2018`)
       .map(res => {
@@ -107,6 +113,23 @@ export class DocumentService {
         }
       });
   }
+
+  addDocument(d: Document): Observable<any> {
+    return this.http.post('documents/', {
+      'title': d.title,
+      'publisher': d.publisher,
+      'authors': d.authors,
+      'year': Number(d.year),
+      'description': d.description,
+      'cover': d.cover,
+      'type': Number(d.document_type),
+      'price': Number(d.price),
+      'is_reference': d.is_reference,
+      'is_bestseller': d.is_bestseller,
+      'tags': d.tags
+    });
+  }
+
   searchDocuments(
     options: {
       title?: string,

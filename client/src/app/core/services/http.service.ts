@@ -49,7 +49,6 @@ export class HttpService extends Http {
   get(url: string, options?: RequestOptionsArgs): Observable<any> {
     this.requestInterceptor();
     return super.get(this.getFullUrl(url), this.requestOptions(options))
-      //.delay(1000)
       .catch(this.onCatch.bind(this))
       .do((res: Response) => {
         this.onSubscribeSuccess(res);
@@ -160,13 +159,12 @@ export class HttpService extends Http {
     }
 
     if (options.headers == null) {
-      const user = localStorage.getItem('user') != "undefined" ? JSON.parse(localStorage.getItem('user')) : null;
-      const token = localStorage.getItem("token");
-      options.headers = new Headers({
-        'Content-Type': 'application/json',
-        'Bearer': "JWT " + token
-      });
+      options.headers = new Headers();
     }
+    const user = localStorage.getItem('user') != "undefined" ? JSON.parse(localStorage.getItem('user')) : null;
+    const token = localStorage.getItem("token");
+    options.headers.set('Content-Type', 'application/json');
+    options.headers.set('Bearer', "JWT " + token);
     return options;
   }
 

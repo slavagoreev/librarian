@@ -4,6 +4,6 @@ import { UserState } from './user/reducers/user.state';
 
 export interface AppState {
   documents: DocumentState;
-  auth: AuthState
-  user: UserState
+  auth: AuthState;
+  user: UserState;
 }

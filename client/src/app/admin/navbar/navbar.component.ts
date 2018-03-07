@@ -14,7 +14,7 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     console.log (this.router.url)
-    this.permission = this.router.url.search('admin') > -1
+    this.permission = this.router.url.search('librarian') > -1
   }
 
 }

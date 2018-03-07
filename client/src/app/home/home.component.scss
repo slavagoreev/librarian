@@ -1,7 +1,19 @@
 @import "../../sass/variables";
 .header-slider {
-  height: 250px;
-  background: #fff;
+  height: 330px;
+  background: transparent;
+
+  &:before {
+    content: "";
+    width: 100%;
+    height: 270px;
+    position: absolute;
+    background: #fff;
+    z-index: -1;
+  }
+}
+.ng2-carouselamos {
+  padding: 0 20px;
 }
 
 .documents {
@@ -20,19 +32,14 @@
   }
 
   app-loader {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    left: 0;
     & > div {
-     background: rgba(255, 255, 255, 0.3);
       width: 100%;
       height: 100%;
     }
   }
   .image-loader {
-    top: 200px !important;
+    left: calc(50% + 85px);
+    position: absolute;
   }
 }
 
@@ -72,4 +79,31 @@
     }
   }
 
+}
+.move-left, .move-right {
+  padding: 25px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.78);
+  width: 50px;
+  height: 50px;
+  box-shadow: 3px 0 10px #565656;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+
+  i.left-chevron {
+    width: 23px;
+    height: 23px;
+    opacity: 0.5;
+    position: absolute;
+    left: 16px;
+    top: 14px;
+  }
+
+  i.left-chevron.rotated {
+    left: 11px;
+  }
+}
+.rotated {
+  transform: rotate(180deg);
 }

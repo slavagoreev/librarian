@@ -9,6 +9,8 @@ import { Observable } from 'rxjs/Observable';
 import { AuthActions } from "../../auth/actions/auth.actions";
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../shared/models/users.model';
+import {DocumentService} from '../../core/services/document.service';
+import {Document as Doc} from '../../shared/models/documents.model';
 //import { Http } from '@angular/http';
 
 @Component({
@@ -21,6 +23,7 @@ export class HeaderComponent implements OnInit {
   searchOpen: boolean = false;
   isAuthenticated: boolean;
   user$: User;
+  documents$: Observable<Doc[]>;
   isAdmin: boolean;
 
   constructor(
@@ -28,13 +31,15 @@ export class HeaderComponent implements OnInit {
     @Inject(WINDOW) private window,
     private authActions: AuthActions,
     private authService: AuthService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private documentService: DocumentService
   ) {
     this.store.dispatch(this.authActions.authorize());
     this.store.select(getAuthStatus).subscribe((auth) => {
       this.isAuthenticated = auth;
-      if (auth)
+      if (auth) {
         this.user$ = this.authService.getUserData()
+      }
     });
     this.store.select(getUserRole).subscribe((role) => {
       this.isAdmin = (role === 2);
@@ -42,6 +47,9 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.documentService.getDocuments().subscribe(res => {
+      this.documents$ = Observable.of(res);
+    });
   }
   setSearchState(state: boolean) {
     this.searchOpen = state;

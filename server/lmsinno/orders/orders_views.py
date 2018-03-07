@@ -90,7 +90,7 @@ class OrderDetail(APIView):
                     sum = min(overdue_days * 100, order.copy.document.price)
                     result['data'] = {'overdue_sum': sum}
                     order.date_return = datetime.date.today()
-                if old_order == 1:
+                if old_order == 1 or old_order == 4:
                     order.date_return = datetime.date.today()
 
                 order.copy.status = 0

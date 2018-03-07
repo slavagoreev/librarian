@@ -1,6 +1,10 @@
 .document-list {
   margin: 50px 0;
 
+  a.user {
+    font-size: 15px;
+    color: #777;
+  }
   .table thead th {
     border-top: 0;
   }
@@ -159,4 +163,16 @@
       float: right;
     }
   }
+  td {
+    vertical-align: middle;
+  }
+  .dropdown-toggle {
+    margin-top: 0 !important;
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+  overflow: inherit;
+  min-width: 830px;
 }
