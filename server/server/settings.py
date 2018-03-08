@@ -145,7 +145,7 @@ DATABASES = {
         'NAME': 'librarian',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '/tmp/mysql.sock'
+        'HOST': 'localhost'
     }
 }
 
