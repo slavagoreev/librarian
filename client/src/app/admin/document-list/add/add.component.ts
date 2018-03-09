@@ -133,8 +133,8 @@ export class AddComponent implements OnInit {
     this.document.copies_available = 0;
     this.document.tags = [];
     this.documentService.addDocument(this.document).subscribe(res => {
+      this.linker.navigate(['librarian/document-list/']);
     });
-    this.linker.navigate(['librarian/document-list/']);
   }
 
   private pushErrorFor(ctrl_name: string, msg: string) {

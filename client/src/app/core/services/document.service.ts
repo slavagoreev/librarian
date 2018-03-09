@@ -126,7 +126,8 @@ export class DocumentService {
       'price': Number(d.price),
       'is_reference': d.is_reference,
       'is_bestseller': d.is_bestseller,
-      'tags': d.tags
+      'tags': d.tags,
+      'copies_available': 0
     });
   }
 
