@@ -13,5 +13,5 @@
 
 ### CHANGED
 
---- now user can order any book 1 time even no copies left, but librarian can accept booking only if copies available.
---- Also user can extend book only if no request on this book exist (copies_available == 0)
+Now user can order any book 1 time even no copies left, but librarian can accept booking only if copies available.
+Also user can extend book only if no request on this book exist (copies_available == 0)
