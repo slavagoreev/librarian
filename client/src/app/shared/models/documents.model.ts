@@ -18,4 +18,5 @@ export class Document {
   tags?: Tag[];
   copies?: Copy[];
   is_bestseller?: boolean;
+  is_extendable?: boolean;
 }
