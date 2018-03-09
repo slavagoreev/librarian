@@ -253,6 +253,11 @@ class Booking(APIView):
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
+            if not Copy.objects.filter(document=document):
+                result['status'] = misc.HTTP_404_NOT_FOUND
+                result['data'] = {'details': 'no copies in the system'}
+                return Response(result, status=status.HTTP_404_NOT_FOUND)
+
             copy = Copy.objects.filter(document=document).first()
 
             user = User.get_instance(request=request)
