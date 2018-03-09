@@ -9,4 +9,5 @@ export class Order {
   date_return: Date;
   status: number;
   overdue_sum: number;
+  is_extendable?: boolean;
 }

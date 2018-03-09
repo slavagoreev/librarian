@@ -31,7 +31,7 @@
             </a>
           </td>
           <td>
-            <div *ngIf="order.status == 1 && !order.document.is_bestseller">
+            <div *ngIf="order.status == 1 && !order.document.is_bestseller && order.is_extendable">
               <button class="btn btn-link" (click)="extendOrder(order.order_id)">Extend</button>
             </div>
           </td>

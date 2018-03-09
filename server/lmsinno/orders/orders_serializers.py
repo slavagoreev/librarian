@@ -24,6 +24,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     overdue_sum = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
     document = serializers.SerializerMethodField()
+    is_extendable = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -34,7 +35,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
                   'date_accepted',
                   'date_return',
                   'status',
-                  'overdue_sum')
+                  'overdue_sum',
+                  'is_extendable')
 
     @staticmethod
     def get_overdue_sum(obj):
@@ -52,3 +54,13 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_document(obj):
         return documents_serializers.DocumentSerializer(Document.objects.get(document_id=obj.copy.document.document_id)).data
+
+    @staticmethod
+    def get_is_extendable(obj):
+        document = obj.copy.document
+        if document.copies_available == 0:
+            orders = Order.objects.filter(status=0)
+            for order in orders:
+                if order.copy.document == document:
+                    return False
+        return True
