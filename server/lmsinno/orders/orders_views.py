@@ -56,17 +56,45 @@ class OrderDetail(APIView):
 
     @staticmethod
     def patch(request, order_id):
+        """
+        Check out one order for document
+        :param request:
+        :param order_id:
+        :return: HTTP_404_NOT_FOUND:
+            if no copy available for this order
+        :return: HTTP_200_OK and JSON
+        """
         Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
         try:
             order = Order.objects.get(order_id=order_id)
-            old_order = int(order.status)
-            order.status = int(request.data['status'])
+            document = order.copy.document
+
+            old_status = int(order.status)
+            new_status = int(request.data['status'])
 
             # if order status is 1 or 3 proceed
-            if order.status == 1:
+            if new_status == 1:
+                if document.copies_available == 0:
+                    result['data'] = 'no copy available'
+                    result['status'] = misc.HTTP_404_NOT_FOUND
+                    return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+                copy = Copy.objects.all()
+                copy = copy.filter(document=document)
+                copy = copy.filter(status=0)
+                copy = copy.first()
+                copy.status = 1
+                copy.save()
+
+                document.copies_available -= 1
+                document.save()
+
+                order.copy = copy
+
                 order.date_accepted = datetime.date.today()
+
                 if order.user.role == 0:
                     delta = datetime.timedelta(weeks=3)
                     order.date_return = datetime.date.today() + delta
@@ -83,14 +111,14 @@ class OrderDetail(APIView):
                     delta = datetime.timedelta(weeks=2)
                     order.date_return = datetime.date.today() + delta
 
-            elif order.status == 3:
+            elif new_status == 3:
 
-                if old_order == 2:
+                if old_status == 2:
                     overdue_days = (datetime.date.today() - order.date_return).days
                     sum = min(overdue_days * 100, order.copy.document.price)
                     result['data'] = {'overdue_sum': sum}
                     order.date_return = datetime.date.today()
-                if old_order == 1 or old_order == 4:
+                if old_status == 1 or old_status == 4:
                     order.date_return = datetime.date.today()
 
                 order.copy.status = 0
@@ -98,16 +126,22 @@ class OrderDetail(APIView):
                 order.copy.document.copies_available += 1
                 order.copy.document.save()
 
-            elif order.status == 0:
-
+            else:
+                # if status nor 1 or 3 than it is incorrect request
                 result['status'] = misc.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-            order.save()
+            if 0 < new_status < 5:
+                order.status = new_status
+                order.save()
+            else:
+                while 1:
+                    print("If reaches this manage to /server/lmsinno/orders/orders_views.py")
 
             result['status'] = misc.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
+            result['data'] = 'order dose not exist'
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
@@ -150,13 +184,20 @@ class MyOrders(APIView):
 
         try:
             order = Order.objects.get(order_id=order_id)
+            document = order.copy.document
 
             if order.user != User.get_instance(request=request):
                 raise KeyError
 
             new_status = int(request.data['status'])
-            if new_status != 4 or order.status == 4 or order.copy.document.is_bestseller:
+            if new_status != 4 or order.status == 4:
                 raise KeyError
+
+            if document.copies_available == 0:
+                orders = Order.objects.filter(status=0)
+                for order in orders:
+                    if order.copy.document == document:
+                        raise LookupError
 
             delta = datetime.timedelta(weeks=1)
             order.date_return += delta
@@ -169,6 +210,10 @@ class MyOrders(APIView):
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
+            result['status'] = misc.HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+        except LookupError:
+            result['data'] = 'sorry, someone need this book'
             result['status'] = misc.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
@@ -194,31 +239,21 @@ class Booking(APIView):
 
         try:
             document = Document.objects.get(pk=document_id)
-
             orders = Order.objects.all().filter(user=User.get_instance(request))
 
-            for i in orders:
-                if i.copy.document.document_id == document.document_id:
-                    if i.status != 3:
+            for order in orders:
+                if order.copy.document.document_id == document.document_id:
+                    if order.status == 0 or order.status == 1 or order.status == 2 or order.status == 4:
                         result['status'] = misc.HTTP_400_BAD_REQUEST
                         result['data'] = {'details': 'you already booked this document'}
                         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-            if document.copies_available == 0:
-                result['status'] = misc.HTTP_400_BAD_REQUEST
-                result['data'] = {'details': 'document is not available (run out of copies)'}
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
-            elif document.is_reference:
+            if document.is_reference:
                 result['status'] = misc.HTTP_400_BAD_REQUEST
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-            copy = Copy.objects.all()
-            copy = copy.filter(document=document)
-            copy = copy.filter(status=0)
-            copy = copy[0]
-            copy.status = 1
-            copy.save()
+            copy = Copy.objects.first()
 
             user = User.get_instance(request=request)
 
@@ -236,9 +271,6 @@ class Booking(APIView):
 
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
-
-        document.copies_available -= 1
-        document.save()
 
         order_serializer = OrderSerializer(order)
         result['data'] = order_serializer.data
