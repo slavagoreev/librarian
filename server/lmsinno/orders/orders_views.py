@@ -69,20 +69,24 @@ class OrderDetail(APIView):
 
         try:
             order = Order.objects.get(order_id=order_id)
-            document = order.copy.document
+            document = order.document
 
             old_status = int(order.status)
             new_status = int(request.data['status'])
+            if old_status == new_status:
+                result['status'] = misc.HTTP_400_BAD_REQUEST
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             # if order status is 1 or 3 proceed
-            if new_status == 1:
+            # we can accept closed orders just because
+            if new_status == 1 and (old_status == 0 or old_status == 3):
+                print(document.copies_available)
                 if document.copies_available == 0:
                     result['data'] = 'no copy available'
                     result['status'] = misc.HTTP_404_NOT_FOUND
-                    return Response(result, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-                copy = Copy.objects.all()
-                copy = copy.filter(document=document)
+                copy = Copy.objects.filter(document=document)
                 copy = copy.filter(status=0)
                 copy = copy.first()
                 copy.status = 1
@@ -121,11 +125,10 @@ class OrderDetail(APIView):
                 if old_status == 1 or old_status == 4:
                     order.date_return = datetime.date.today()
 
-                order.copy.status = 0
-                order.copy.save()
-
                 # if order closed immediately copies number must no change
-                if old_status != 0:
+                if old_status == 1 or old_status == 2 or old_status == 4:
+                    order.copy.status = 0
+                    order.copy.save()
                     order.copy.document.copies_available += 1
                     order.copy.document.save()
 
@@ -242,7 +245,7 @@ class Booking(APIView):
             orders = Order.objects.all().filter(user=User.get_instance(request))
 
             for order in orders:
-                if order.copy.document.document_id == document.document_id:
+                if order.document.document_id == document.document_id:
                     if order.status == 0 or order.status == 1 or order.status == 2 or order.status == 4:
                         result['status'] = misc.HTTP_400_BAD_REQUEST
                         result['data'] = {'details': 'you already booked this document'}
@@ -253,17 +256,10 @@ class Booking(APIView):
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-            if not Copy.objects.filter(document=document):
-                result['status'] = misc.HTTP_404_NOT_FOUND
-                result['data'] = {'details': 'no copies in the system'}
-                return Response(result, status=status.HTTP_404_NOT_FOUND)
-
-            copy = Copy.objects.filter(document=document).first()
-
             user = User.get_instance(request=request)
 
             order = Order.objects.create(
-                copy=copy,
+                document=document,
                 user=user,
             )
 

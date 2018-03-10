@@ -74,7 +74,7 @@ class CopyDetail(APIView):
         """
         Delete Copy bi ID
         :param request:
-        :param copy_id:
+        :param copy_id: document id in real
         :return: HTTP_200_OK and JSON-Copy: if deleted
                  HTTP_404_NOT_FOUND: no copes or document DoesNotExist
         """
@@ -84,6 +84,7 @@ class CopyDetail(APIView):
         try:
             document = Document.objects.get(document_id=copy_id)
             copies = Copy.objects.filter(document=document).filter(status=0)
+
             if not copies:
                 raise FileNotFoundError
 

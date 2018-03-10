@@ -17,7 +17,8 @@ class OrderSerializer(serializers.ModelSerializer):
                   'date_created',
                   'date_accepted',
                   'date_return',
-                  'status')
+                  'status',
+                  'document')
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
@@ -53,14 +54,14 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_document(obj):
-        return documents_serializers.DocumentSerializer(Document.objects.get(document_id=obj.copy.document.document_id)).data
+        return documents_serializers.DocumentSerializer(obj.document).data
 
     @staticmethod
     def get_is_extendable(obj):
-        document = obj.copy.document
+        document = obj.document
         if document.copies_available == 0:
             orders = Order.objects.filter(status=0)
             for order in orders:
-                if order.copy.document == document:
+                if order.document == document:
                     return False
         return True
