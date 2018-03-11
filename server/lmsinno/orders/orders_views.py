@@ -221,6 +221,7 @@ class MyOrders(APIView):
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
+# TODO copy valid
 class Booking(APIView):
     """
     Class to book one particular document by ID
