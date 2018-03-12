@@ -33,6 +33,33 @@ class Orders(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
+class OrdersQueue(APIView):
+    permission_classes = (LibrariantPermission,)
+    """
+        Class to get all orders
+    """
+
+    @staticmethod
+    def get(request):
+        """
+        Return set of all orders
+        :param request:
+        :return: HTTP_200_OK and JSON
+        """
+        Order.overdue_validation()
+        result = {'status': '', 'data': {}}
+
+        orders_in_queue = Order.objects.filter(status=0)
+
+        # TODO priority queue for orders
+
+        orders = OrderDetailSerializer(orders_in_queue, many=True)
+
+        result['data'] = orders.data
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
 class OrderDetail(APIView):
     permission_classes = (LibrariantPermission,)
     """
