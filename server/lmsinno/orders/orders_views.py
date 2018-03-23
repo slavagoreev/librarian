@@ -148,6 +148,11 @@ class OrderDetail(APIView):
                     delta = datetime.timedelta(weeks=2)
                     order.date_return = datetime.date.today() + delta
 
+                # Visiting Professor - limit is 1 week (regardless the type of the document)
+                if order.user.role == 1.3:
+                    delta = datetime.timedelta(weeks=1)
+                    order.date_return = datetime.date.today() + delta
+
             elif new_status == 3:
 
                 if old_status == 2:
@@ -226,7 +231,11 @@ class MyOrders(APIView):
                 raise KeyError
 
             new_status = int(request.data['status'])
-            if new_status != 4 or order.status == 4:
+            if new_status != 4:
+                raise KeyError
+
+            # Visiting Professor patron can renew an item as many times as he wants
+            if order.status == 4 and order.user.role != 1.3:
                 raise KeyError
 
             if document.copies_available == 0:

@@ -40,7 +40,7 @@ class Document(models.Model):
 class User(AbstractUser):
     # Type of User:
     # 0 - basic user; 1 - Faculty; 2 - Librarian
-    USER_TYPE_CHOICES = [(0.0, 'Basic user'), (1.1, 'Instructor'), (1.2, 'TA'), (1.3, 'Professor'),(2.0, 'Librarian')]
+    USER_TYPE_CHOICES = [(0.0, 'Basic user'), (1.1, 'Instructor'), (1.2, 'TA'), (1.3, 'VProfessor'), (1.4, 'Professor'), (2.0, 'Librarian')]
 
     role = models.FloatField(default=0, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
