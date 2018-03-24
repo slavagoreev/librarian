@@ -94,6 +94,7 @@ class CopyDetail(APIView):
             document.save()
 
             print(document.copies_available)
+            print(len(Copy.objects.filter(document=document)))
         except Document.DoesNotExist:
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)

@@ -51,7 +51,6 @@ class OrdersQueue(APIView):
 
         # get clean queue of orders
         orders_in_queue = Order.objects.filter(status=0)
-        print(orders_in_queue)
 
         # TODO priority queue for orders
 
@@ -113,7 +112,6 @@ class OrderDetail(APIView):
             # if order status is 1 or 3 proceed
             # we can accept closed orders just because
             if new_status == 1 and (old_status == 0 or old_status == 3):
-                print(document.copies_available)
                 if document.copies_available == 0:
                     result['data'] = 'no copy available'
                     result['status'] = misc.HTTP_404_NOT_FOUND
