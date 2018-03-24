@@ -9,6 +9,8 @@ urlpatterns = [
     url(r'^', include('rest_auth.urls')),
     url(r'^(?P<user_id>[0-9]+)[/]?$', users_views.UserDetail.as_view()),
     url(r'^$', users_views.Users.as_view()),
+    url(r'^social/', include('social_django.urls', namespace='social')),  # <- Here
+    url(r'^registration/$', users_views.MyReg.as_view()),
     url(r'^registration/', include('rest_auth.registration.urls')),
     url(r'^profile/', users_views.MyDetail.as_view()),
     url(r'^token/', obtain_jwt_token),

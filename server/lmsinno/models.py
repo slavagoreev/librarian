@@ -40,9 +40,9 @@ class Document(models.Model):
 class User(AbstractUser):
     # Type of User:
     # 0 - basic user; 1 - Faculty; 2 - Librarian
-    USER_TYPE_CHOICES = [(0, 'Basic user'), (1, 'Faculty'), (2, 'Librarian')]
+    USER_TYPE_CHOICES = [(0.0, 'Basic user'), (1.1, 'Instructor'), (1.2, 'TA'), (1.3, 'VProfessor'), (1.4, 'Professor'), (2.0, 'Librarian')]
 
-    role = models.IntegerField(default=0, choices=USER_TYPE_CHOICES)
+    role = models.FloatField(default=0, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
 
@@ -129,11 +129,12 @@ class Copy(models.Model):
 
 class Order(models.Model):
     # Type of Status:
-    # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed
+    # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed; 4 - extended
     STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed'), (4, 'Extended')]
 
     order_id = models.AutoField(primary_key=True)
-    copy = models.ForeignKey(Copy, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, null=True)
+    copy = models.ForeignKey(Copy, on_delete=models.CASCADE, default=None, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateField(auto_now_add=True)
     date_accepted = models.DateField(default=None, null=True)

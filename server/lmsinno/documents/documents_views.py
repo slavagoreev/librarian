@@ -233,7 +233,7 @@ class DocumentDetailByCopyID(APIView):
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         result['status'] = misc.HTTP_200_OK
-        result['data'] = DocumentSerializer(Document.objects.get(pk=copy.document_id)).data
+        result['data'] = DocumentResponseSerializer(Document.objects.get(pk=copy.document_id)).data
 
         return Response(result, status=status.HTTP_200_OK)
 
@@ -251,6 +251,6 @@ class Bestsellers(APIView):
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         result['status'] = misc.HTTP_200_OK
-        result['data'] = DocumentSerializer(bestsellers, many=True).data
+        result['data'] = DocumentResponseSerializer(bestsellers, many=True).data
 
         return Response(result, status=status.HTTP_200_OK)

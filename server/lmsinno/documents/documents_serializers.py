@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Document, Author, Tag, Copy
+from ..models import Document, Author, Tag, Copy, Order
 from ..tags.tags_serializers import TagSerializer
 from ..authors.authors_serializers import AuthorSerializer
 from ..copies import copies_serializers
@@ -38,11 +38,16 @@ class DocumentSerializer(serializers.ModelSerializer):
         serializer = TagSerializer(tags_of_book, many=True)
         return serializer.data
 
+    @staticmethod
+    def get_copies_available(obj):
+        return max(0, obj.copies_available - len(Order.objects.filter(document=obj).filter(status=0)))
+
 
 class DocumentResponseSerializer(serializers.ModelSerializer):
     authors = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
     copes = serializers.SerializerMethodField()
+    copies_available = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
@@ -60,6 +65,10 @@ class DocumentResponseSerializer(serializers.ModelSerializer):
                   'authors',
                   'tags',
                   'copes')
+
+    @staticmethod
+    def get_copies_available(obj):
+        return max(0, obj.copies_available - len(Order.objects.filter(document=obj).filter(status=0)) - len(Copy.objects.filter(status=1)))
 
     @staticmethod
     def get_authors(obj):
