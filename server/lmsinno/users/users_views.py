@@ -1,4 +1,8 @@
-from rest_auth.registration.views import RegisterView
+try:
+    from rest_auth.registration.views import RegisterView
+except ImportError:
+    raise ImportError("rest_auth needs to be added to INSTALLED_APPS.")
+
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
