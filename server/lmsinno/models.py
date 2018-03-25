@@ -51,7 +51,8 @@ class Document(models.Model):
         return copy
 
     def return_copy(self, copy):
-
+        if not copy:
+            return
         if copy.document != self:
             return
         if copy.status == 0:
