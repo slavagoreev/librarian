@@ -187,20 +187,23 @@ class Order(models.Model):
         return '{0}: {1}'.format(self.user, self.document)
 
     @staticmethod
-    def overdue_validation():
+    def overdue_and_queue_validation():
         orders = Order.objects.all().exclude(status=3).exclude(status=0)
 
         for order in orders:
-            if not order.date_return:
-                continue
 
-            if order.date_return < datetime.date.today():
-                order.status = 2
-                order.save()
+            if order.date_return:
+                if order.date_return < datetime.date.today():
+                    order.status = 2
+                    order.save()
+
+        queue = Order.get_queue()
+        for order in queue:
+            order.attach_copy(order.document.take_copy())
 
     @staticmethod
     def get_queue():
-        orders_in_queue = Order.objects.filter(status=0)
+        orders_in_queue = Order.objects.filter(status=0).filter(copy=None)
 
         # TODO priority queue for orders
 
@@ -220,6 +223,7 @@ class Order(models.Model):
             self.date_attach = datetime.datetime.today()
             self.copy = copy
             self.save()
+            # TODO notifications
 
 
 class Tag(models.Model):

@@ -23,10 +23,10 @@ class Orders(APIView):
         :param request:
         :return: HTTP_200_OK and JSON
         """
-        Order.overdue_validation()
+        Order.overdue_and_queue_validation()
         result = {'status': '', 'data': {}}
 
-        orders = OrderDetailSerializer(Order.objects.all(), many=True)
+        orders = OrderDetailSerializer(Order.objects.all().exclude(copy=None), many=True)
 
         result['data'] = orders.data
 
@@ -46,7 +46,7 @@ class OrdersQueue(APIView):
         :param request:
         :return: HTTP_200_OK and JSON
         """
-        Order.overdue_validation()
+        Order.overdue_and_queue_validation()
         result = {'status': '', 'data': {}}
 
         orders_in_queue = OrderDetailSerializer(Order.get_queue(), many=True)
@@ -64,7 +64,7 @@ class OrderDetail(APIView):
 
     @staticmethod
     def get(request, order_id):
-        Order.overdue_validation()
+        Order.overdue_and_queue_validation()
         result = {'status': '', 'data': {}}
 
         try:
@@ -87,7 +87,7 @@ class OrderDetail(APIView):
             if no copy available for this order
         :return: HTTP_200_OK and JSON
         """
-        Order.overdue_validation()
+        Order.overdue_and_queue_validation()
         result = {'status': '', 'data': {}}
 
         try:
@@ -132,19 +132,20 @@ class OrderDetail(APIView):
                     delta = datetime.timedelta(weeks=1)
                     order.date_return = datetime.date.today() + delta
 
-            elif new_status == 3:
+            elif new_status == 3 and old_status != 3:
 
                 if old_status == 2:
 
                     overdue_days = (datetime.date.today() - order.date_return).days
                     overdue_sum = min(overdue_days * 100, order.copy.document.price)
                     result['data'] = {'overdue_sum': overdue_sum}
-                    order.date_return = datetime.date.today()
 
                 # if order closed immediately copies number must no change
-                if old_status == 1 or old_status == 2 or old_status == 4:
+
+                if old_status != 0:
                     order.date_return = datetime.date.today()
-                    document.return_copy(order.copy)
+
+                document.return_copy(order.copy)
 
             else:
                 # if status nor 1 or 3 than it is incorrect request
@@ -182,7 +183,7 @@ class MyOrders(APIView):
         :param request:
         :return: HTTP_200_OK and JSON
         """
-        Order.overdue_validation()
+        Order.overdue_and_queue_validation()
         result = {'status': '', 'data': {}}
 
         user = User.get_instance(request=request)
