@@ -49,16 +49,7 @@ class OrdersQueue(APIView):
         Order.overdue_validation()
         result = {'status': '', 'data': {}}
 
-        # get clean queue of orders
-        orders_in_queue = Order.objects.filter(status=0)
-
-        # TODO priority queue for orders
-
-        orders_in_queue = orders_in_queue.order_by('-user__role')
-        orders_in_queue = orders_in_queue.reverse()[::-1]
-        # orders_in_queue = list(orders_in_queue)
-
-        orders_in_queue = OrderDetailSerializer(orders_in_queue, many=True)
+        orders_in_queue = OrderDetailSerializer(Order.get_queue(), many=True)
 
         result['data'] = orders_in_queue.data
 
@@ -116,7 +107,7 @@ class OrderDetail(APIView):
                     return Response(result, status=status.HTTP_404_NOT_FOUND)
 
                 if not order.copy:
-                    order.copy = document.take_copy()
+                    order.attach_copy(document.take_copy())
 
                 order.date_accepted = datetime.date.today()
 
@@ -289,9 +280,10 @@ class Booking(APIView):
 
             order = Order.objects.create(
                 document=document,
-                user=user,
-                copy=document.take_copy()
+                user=user
             )
+
+            order.attach_copy(document.take_copy())
 
         except IndexError:
 

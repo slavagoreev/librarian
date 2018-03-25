@@ -166,7 +166,7 @@ class Copy(models.Model):
 class Order(models.Model):
     # Type of Status:
     # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed; 4 - extended
-    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (2, 'Overdue'), (3, 'Closed'), (4, 'Extended')]
+    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (4, 'Extended'), (2, 'Overdue'), (3, 'Closed'),]
 
     order_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, null=True)
@@ -198,11 +198,28 @@ class Order(models.Model):
                 order.status = 2
                 order.save()
 
+    @staticmethod
+    def get_queue():
+        orders_in_queue = Order.objects.filter(status=0)
+
+        # TODO priority queue for orders
+
+        orders_in_queue = orders_in_queue.order_by('-user__role')
+        orders_in_queue = orders_in_queue.reverse()[::-1]
+
+        return orders_in_queue
+
     def extend(self):
         delta = datetime.timedelta(weeks=1)
         self.date_return += delta
         self.status = 4
         self.save()
+
+    def attach_copy(self, copy):
+        if copy:
+            self.date_attach = datetime.datetime.today()
+            self.copy = copy
+            self.save()
 
 
 class Tag(models.Model):
