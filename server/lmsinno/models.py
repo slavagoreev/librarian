@@ -33,6 +33,30 @@ class Document(models.Model):
     def __str__(self):
         return self.title
 
+    def take_copy(self):
+
+        copies = Copy.objects.filter(document=self).filter(status=0)
+
+        if not copies:
+            return None
+
+        copy = copies.first()
+        copy.status = 1
+        copy.save()
+
+        self.copies_available -= 1
+        self.save()
+
+        return copy
+
+    def return_copy(self, copy):
+        copy.status = 0
+        copy.save()
+
+        self.copies_available += 1
+        self.save()
+
+
 
 class User(AbstractUser):
     # Type of User:
@@ -70,11 +94,11 @@ class User(AbstractUser):
         self.last_name = data.get('last_name') or self.last_name
         self.first_name = data.get('first_name') or self.first_name
 
-    def get_instance(self, request):
+    @staticmethod
+    def get_instance(request):
         if 'HTTP_HOST' in request.META:
             try:
                 token = re.split(' ', request.META['HTTP_BEARER'])[1]
-                print(token)
                 payload = jwt.decode(token, settings.SECRET_KEY)
                 email = payload['email']
                 user_id = payload['user_id']

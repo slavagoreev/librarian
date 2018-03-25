@@ -21,3 +21,7 @@ Also user can extend book only if no request on this book exist (copies_availabl
 ### ADDED
 
 New type of date - data_attach when copy was attach to the order
+
+### ADDED
+
+model document: take_copy, return_copy

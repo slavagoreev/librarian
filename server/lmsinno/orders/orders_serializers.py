@@ -1,9 +1,8 @@
 from rest_framework import serializers
 
+from ..models import Order, User
 from ..users import users_serializers
 from ..documents import documents_serializers
-
-from ..models import Order, User, Document
 
 import datetime
 
@@ -22,6 +21,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
+
     overdue_sum = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
     document = serializers.SerializerMethodField()

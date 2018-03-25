@@ -100,33 +100,22 @@ class OrderDetail(APIView):
         result = {'status': '', 'data': {}}
 
         try:
+
             order = Order.objects.get(order_id=order_id)
             document = order.document
 
             old_status = int(order.status)
             new_status = int(request.data['status'])
-            if old_status == new_status:
-                result['status'] = misc.HTTP_400_BAD_REQUEST
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             # if order status is 1 or 3 proceed
             # we can accept closed orders just because
-            if new_status == 1 and (old_status == 0 or old_status == 3):
-                if document.copies_available == 0:
+            if new_status == 1 and old_status == 0:
+                if document.copies_available == 0 and not order.copy:
                     result['data'] = 'no copy available'
                     result['status'] = misc.HTTP_404_NOT_FOUND
                     return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-                copy = Copy.objects.filter(document=document)
-                copy = copy.filter(status=0)
-                copy = copy.first()
-                copy.status = 1
-                copy.save()
-
-                document.copies_available -= 1
-                document.save()
-
-                order.copy = copy
+                order.copy = document.get_copy()
 
                 order.date_accepted = datetime.date.today()
 
@@ -163,10 +152,7 @@ class OrderDetail(APIView):
 
                 # if order closed immediately copies number must no change
                 if old_status == 1 or old_status == 2 or old_status == 4:
-                    order.copy.status = 0
-                    order.copy.save()
-                    order.copy.document.copies_available += 1
-                    order.copy.document.save()
+                    document.return_copy(order.copy)
 
             else:
                 # if status nor 1 or 3 than it is incorrect request
@@ -182,10 +168,14 @@ class OrderDetail(APIView):
 
             result['status'] = misc.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
+
         except Order.DoesNotExist:
             result['data'] = 'order dose not exist'
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
+        except KeyError:
+            result['status'] = misc.HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MyOrders(APIView):
