@@ -3,6 +3,7 @@ import re
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.http import HttpResponse
+from jwt import DecodeError
 from rest_framework import status, exceptions
 from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
@@ -72,6 +73,7 @@ class User(AbstractUser):
         if 'HTTP_HOST' in request.META:
             try:
                 token = re.split(' ', request.META['HTTP_BEARER'])[1]
+                print(token)
                 payload = jwt.decode(token, settings.SECRET_KEY)
                 email = payload['email']
                 userid = payload['user_id']
@@ -86,6 +88,9 @@ class User(AbstractUser):
             except User.DoesNotExist:
                 return None
             except KeyError:
+                return None
+            # empty session catcher
+            except DecodeError:
                 return None
 
             return user
@@ -136,27 +141,23 @@ class Order(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, null=True)
     copy = models.ForeignKey(Copy, on_delete=models.CASCADE, default=None, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_created = models.DateField(auto_now_add=True)
-    date_accepted = models.DateField(default=None, null=True)
-    date_return = models.DateField(default=None, null=True)
     status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
 
+    # date when order was created
+    date_created = models.DateField(auto_now_add=True)
+    # data when copy was attach to the order
+    date_attach = models.DateField(default=None, null=True)
+    # data when patron take his order
+    date_accepted = models.DateField(default=None, null=True)
+    # data when patron return his  order
+    date_return = models.DateField(default=None, null=True)
+
     def __str__(self):
-        return '{0}: {1}'.format(self.user, self.copy)
+        return '{0}: {1}'.format(self.user, self.document)
 
     @staticmethod
     def overdue_validation():
-        orders = Order.objects.all().filter(status=1)
-
-        for order in orders:
-            if not order.date_return:
-                continue
-
-            if order.date_return < datetime.date.today():
-                order.status = 2
-                order.save()
-
-        orders = Order.objects.all().filter(status=4)
+        orders = Order.objects.all().exclude(status=3).exclude(status=0)
 
         for order in orders:
             if not order.date_return:

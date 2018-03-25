@@ -157,13 +157,23 @@ class MyDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
-class MyReg(RegisterView):
-
+class Registration(RegisterView):
+    """
+        Class to handel with registration errors
+    """
     def create(self, request, *args, **kwargs):
+        """
+            :return: HTTP_201_CREATED and JSON-Documents: if all good
+                    HTTP_400_BAD_REQUEST: if some problems with serializer
+        """
         result = {'status': '', 'data': {}}
+
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
+
             result['data'] = serializer.errors
             result['status'] = misc.HTTP_400_BAD_REQUEST
+
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
         return RegisterView.create(self, request, *args, **kwargs)
