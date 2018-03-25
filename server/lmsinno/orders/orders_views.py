@@ -115,7 +115,8 @@ class OrderDetail(APIView):
                     result['status'] = misc.HTTP_404_NOT_FOUND
                     return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-                order.copy = document.get_copy()
+                if not order.copy:
+                    order.copy = document.take_copy()
 
                 order.date_accepted = datetime.date.today()
 
@@ -143,15 +144,15 @@ class OrderDetail(APIView):
             elif new_status == 3:
 
                 if old_status == 2:
+
                     overdue_days = (datetime.date.today() - order.date_return).days
-                    sum = min(overdue_days * 100, order.copy.document.price)
-                    result['data'] = {'overdue_sum': sum}
-                    order.date_return = datetime.date.today()
-                if old_status == 1 or old_status == 4:
+                    overdue_sum = min(overdue_days * 100, order.copy.document.price)
+                    result['data'] = {'overdue_sum': overdue_sum}
                     order.date_return = datetime.date.today()
 
                 # if order closed immediately copies number must no change
                 if old_status == 1 or old_status == 2 or old_status == 4:
+                    order.date_return = datetime.date.today()
                     document.return_copy(order.copy)
 
             else:
@@ -212,10 +213,10 @@ class MyOrders(APIView):
         result = {'status': '', 'data': {}}
 
         try:
-            order = Order.objects.get(order_id=order_id)
-            document = order.copy.document
+            my_order = Order.objects.get(order_id=order_id)
+            document = my_order.copy.document
 
-            if order.user != User.get_instance(request=request):
+            if my_order.user != User.get_instance(request=request):
                 raise KeyError
 
             new_status = int(request.data['status'])
@@ -223,19 +224,16 @@ class MyOrders(APIView):
                 raise KeyError
 
             # Visiting Professor patron can renew an item as many times as he wants
-            if order.status == 4 and order.user.role != 1.3:
+            if my_order.status == 4 and my_order.user.role != 1.3:
                 raise KeyError
 
             if document.copies_available == 0:
                 orders = Order.objects.filter(status=0)
                 for order in orders:
-                    if order.copy.document == document:
+                    if order.document == document:
                         raise LookupError
 
-            delta = datetime.timedelta(weeks=1)
-            order.date_return += delta
-            order.status = new_status
-            order.save()
+            my_order.extend()
 
             result['status'] = misc.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
@@ -292,6 +290,7 @@ class Booking(APIView):
             order = Order.objects.create(
                 document=document,
                 user=user,
+                copy=document.take_copy()
             )
 
         except IndexError:

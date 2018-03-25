@@ -41,6 +41,7 @@ class Document(models.Model):
             return None
 
         copy = copies.first()
+
         copy.status = 1
         copy.save()
 
@@ -50,12 +51,17 @@ class Document(models.Model):
         return copy
 
     def return_copy(self, copy):
+
+        if copy.document != self:
+            return
+        if copy.status == 0:
+            return
+
         copy.status = 0
         copy.save()
 
         self.copies_available += 1
         self.save()
-
 
 
 class User(AbstractUser):
@@ -64,7 +70,7 @@ class User(AbstractUser):
     USER_TYPE_CHOICES = [(0.0, 'Basic user'),
                          (1.1, 'Instructor'),
                          (1.2, 'Teacher Assistant'),
-                         (1.3, 'VProfessor'),
+                         (1.3, 'Visiting Professor'),
                          (1.4, 'Professor'),
                          (2.0, 'Librarian')]
 
@@ -191,6 +197,12 @@ class Order(models.Model):
             if order.date_return < datetime.date.today():
                 order.status = 2
                 order.save()
+
+    def extend(self):
+        delta = datetime.timedelta(weeks=1)
+        self.date_return += delta
+        self.status = 4
+        self.save()
 
 
 class Tag(models.Model):
