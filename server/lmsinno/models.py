@@ -1,19 +1,15 @@
-import random
-import re
 from django.contrib.auth.models import AbstractUser
-from django.db import models
-from django.http import HttpResponse
-from jwt import DecodeError
-from rest_framework import status, exceptions
-from rest_framework.authtoken.models import Token
-from rest_framework_jwt.settings import api_settings
 from django.conf import settings
+from django.db import models
+
+from rest_framework_jwt.settings import api_settings
+from rest_framework.authtoken.models import Token
+
+import datetime
+import jwt
+import re
 
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-import jwt
-import json
-import datetime
 
 
 class Document(models.Model):
@@ -41,7 +37,12 @@ class Document(models.Model):
 class User(AbstractUser):
     # Type of User:
     # 0 - basic user; 1 - Faculty; 2 - Librarian
-    USER_TYPE_CHOICES = [(0.0, 'Basic user'), (1.1, 'Instructor'), (1.2, 'TA'), (1.3, 'VProfessor'), (1.4, 'Professor'), (2.0, 'Librarian')]
+    USER_TYPE_CHOICES = [(0.0, 'Basic user'),
+                         (1.1, 'Instructor'),
+                         (1.2, 'Teacher Assistant'),
+                         (1.3, 'VProfessor'),
+                         (1.4, 'Professor'),
+                         (2.0, 'Librarian')]
 
     role = models.FloatField(default=0, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
@@ -69,18 +70,18 @@ class User(AbstractUser):
         self.last_name = data.get('last_name') or self.last_name
         self.first_name = data.get('first_name') or self.first_name
 
-    def get_instance(request):
+    def get_instance(self, request):
         if 'HTTP_HOST' in request.META:
             try:
                 token = re.split(' ', request.META['HTTP_BEARER'])[1]
                 print(token)
                 payload = jwt.decode(token, settings.SECRET_KEY)
                 email = payload['email']
-                userid = payload['user_id']
+                user_id = payload['user_id']
 
                 user = User.objects.get(
                     email=email,
-                    id=userid
+                    id=user_id
                 )
 
             except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:
@@ -90,7 +91,7 @@ class User(AbstractUser):
             except KeyError:
                 return None
             # empty session catcher
-            except DecodeError:
+            except jwt.DecodeError:
                 return None
 
             return user
