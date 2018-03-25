@@ -25,3 +25,7 @@ New type of date - data_attach when copy was attach to the order
 ### ADDED
 
 model document: take_copy, return_copy
+
+### ADDED
+
+model order: queue validation
