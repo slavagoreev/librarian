@@ -27,9 +27,9 @@ export class PlainUserRolePipe implements PipeTransform {
     switch (value) {
       case 100: return "Student";
       case 210: return "Instructor";
-      case 210: return "Teacher Assistant";
-      case 210: return "Visiting Professor";
-      case 210: return "Professor";
+      case 220: return "Teacher Assistant";
+      case 230: return "Visiting Professor";
+      case 240: return "Professor";
       case 300: return "Librarian";
     }
   }
