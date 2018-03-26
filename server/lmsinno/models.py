@@ -305,6 +305,8 @@ class Order(models.Model):
             self.date_return = datetime.date.today()
 
         self.document.return_copy(self.copy)
+        self.status = misc.CLOSED_STATUS
+        self.save()
 
         return overdue_sum
 
