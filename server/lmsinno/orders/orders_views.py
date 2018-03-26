@@ -104,7 +104,7 @@ class OrderDetail(APIView):
                     result['status'] = misc.HTTP_404_NOT_FOUND
                     return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-                order.accept()
+                order.accept_booking()
 
                 result['status'] = misc.HTTP_200_OK
                 return Response(result, status=status.HTTP_200_OK)
@@ -167,29 +167,20 @@ class MyOrders(APIView):
         result = {'status': '', 'data': {}}
 
         try:
+
             my_order = Order.objects.get(order_id=order_id)
-            document = my_order.copy.document
 
             if my_order.user != User.get_instance(request=request):
                 raise KeyError
 
-            new_status = int(request.data['status'])
-            if new_status != 4:
-                raise KeyError
-
-            # Visiting Professor patron can renew an item as many times as he wants
-            if my_order.status == 4 and my_order.user.role != misc.VISITING_PROFESSOR_ROLE:
-                raise KeyError
+            if not my_order.is_renewable():
+                result['data'] = 'sorry, you can not renew this document'
+                result['status'] = misc.HTTP_400_BAD_REQUEST
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             # TODO renew item
 
-            if document.copies_available == 0:
-                orders = Order.objects.filter(status=0)
-                for order in orders:
-                    if order.document == document:
-                        raise LookupError
-
-            my_order.extend()
+            my_order.renew()
 
             result['status'] = misc.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
@@ -197,15 +188,11 @@ class MyOrders(APIView):
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
-            result['status'] = misc.HTTP_400_BAD_REQUEST
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
-        except LookupError:
-            result['data'] = 'sorry, someone need this book'
+            result['data'] = "sorry, you can renew only your document"
             result['status'] = misc.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
-# TODO copy valid
 class Booking(APIView):
     """
     Class to book one particular document by ID

@@ -242,7 +242,7 @@ class Order(models.Model):
             self.save()
             # TODO notifications
 
-    def accept(self):
+    def accept_booking(self):
         """
         accept order in queue if it has copy
         :return:
@@ -285,6 +285,20 @@ class Order(models.Model):
         self.status = misc.BOOKED_STATUS
         self.save()
 
+    def renew(self):
+        if not self.is_renewable:
+            return
+
+        self.status = misc.CLOSED_STATUS
+        self.date_return = datetime.date.today()
+        self.save()
+
+        new_order = Order.objects.create(
+            document=self.document,
+            user=self.user,
+            copy=self.copy
+        )
+
     def close(self):
         """
 
@@ -312,6 +326,18 @@ class Order(models.Model):
 
     def get_overdue_sum(self):
         pass
+
+    def is_renewable(self):
+        if self.status == misc.OVERDUE_STATUS:
+            return False
+
+        if not self.document.copies_available:
+            orders_on_copy = Order.objects.filter(status=misc.IN_QUEUE_STATUS)
+            orders_on_copy = orders_on_copy.filter(document=self.document).filter(copy=None)
+            if orders_on_copy:
+                return False
+
+        return True
 
 
 class Tag(models.Model):
