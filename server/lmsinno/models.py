@@ -5,6 +5,8 @@ from django.db import models
 from rest_framework_jwt.settings import api_settings
 from rest_framework.authtoken.models import Token
 
+from . import misc
+
 import datetime
 import jwt
 import re
@@ -15,7 +17,9 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 class Document(models.Model):
     # Type of Documents:
     # 0 - Book; 1 - Journal article; 2 - AV
-    DOCUMENT_TYPE_CHOICES = [(0, 'Book'), (1, 'Journal article'), (2, 'AV')]
+    DOCUMENT_TYPE_CHOICES = [(misc.BOOK_TYPE, 'Book'),
+                             (misc.JOURNAL_TYPE, 'Journal article'),
+                             (misc.AV_TYPE, 'AV')]
 
     title = models.CharField(max_length=255)
     document_id = models.AutoField(primary_key=True, verbose_name=title)
@@ -68,14 +72,14 @@ class Document(models.Model):
 class User(AbstractUser):
     # Type of User:
     # 0 - basic user; 1 - Faculty; 2 - Librarian
-    USER_TYPE_CHOICES = [(0.0, 'Basic user'),
-                         (1.1, 'Instructor'),
-                         (1.2, 'Teacher Assistant'),
-                         (1.3, 'Visiting Professor'),
-                         (1.4, 'Professor'),
-                         (2.0, 'Librarian')]
+    USER_TYPE_CHOICES = [(misc.BASIC_USER_ROLE, 'Basic user'),
+                         (misc.INSTRUCTOR_ROLE, 'Instructor'),
+                         (misc.TEACHER_ASSISTANT_ROLE, 'Teacher Assistant'),
+                         (misc.VISITING_PROFESSOR_ROLE, 'Visiting Professor'),
+                         (misc.PROFESSOR_ROLE, 'Professor'),
+                         (misc.LIBRARIAN_ROLE, 'Librarian')]
 
-    role = models.FloatField(default=0, choices=USER_TYPE_CHOICES)
+    role = models.IntegerField(default=misc.BASIC_USER_ROLE, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
 

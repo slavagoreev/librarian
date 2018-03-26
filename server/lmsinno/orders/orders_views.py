@@ -110,27 +110,34 @@ class OrderDetail(APIView):
                     order.attach_copy(document.take_copy())
 
                 order.date_accepted = datetime.date.today()
+                delta = datetime.timedelta(days=1)
 
-                if order.user.role == 0:
+                # books are checked out for three weeks
+                if order.user.role == misc.BASIC_USER_ROLE:
                     delta = datetime.timedelta(weeks=3)
-                    order.date_return = datetime.date.today() + delta
 
+                # current best sellers, in which case the limit is two weeks
                 if order.copy.document.is_bestseller:
                     delta = datetime.timedelta(weeks=2)
-                    order.date_return = datetime.date.today() + delta
 
-                if order.user.role >= 1:
+                # checked out by a faculty member, in which case the limit is 4 weeks
+                if order.user.role == (misc.LIBRARIAN_ROLE or
+                                       misc.VISITING_PROFESSOR_ROLE or
+                                       misc.TEACHER_ASSISTANT_ROLE or
+                                       misc.INSTRUCTOR_ROLE or
+                                       misc.PROFESSOR_ROLE):
+
                     delta = datetime.timedelta(weeks=4)
-                    order.date_return = datetime.date.today() + delta
 
-                if order.copy.document.type > 0:
+                # AV materials and journals may be checked out for two weeks.
+                if order.copy.document.type == (misc.JOURNAL_TYPE or misc.AV_TYPE):
                     delta = datetime.timedelta(weeks=2)
-                    order.date_return = datetime.date.today() + delta
 
                 # Visiting Professor - limit is 1 week (regardless the type of the document)
-                if order.user.role == 1.3:
+                if order.user.role == misc.VISITING_PROFESSOR_ROLE:
                     delta = datetime.timedelta(weeks=1)
-                    order.date_return = datetime.date.today() + delta
+
+                order.date_return = datetime.date.today() + delta
 
             elif new_status == 3 and old_status != 3:
 
@@ -216,7 +223,7 @@ class MyOrders(APIView):
                 raise KeyError
 
             # Visiting Professor patron can renew an item as many times as he wants
-            if my_order.status == 4 and my_order.user.role != 1.3:
+            if my_order.status == 4 and my_order.user.role != misc.VISITING_PROFESSOR_ROLE:
                 raise KeyError
 
             if document.copies_available == 0:

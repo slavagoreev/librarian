@@ -3,14 +3,14 @@ try:
 except ImportError:
     raise ImportError("rest_auth needs to be added to INSTALLED_APPS.")
 
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.response import Response
 
 from .users_serializers import UserResponseDataSerializer, UserDetailSerializer
-from .. import misc
-from ..models import User
 from ..permissions import LibrariantPermission, UserDetailPermission
+from ..models import User
+from .. import misc
 
 
 class Users(APIView):
@@ -94,7 +94,7 @@ class UserDetail(APIView):
             # We return 'accepted' in case that 'hacker' who try to change state
             # Might try several times before he totally burn in tears about our security :)
             # NOTE: User.get_instance(request).role - the instance of requester
-            if User.get_instance(request).role != 2 or (user.role != User.get_instance(request).role and User.get_instance(request).role != 2):
+            if User.get_instance(request).role != misc.LIBRARIAN_ROLE:
                 return Response(result, status=status.HTTP_202_ACCEPTED)
             # If pass, then save all
             serializer.save()

@@ -89,7 +89,7 @@ class UserSafeSerializer(serializers.Serializer):
             'first_name': self.validated_data.get('first_name', ''),
             'last_name': self.validated_data.get('last_name', ''),
             'phone': self.validated_data.get('phone', ''),
-            'role': 0
+            'role': 100
         }
 
     def save(self, request):
