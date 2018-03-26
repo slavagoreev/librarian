@@ -68,7 +68,7 @@ class DocumentResponseSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_copies_available(obj):
-        return max(0, obj.copies_available - len(Order.objects.filter(document=obj).filter(status=0)) - len(Copy.objects.filter(status=1)))
+        return len(Copy.objects.filter(document=obj).filter(status=0))
 
     @staticmethod
     def get_authors(obj):

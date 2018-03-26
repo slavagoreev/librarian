@@ -33,7 +33,7 @@ export class DocumentDetailsComponent implements OnInit, OnDestroy {
           this.document = res
         });
     });
-    this.store.select(getUserRole).subscribe(res => this.permission = res == 2);
+    this.store.select(getUserRole).subscribe(res => this.permission = res == 300);
     this.innerHeight =window.innerHeight;
   }
   @HostListener('window:resize', ['$event'])

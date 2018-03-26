@@ -4,7 +4,7 @@ from rest_framework import status
 
 from .copies_serializers import CopySerializer, CopyDetailSerializer
 from .. import misc
-from ..models import Copy, Document
+from ..models import Copy, Document, Order
 from ..permissions import LibrariantPermission
 
 
@@ -29,9 +29,10 @@ class CopyDetail(APIView):
 
         if serializer.is_valid():
             copy = serializer.save()
+            Order.queue_validation()
 
             document = Document.objects.get(pk=copy.document_id)
-            document.copies_available += 1
+            document.copies_available = len(Copy.objects.filter(document=document).filter(status=misc.NOT_ORDERED_STATUS))
             document.save()
 
             result['status'] = misc.HTTP_200_OK
@@ -83,7 +84,7 @@ class CopyDetail(APIView):
 
         try:
             document = Document.objects.get(document_id=copy_id)
-            copies = Copy.objects.filter(document=document).filter(status=0)
+            copies = Copy.objects.filter(document=document).filter(status=misc.NOT_ORDERED_STATUS)
 
             if not copies:
                 raise FileNotFoundError
@@ -93,12 +94,11 @@ class CopyDetail(APIView):
             document.copies_available -= 1
             document.save()
 
-            print(document.copies_available)
-            print(len(Copy.objects.filter(document=document)))
         except Document.DoesNotExist:
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except FileNotFoundError:
+            result['data'] = 'no copy to delete'
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 

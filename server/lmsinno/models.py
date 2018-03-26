@@ -49,7 +49,7 @@ class Document(models.Model):
         copy.status = misc.ORDERED_STATUS
         copy.save()
 
-        self.copies_available -= 1
+        self.copies_available = len(Copy.objects.filter(document=self).filter(status=misc.NOT_ORDERED_STATUS))
         self.save()
 
         return copy
@@ -65,7 +65,7 @@ class Document(models.Model):
         copy.status = misc.NOT_ORDERED_STATUS
         copy.save()
 
-        self.copies_available += 1
+        self.copies_available = len(Copy.objects.filter(document=self).filter(status=misc.NOT_ORDERED_STATUS))
         self.save()
 
 
@@ -209,6 +209,10 @@ class Order(models.Model):
                     order.status = misc.OVERDUE_STATUS
                     order.save()
 
+        Order.queue_validation()
+
+    @staticmethod
+    def queue_validation():
         queue = Order.get_queue()
         for order in queue:
             order.attach_copy()
@@ -304,9 +308,7 @@ class Order(models.Model):
 
         :return:
         """
-        if self.status != (misc.BOOKED_STATUS or
-                           misc.OVERDUE_STATUS or
-                           misc.IN_QUEUE_STATUS):
+        if self.status == misc.CLOSED_STATUS:
             return None
 
         overdue_sum = 0
