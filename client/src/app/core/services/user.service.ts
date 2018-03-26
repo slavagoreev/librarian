@@ -115,6 +115,25 @@ export class UserService {
       });
   }
 
+  getAllPreorders(): Observable<Order[]> {
+    return this.http.get(`orders/queue`)
+      .map(res => {
+        const _res = res.json();
+        if (_res.data) {
+          return _res.data;
+        } else {
+          this.http.loading.next({
+            loading: true,
+            error: {
+              title: 'Loading error',
+              message: 'Could not load orders',
+              delay: 20000
+            }
+          });
+          return null;
+        }
+      });
+  }
   getOrderDetail(orderNumber): Observable<Order> {
     return this.http.get(`users/${orderNumber}`)
       .map(res => {
