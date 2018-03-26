@@ -52,9 +52,12 @@
                      [ngClass]="{
                           'is-invalid' : userEditInfoForm.get('username').errors && userEditInfoForm.get('username').dirty
                        }">
-                <option value="0" [selected]="user.role === 0">Patron</option>
-                <option value="1" [selected]="user.role === 1">Faculty</option>
-                <option value="2" [selected]="user.role === 2">Librarian</option>
+                <option value="100" [selected]="user.role === 100">Patron</option>
+                <option value="210" [selected]="user.role === 210">Instructor</option>
+                <option value="210" [selected]="user.role === 220">Teacher Assistant</option>
+                <option value="210" [selected]="user.role === 230">Visiting Professor</option>
+                <option value="210" [selected]="user.role === 240">Professor</option>
+                <option value="300" [selected]="user.role === 300">Librarian</option>
               </select>
               <div class="invalid-feedback">
                 {{userEditInfoForm.get('username')?.errors?.msg || 'Enter valid username!'}}
