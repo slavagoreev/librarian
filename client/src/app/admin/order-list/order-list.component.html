@@ -2,7 +2,10 @@
   <div class="document-list col-lg-10 col-12 px-0 row mx-auto">
     <app-navbar></app-navbar>
     <div class="table-responsive">
-      <p class="text-muted italic mb-0">Order list:</p>
+      <p *ngIf="isOrders; else preorderHead" class="text-muted italic mb-0">Order list:</p>
+      <ng-template #preorderHead><p class="text-muted italic mb-0">Preorder list:</p></ng-template>
+      <button class="btn btn-light" *ngIf="isOrders; else toOrder" (click)="toPreorders()">show preorders</button>
+      <ng-template #toOrder><button class="btn btn-light" (click)="toOrders()">show orders</button></ng-template>
       <table class="table">
         <thead>
         <tr>
