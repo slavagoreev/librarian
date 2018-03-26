@@ -39,14 +39,14 @@ class Document(models.Model):
 
     def take_copy(self):
 
-        copies = Copy.objects.filter(document=self).filter(status=0)
+        copies = Copy.objects.filter(document=self).filter(status=misc.NOT_ORDERED_STATUS)
 
         if not copies:
             return None
 
         copy = copies.first()
 
-        copy.status = 1
+        copy.status = misc.ORDERED_STATUS
         copy.save()
 
         self.copies_available -= 1
@@ -59,10 +59,10 @@ class Document(models.Model):
             return
         if copy.document != self:
             return
-        if copy.status == 0:
+        if copy.status == misc.NOT_ORDERED_STATUS:
             return
 
-        copy.status = 0
+        copy.status = misc.NOT_ORDERED_STATUS
         copy.save()
 
         self.copies_available += 1
@@ -171,13 +171,16 @@ class Copy(models.Model):
 class Order(models.Model):
     # Type of Status:
     # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed; 4 - extended
-    STATUS_TYPE_CHOICES = [(0, 'In queue'), (1, 'Booked'), (4, 'Extended'), (2, 'Overdue'), (3, 'Closed'),]
+    STATUS_TYPE_CHOICES = [(misc.IN_QUEUE_STATUS, 'In queue'),
+                           (misc.BOOKED_STATUS, 'Booked'),
+                           (misc.OVERDUE_STATUS, 'Overdue'),
+                           (misc.CLOSED_STATUS, 'Closed'), ]
 
     order_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, null=True)
     copy = models.ForeignKey(Copy, on_delete=models.CASCADE, default=None, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=0)
+    status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=misc.IN_QUEUE_STATUS)
 
     # date when order was created
     date_created = models.DateField(auto_now_add=True)
@@ -193,22 +196,26 @@ class Order(models.Model):
 
     @staticmethod
     def overdue_and_queue_validation():
-        orders = Order.objects.all().exclude(status=3).exclude(status=0)
+        """
+
+        :return:
+        """
+        orders = Order.objects.all().exclude(status=misc.IN_QUEUE_STATUS).exclude(status=misc.CLOSED_STATUS)
 
         for order in orders:
 
             if order.date_return:
                 if order.date_return < datetime.date.today():
-                    order.status = 2
+                    order.status = misc.OVERDUE_STATUS
                     order.save()
 
         queue = Order.get_queue()
         for order in queue:
-            order.attach_copy(order.document.take_copy())
+            order.attach_copy()
 
     @staticmethod
     def get_queue():
-        orders_in_queue = Order.objects.filter(status=0).filter(copy=None)
+        orders_in_queue = Order.objects.filter(status=misc.IN_QUEUE_STATUS).filter(copy=None)
 
         # TODO priority queue for orders
 
@@ -217,18 +224,92 @@ class Order(models.Model):
 
         return orders_in_queue
 
-    def extend(self):
-        delta = datetime.timedelta(weeks=1)
-        self.date_return += delta
-        self.status = 4
-        self.save()
+    def attach_copy(self):
+        """
+        attach copy to the order if exist available copy
+        :return:
+        """
+        if self.status != misc.IN_QUEUE_STATUS:
+            return
+        if self.copy:
+            return
 
-    def attach_copy(self, copy):
+        copy = self.document.take_copy()
+
         if copy:
             self.date_attach = datetime.datetime.today()
             self.copy = copy
             self.save()
             # TODO notifications
+
+    def accept(self):
+        """
+        accept order in queue if it has copy
+        :return:
+        """
+        if self.status != misc.IN_QUEUE_STATUS:
+            return
+        self.attach_copy()
+        if not self.copy:
+            return
+
+        self.date_accepted = datetime.date.today()
+        delta = datetime.timedelta(days=1)
+
+        # books are checked out for three weeks
+        if self.user.role == misc.BASIC_USER_ROLE:
+            delta = datetime.timedelta(weeks=3)
+
+        # current best sellers, in which case the limit is two weeks
+        if self.copy.document.is_bestseller:
+            delta = datetime.timedelta(weeks=2)
+
+        # checked out by a faculty member, in which case the limit is 4 weeks
+        if self.user.role == (misc.LIBRARIAN_ROLE or
+                              misc.VISITING_PROFESSOR_ROLE or
+                              misc.TEACHER_ASSISTANT_ROLE or
+                              misc.INSTRUCTOR_ROLE or
+                              misc.PROFESSOR_ROLE):
+            delta = datetime.timedelta(weeks=4)
+
+        # AV materials and journals may be checked out for two weeks.
+        if self.copy.document.type == (misc.JOURNAL_TYPE or misc.AV_TYPE):
+            delta = datetime.timedelta(weeks=2)
+
+        # Visiting Professor - limit is 1 week (regardless the type of the document)
+        if self.user.role == misc.VISITING_PROFESSOR_ROLE:
+            delta = datetime.timedelta(weeks=1)
+
+        self.date_return = datetime.date.today() + delta
+
+        self.status = misc.BOOKED_STATUS
+        self.save()
+
+    def close(self):
+        """
+
+        :return:
+        """
+        if self.status != (misc.BOOKED_STATUS or
+                           misc.OVERDUE_STATUS or
+                           misc.IN_QUEUE_STATUS):
+            return None
+
+        overdue_sum = 0
+        if self.status == misc.OVERDUE_STATUS:
+            overdue_days = (datetime.date.today() - self.date_return).days
+            overdue_sum = min(overdue_days * 100, self.copy.document.price)
+
+        # if order closed immediately copies number must no change
+        if self.status != misc.IN_QUEUE_STATUS:
+            self.date_return = datetime.date.today()
+
+        self.document.return_copy(self.copy)
+
+        return overdue_sum
+
+    def get_overdue_sum(self):
+        pass
 
 
 class Tag(models.Model):

@@ -7,8 +7,6 @@ from ..permissions import LibrariantPermission
 from ..models import Order, User, Document, Copy
 from .. import misc
 
-import datetime
-
 
 class Orders(APIView):
     permission_classes = (LibrariantPermission,)
@@ -98,82 +96,39 @@ class OrderDetail(APIView):
             old_status = int(order.status)
             new_status = int(request.data['status'])
 
-            # if order status is 1 or 3 proceed
-            # we can accept closed orders just because
-            if new_status == 1 and old_status == 0:
+            # if new status is BOOKED_STATUS or CLOSED_STATUS proceed
+            if new_status == misc.BOOKED_STATUS and old_status == misc.IN_QUEUE_STATUS:
+
                 if document.copies_available == 0 and not order.copy:
                     result['data'] = 'no copy available'
                     result['status'] = misc.HTTP_404_NOT_FOUND
                     return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-                if not order.copy:
-                    order.attach_copy(document.take_copy())
+                order.accept()
 
-                order.date_accepted = datetime.date.today()
-                delta = datetime.timedelta(days=1)
+                result['status'] = misc.HTTP_200_OK
+                return Response(result, status=status.HTTP_200_OK)
 
-                # books are checked out for three weeks
-                if order.user.role == misc.BASIC_USER_ROLE:
-                    delta = datetime.timedelta(weeks=3)
+            elif new_status == misc.CLOSED_STATUS and old_status != misc.CLOSED_STATUS:
 
-                # current best sellers, in which case the limit is two weeks
-                if order.copy.document.is_bestseller:
-                    delta = datetime.timedelta(weeks=2)
-
-                # checked out by a faculty member, in which case the limit is 4 weeks
-                if order.user.role == (misc.LIBRARIAN_ROLE or
-                                       misc.VISITING_PROFESSOR_ROLE or
-                                       misc.TEACHER_ASSISTANT_ROLE or
-                                       misc.INSTRUCTOR_ROLE or
-                                       misc.PROFESSOR_ROLE):
-
-                    delta = datetime.timedelta(weeks=4)
-
-                # AV materials and journals may be checked out for two weeks.
-                if order.copy.document.type == (misc.JOURNAL_TYPE or misc.AV_TYPE):
-                    delta = datetime.timedelta(weeks=2)
-
-                # Visiting Professor - limit is 1 week (regardless the type of the document)
-                if order.user.role == misc.VISITING_PROFESSOR_ROLE:
-                    delta = datetime.timedelta(weeks=1)
-
-                order.date_return = datetime.date.today() + delta
-
-            elif new_status == 3 and old_status != 3:
-
-                if old_status == 2:
-
-                    overdue_days = (datetime.date.today() - order.date_return).days
-                    overdue_sum = min(overdue_days * 100, order.copy.document.price)
-                    result['data'] = {'overdue_sum': overdue_sum}
-
-                # if order closed immediately copies number must no change
-
-                if old_status != 0:
-                    order.date_return = datetime.date.today()
-
-                document.return_copy(order.copy)
+                overdue_sum = order.close()
+                result['data'] = {'overdue_sum': overdue_sum}
+                result['status'] = misc.HTTP_200_OK
+                return Response(result, status=status.HTTP_200_OK)
 
             else:
+
                 # if status nor 1 or 3 than it is incorrect request
+                result['data'] = 'no such option'
                 result['status'] = misc.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
-
-            if 0 < new_status < 5:
-                order.status = new_status
-                order.save()
-            else:
-                while 1:
-                    print("If reaches this manage to /server/lmsinno/orders/orders_views.py")
-
-            result['status'] = misc.HTTP_200_OK
-            return Response(result, status=status.HTTP_200_OK)
 
         except Order.DoesNotExist:
             result['data'] = 'order dose not exist'
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
+            result['data'] = 'incorrect data was provided'
             result['status'] = misc.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
@@ -225,6 +180,8 @@ class MyOrders(APIView):
             # Visiting Professor patron can renew an item as many times as he wants
             if my_order.status == 4 and my_order.user.role != misc.VISITING_PROFESSOR_ROLE:
                 raise KeyError
+
+            # TODO renew item
 
             if document.copies_available == 0:
                 orders = Order.objects.filter(status=0)
@@ -291,7 +248,7 @@ class Booking(APIView):
                 user=user
             )
 
-            order.attach_copy(document.take_copy())
+            order.attach_copy()
 
         except IndexError:
 
