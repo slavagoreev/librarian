@@ -70,6 +70,8 @@ class Document(models.Model):
         self.copies_available = len(Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS))
         self.save()
 
+        Order.queue_validation()
+
 
 class User(AbstractUser):
     # Type of User:
@@ -197,7 +199,7 @@ class Order(models.Model):
         return '{0}: {1}'.format(self.user, self.document)
 
     @staticmethod
-    def overdue_and_queue_validation():
+    def overdue_validation():
         """
 
         :return:

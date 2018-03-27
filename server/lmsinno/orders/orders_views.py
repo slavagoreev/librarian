@@ -8,6 +8,11 @@ from ..models import Order, User, Document, Copy
 from .. import const
 
 
+from threading import Thread
+import datetime
+import time
+
+
 class Orders(APIView):
     permission_classes = (LibrariantPermission,)
     """
@@ -21,7 +26,7 @@ class Orders(APIView):
         :param request:
         :return: HTTP_200_OK and JSON
         """
-        Order.overdue_and_queue_validation()
+
         result = {'status': '', 'data': {}}
 
         orders = OrderDetailSerializer(Order.objects.all().exclude(copy=None), many=True)
@@ -44,7 +49,7 @@ class OrdersQueue(APIView):
         :param request:
         :return: HTTP_200_OK and JSON
         """
-        Order.overdue_and_queue_validation()
+
         result = {'status': '', 'data': {}}
 
         orders_in_queue = OrderDetailSerializer(Order.get_queue(), many=True)
@@ -62,7 +67,7 @@ class OrderDetail(APIView):
 
     @staticmethod
     def get(request, order_id):
-        Order.overdue_and_queue_validation()
+
         result = {'status': '', 'data': {}}
 
         try:
@@ -85,7 +90,7 @@ class OrderDetail(APIView):
             if no copy available for this order
         :return: HTTP_200_OK and JSON
         """
-        Order.overdue_and_queue_validation()
+
         result = {'status': '', 'data': {}}
 
         try:
@@ -145,7 +150,7 @@ class MyOrders(APIView):
         :param request:
         :return: HTTP_200_OK and JSON
         """
-        Order.overdue_and_queue_validation()
+
         result = {'status': '', 'data': {}}
 
         user = User.get_instance(request=request)
@@ -217,11 +222,12 @@ class Booking(APIView):
             orders = Order.objects.all().filter(user=User.get_instance(request))
 
             for order in orders:
-                if order.document.document_id == document.document_id:
-                    if order.status == 0 or order.status == 1 or order.status == 2 or order.status == 4:
-                        result['status'] = const.HTTP_400_BAD_REQUEST
-                        result['data'] = {'details': 'you already booked this document'}
-                        return Response(result, status=status.HTTP_400_BAD_REQUEST)
+                if order.document.document_id == document.document_id and order.status == (const.IN_QUEUE_STATUS or
+                                                                                           const.BOOKED_STATUS or
+                                                                                           const.OVERDUE_STATUS):
+                    result['status'] = const.HTTP_400_BAD_REQUEST
+                    result['data'] = {'details': 'you already booked this document'}
+                    return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             if document.is_reference:
                 result['status'] = const.HTTP_400_BAD_REQUEST
@@ -252,3 +258,17 @@ class Booking(APIView):
         result['status'] = const.HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
+
+
+class MyThread(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+
+    def run(self):
+        while True:
+            time.sleep(datetime.timedelta(hours=12).seconds)
+            Order.overdue_validation()
+
+
+MyThread().start()

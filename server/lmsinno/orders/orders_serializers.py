@@ -43,7 +43,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_overdue_sum(obj):
         sum = 0
-        if obj.status == 2:
+        if obj.status == const.OVERDUE_STATUS:
             overdue_days = (datetime.date.today() - obj.date_return).days
             sum = max(min(overdue_days * const.OVERDUE_CONST, obj.copy.document.price), 0)
 
