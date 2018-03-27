@@ -388,7 +388,12 @@ class UserTelegram(models.Model):
         if self.token:
             return
 
-        self.token = get_random_string(128)
+        while True:
+            try:
+                self.token = get_random_string(8)
+                break
+            except Exception:
+                pass
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
