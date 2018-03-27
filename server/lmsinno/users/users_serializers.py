@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 
 from ..orders.orders_serializers import OrderSerializer
-from ..models import User, Order
+from ..models import User, Order, UserTelegram
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -89,7 +89,7 @@ class UserSafeSerializer(serializers.Serializer):
             'first_name': self.validated_data.get('first_name', ''),
             'last_name': self.validated_data.get('last_name', ''),
             'phone': self.validated_data.get('phone', ''),
-            'role': 0
+            'role': 100
         }
 
     def save(self, request):
@@ -100,6 +100,11 @@ class UserSafeSerializer(serializers.Serializer):
         adapter.save_user(request, user, self)
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
+
+        UserTelegram.objects.create(
+            user=user
+        )
+
         return user
 
 

@@ -86,14 +86,23 @@ export class AuthService {
         // console.log (res);
         this.setLocalData(res.json());
         this.store.dispatch(this.actions.loginSuccess(_data));
-        this.notifications.sendMessage('Registration', 'success', 'Signed up successfully', 5000)
+        this.notifications.sendMessage('Registration', 'success', 'Signed up successfully', 5000);
       } else {
-        this.http.loading.next({
-          loading: false,
-          error: {
-            title: 'Please enter valid Credentials',
-          }
-        });
+        if (_data.data.username) {
+          this.notifications.sendMessage('Enter valid credentials', 'error', 'This username is already registered', 5000);
+        }
+        if (_data.data.email) {
+          this.notifications.sendMessage('Enter valid credentials', 'error', 'This email is already registered', 5000);
+        }
+        if (_data.data.password1) {
+          this.notifications.sendMessage('Enter valid credentials', 'error', 'Password is too common', 5000);
+        }
+        // this.http.loading.next({
+        //   loading: false,
+        //   error: {
+        //     title: 'Please enter valid Credentials',
+        //   }
+        // });
       }
       return _data;
     });

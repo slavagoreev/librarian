@@ -1,9 +1,11 @@
 from django.utils.datastructures import MultiValueDictKeyError
-from rest_framework.authtoken.models import Token
+
 from rest_framework.views import exception_handler
 from rest_framework import permissions
+
 from .models import User
-import re
+
+from . import misc
 
 
 class DocumentPermission(permissions.BasePermission):
@@ -16,11 +18,11 @@ class DocumentPermission(permissions.BasePermission):
 
         if request.method == 'GET':
             result = True
-        elif request.method == 'POST' and user.role == 2:
+        elif request.method == 'POST' and user.role == misc.LIBRARIAN_ROLE:
             result = True
-        elif request.method == 'DELETE' and user.role == 2:
+        elif request.method == 'DELETE' and user.role == misc.LIBRARIAN_ROLE:
             result = True
-        elif request.method == 'PATCH' and user.role == 2:
+        elif request.method == 'PATCH' and user.role == misc.LIBRARIAN_ROLE:
             result = True
         else:
             result = False
@@ -38,9 +40,9 @@ class AuthenticatedUserPermission(permissions.BasePermission):
 
         if request.method == 'GET':
             result = True
-        elif request.method == 'POST' and user.role == 2:
+        elif request.method == 'POST' and user.role == misc.LIBRARIAN_ROLE:
             result = True
-        elif request.method == 'PATCH' and user.role == 2:
+        elif request.method == 'PATCH' and user.role == misc.LIBRARIAN_ROLE:
             result = True
         else:
             result = False
@@ -57,13 +59,13 @@ class LibrariantPermission(permissions.BasePermission):
         if not user:
             return False
 
-        if request.method == 'GET' and user.role == 2:
+        if request.method == 'GET' and user.role == misc.LIBRARIAN_ROLE:
             result = True
-        elif request.method == 'POST' and user.role == 2:
+        elif request.method == 'POST' and user.role == misc.LIBRARIAN_ROLE:
             result = True
-        elif request.method == 'DELETE' and user.role == 2:
+        elif request.method == 'DELETE' and user.role == misc.LIBRARIAN_ROLE:
             result = True
-        elif request.method == 'PATCH' and user.role == 2:
+        elif request.method == 'PATCH' and user.role == misc.LIBRARIAN_ROLE:
             result = True
         else:
             result = False
@@ -79,14 +81,16 @@ class UserDetailPermission(permissions.BasePermission):
         if not user:
             return False
 
-        if request.method == 'GET' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1]) or user.role == 2):
+        if request.method == 'GET' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1])
+                                        or user.role == misc.LIBRARIAN_ROLE):
             result = True
-        elif request.method == 'POST' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1]) or user.role == 2):
+        elif request.method == 'POST' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1])
+                                           or user.role == misc.LIBRARIAN_ROLE):
             result = True
-        elif request.method == 'DELETE' and user.role == 2:
+        elif request.method == 'DELETE' and user.role == misc.LIBRARIAN_ROLE:
             result = True
         elif request.method == 'PATCH':
-            if user.role == 2:
+            if user.role == misc.LIBRARIAN_ROLE:
                 result = True
             elif user.pk == int(request.META['PATH_INFO'].split('/')[-1]):
                 result = True

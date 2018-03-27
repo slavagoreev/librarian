@@ -11,6 +11,7 @@ import {Order} from "../../shared/models/orders.model";
 })
 export class OrderListComponent implements OnInit {
 
+  isOrders = 1;
   type = 'book';
   orders$: Observable<Order[]>;
 
@@ -46,6 +47,21 @@ export class OrderListComponent implements OnInit {
     this.userService.getAllOrders().subscribe(res => {
       this.orders$ = Observable.of(res);
     });
+  }
+
+  observePreorders() {
+    this.userService.getAllPreorders().subscribe(res => {
+      this.orders$ = Observable.of(res);
+    });
+  }
+  toOrders() {
+    this.observeOrders();
+    this.isOrders = 1;
+  }
+
+  toPreorders() {
+    this.observePreorders();
+    this.isOrders = 0;
   }
 
   ngOnInit() {

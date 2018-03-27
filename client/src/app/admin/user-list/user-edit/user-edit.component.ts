@@ -122,7 +122,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
     this.userChanged.address = this.address.nativeElement.value;
     this.userChanged.first_name = this.firstname.nativeElement.value;
     this.userChanged.last_name = this.lastname.nativeElement.value;
-    this.userService.setUserData(JSON.parse(JSON.stringify(this.userChanged))).subscribe();
+    this.userService.setUserData(this.userChanged).subscribe();
   }
 
   private pushErrorFor(ctrl_name: string, msg: string) {

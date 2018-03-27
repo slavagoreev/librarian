@@ -12,7 +12,7 @@ export const AdminRoutes = [
     path: 'librarian',
     canActivate: [ RoleGuard ],
     data: {
-      expectedRole: 2
+      expectedRole: 300
     },
     children: [
       {

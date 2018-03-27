@@ -1,11 +1,18 @@
+from allauth.account.models import EmailAddress, EmailConfirmation, EmailConfirmationHMAC
+
+try:
+    from rest_auth.registration.views import RegisterView, VerifyEmailView
+except ImportError:
+    raise ImportError("rest_auth needs to be added to INSTALLED_APPS.")
+
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.response import Response
 
 from .users_serializers import UserResponseDataSerializer, UserDetailSerializer
-from .. import misc
-from ..models import User
 from ..permissions import LibrariantPermission, UserDetailPermission
+from ..models import User
+from .. import misc
 
 
 class Users(APIView):
@@ -54,6 +61,7 @@ class UserDetail(APIView):
 
         try:
             user = User.objects.get(pk=user_id)
+            print(EmailAddress.objects.get(user=user).verified)
         except User.DoesNotExist:
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
@@ -89,7 +97,7 @@ class UserDetail(APIView):
             # We return 'accepted' in case that 'hacker' who try to change state
             # Might try several times before he totally burn in tears about our security :)
             # NOTE: User.get_instance(request).role - the instance of requester
-            if User.get_instance(request).role != 2 or (user.role != User.get_instance(request).role and User.get_instance(request).role != 2):
+            if User.get_instance(request).role != misc.LIBRARIAN_ROLE:
                 return Response(result, status=status.HTTP_202_ACCEPTED)
             # If pass, then save all
             serializer.save()
@@ -149,4 +157,46 @@ class MyDetail(APIView):
         serializer = UserDetailSerializer(user)
         result['data'] = serializer.data
         result['status'] = misc.HTTP_200_OK
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class Registration(RegisterView):
+    """
+        Class to handel with registration errors
+    """
+    def create(self, request, *args, **kwargs):
+        """
+            :return: HTTP_201_CREATED and JSON-Documents: if all good
+                    HTTP_400_BAD_REQUEST: if some problems with serializer
+        """
+        result = {'status': '', 'data': {}}
+
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+
+            result['data'] = serializer.errors
+            result['status'] = misc.HTTP_400_BAD_REQUEST
+
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+        return RegisterView.create(self, request, *args, **kwargs)
+
+
+class ConfirmEmail(APIView):
+    @staticmethod
+    def get(request, key):
+        user = User.objects.first()
+        print(key)
+
+        #print(EmailConfirmation.objects.get(EmailAddress.objects.get(user=user)))
+        print(EmailAddress.objects.get(user=user))
+
+        print(EmailConfirmationHMAC)
+
+        print(EmailAddress.objects.get(user=user).verified)
+
+        view = VerifyEmailView()
+        view.post(request=request)
+
+        result = {'status': '', 'data': {}}
         return Response(result, status=status.HTTP_200_OK)

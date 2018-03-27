@@ -1,3 +1,4 @@
+from .. import misc
 from rest_framework import serializers
 
 from ..models import Copy, Order
@@ -26,12 +27,12 @@ class CopyDetailSerializer(serializers.ModelSerializer):
     # TODO Return with copy a user
     @staticmethod
     def get_user(obj):
-        if obj.status == 0:
+        if obj.status == misc.NOT_ORDERED_STATUS:
             return None
         else:
             orders = Order.objects.filter(copy=obj)
             for order in orders:
-                if order.status != 3:
+                if order.status != misc.CLOSED_STATUS:
                     return users_serializers.UserResponseDataSerializer(order.user).data
 
 
