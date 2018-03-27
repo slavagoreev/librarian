@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .. import misc
+from .. import const
 from ..models import Order, User
 from ..users import users_serializers
 from ..documents import documents_serializers

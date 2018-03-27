@@ -5,7 +5,7 @@ from rest_framework import status
 from .orders_serializers import OrderSerializer, OrderDetailSerializer
 from ..permissions import LibrariantPermission
 from ..models import Order, User, Document, Copy
-from .. import misc
+from .. import const
 
 
 class Orders(APIView):
@@ -72,7 +72,7 @@ class OrderDetail(APIView):
 
             return Response(result, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
@@ -97,39 +97,39 @@ class OrderDetail(APIView):
             new_status = int(request.data['status'])
 
             # if new status is BOOKED_STATUS or CLOSED_STATUS proceed
-            if new_status == misc.BOOKED_STATUS and old_status == misc.IN_QUEUE_STATUS:
+            if new_status == const.BOOKED_STATUS and old_status == const.IN_QUEUE_STATUS:
 
                 if document.copies_available == 0 and not order.copy:
                     result['data'] = 'no copy available'
-                    result['status'] = misc.HTTP_404_NOT_FOUND
+                    result['status'] = const.HTTP_404_NOT_FOUND
                     return Response(result, status=status.HTTP_404_NOT_FOUND)
 
                 order.accept_booking()
 
-                result['status'] = misc.HTTP_200_OK
+                result['status'] = const.HTTP_200_OK
                 return Response(result, status=status.HTTP_200_OK)
 
-            elif new_status == misc.CLOSED_STATUS and old_status != misc.CLOSED_STATUS:
+            elif new_status == const.CLOSED_STATUS and old_status != const.CLOSED_STATUS:
 
                 overdue_sum = order.close()
                 result['data'] = {'overdue_sum': overdue_sum}
-                result['status'] = misc.HTTP_200_OK
+                result['status'] = const.HTTP_200_OK
                 return Response(result, status=status.HTTP_200_OK)
 
             else:
 
                 # if status nor 1 or 3 than it is incorrect request
                 result['data'] = 'no such option'
-                result['status'] = misc.HTTP_400_BAD_REQUEST
+                result['status'] = const.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         except Order.DoesNotExist:
             result['data'] = 'order dose not exist'
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
             result['data'] = 'incorrect data was provided'
-            result['status'] = misc.HTTP_400_BAD_REQUEST
+            result['status'] = const.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -153,7 +153,7 @@ class MyOrders(APIView):
         orders = OrderDetailSerializer(Order.objects.filter(user=user), many=True)
 
         result['data'] = orders.data
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
@@ -175,21 +175,21 @@ class MyOrders(APIView):
 
             if not my_order.is_renewable():
                 result['data'] = 'sorry, you can not renew this document'
-                result['status'] = misc.HTTP_400_BAD_REQUEST
+                result['status'] = const.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             # TODO renew item
 
             my_order.renew()
 
-            result['status'] = misc.HTTP_200_OK
+            result['status'] = const.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
             result['data'] = "sorry, you can renew only your document"
-            result['status'] = misc.HTTP_400_BAD_REQUEST
+            result['status'] = const.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -219,12 +219,12 @@ class Booking(APIView):
             for order in orders:
                 if order.document.document_id == document.document_id:
                     if order.status == 0 or order.status == 1 or order.status == 2 or order.status == 4:
-                        result['status'] = misc.HTTP_400_BAD_REQUEST
+                        result['status'] = const.HTTP_400_BAD_REQUEST
                         result['data'] = {'details': 'you already booked this document'}
                         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             if document.is_reference:
-                result['status'] = misc.HTTP_400_BAD_REQUEST
+                result['status'] = const.HTTP_400_BAD_REQUEST
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
@@ -239,16 +239,16 @@ class Booking(APIView):
 
         except IndexError:
 
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         except Document.DoesNotExist:
 
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         order_serializer = OrderSerializer(order)
         result['data'] = order_serializer.data
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)

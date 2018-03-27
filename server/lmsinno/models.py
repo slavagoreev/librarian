@@ -7,7 +7,7 @@ from django.utils.crypto import get_random_string
 from rest_framework_jwt.settings import api_settings
 from rest_framework.authtoken.models import Token
 
-from . import misc
+from . import const
 
 import datetime
 import jwt
@@ -19,9 +19,9 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 class Document(models.Model):
     # Type of Documents:
     # 0 - Book; 1 - Journal article; 2 - AV
-    DOCUMENT_TYPE_CHOICES = [(misc.BOOK_TYPE, 'Book'),
-                             (misc.JOURNAL_TYPE, 'Journal article'),
-                             (misc.AV_TYPE, 'AV')]
+    DOCUMENT_TYPE_CHOICES = [(const.BOOK_TYPE, 'Book'),
+                             (const.JOURNAL_TYPE, 'Journal article'),
+                             (const.AV_TYPE, 'AV')]
 
     title = models.CharField(max_length=255)
     document_id = models.AutoField(primary_key=True, verbose_name=title)
@@ -41,17 +41,17 @@ class Document(models.Model):
 
     def take_copy(self):
 
-        copies = Copy.objects.filter(document=self).filter(status=misc.NOT_ORDERED_STATUS)
+        copies = Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS)
 
         if not copies:
             return None
 
         copy = copies.first()
 
-        copy.status = misc.ORDERED_STATUS
+        copy.status = const.ORDERED_STATUS
         copy.save()
 
-        self.copies_available = len(Copy.objects.filter(document=self).filter(status=misc.NOT_ORDERED_STATUS))
+        self.copies_available = len(Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS))
         self.save()
 
         return copy
@@ -61,27 +61,27 @@ class Document(models.Model):
             return
         if copy.document != self:
             return
-        if copy.status == misc.NOT_ORDERED_STATUS:
+        if copy.status == const.NOT_ORDERED_STATUS:
             return
 
-        copy.status = misc.NOT_ORDERED_STATUS
+        copy.status = const.NOT_ORDERED_STATUS
         copy.save()
 
-        self.copies_available = len(Copy.objects.filter(document=self).filter(status=misc.NOT_ORDERED_STATUS))
+        self.copies_available = len(Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS))
         self.save()
 
 
 class User(AbstractUser):
     # Type of User:
     # 0 - basic user; 1 - Faculty; 2 - Librarian
-    USER_TYPE_CHOICES = [(misc.BASIC_USER_ROLE, 'Basic user'),
-                         (misc.INSTRUCTOR_ROLE, 'Instructor'),
-                         (misc.TEACHER_ASSISTANT_ROLE, 'Teacher Assistant'),
-                         (misc.VISITING_PROFESSOR_ROLE, 'Visiting Professor'),
-                         (misc.PROFESSOR_ROLE, 'Professor'),
-                         (misc.LIBRARIAN_ROLE, 'Librarian')]
+    USER_TYPE_CHOICES = [(const.BASIC_USER_ROLE, 'Basic user'),
+                         (const.INSTRUCTOR_ROLE, 'Instructor'),
+                         (const.TEACHER_ASSISTANT_ROLE, 'Teacher Assistant'),
+                         (const.VISITING_PROFESSOR_ROLE, 'Visiting Professor'),
+                         (const.PROFESSOR_ROLE, 'Professor'),
+                         (const.LIBRARIAN_ROLE, 'Librarian')]
 
-    role = models.IntegerField(default=misc.BASIC_USER_ROLE, choices=USER_TYPE_CHOICES)
+    role = models.IntegerField(default=const.BASIC_USER_ROLE, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
 
@@ -173,16 +173,16 @@ class Copy(models.Model):
 class Order(models.Model):
     # Type of Status:
     # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed; 4 - extended
-    STATUS_TYPE_CHOICES = [(misc.IN_QUEUE_STATUS, 'In queue'),
-                           (misc.BOOKED_STATUS, 'Booked'),
-                           (misc.OVERDUE_STATUS, 'Overdue'),
-                           (misc.CLOSED_STATUS, 'Closed'), ]
+    STATUS_TYPE_CHOICES = [(const.IN_QUEUE_STATUS, 'In queue'),
+                           (const.BOOKED_STATUS, 'Booked'),
+                           (const.OVERDUE_STATUS, 'Overdue'),
+                           (const.CLOSED_STATUS, 'Closed'), ]
 
     order_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, null=True)
     copy = models.ForeignKey(Copy, on_delete=models.CASCADE, default=None, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=misc.IN_QUEUE_STATUS)
+    status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=const.IN_QUEUE_STATUS)
 
     # date when order was created
     date_created = models.DateField(auto_now_add=True)
@@ -202,13 +202,13 @@ class Order(models.Model):
 
         :return:
         """
-        orders = Order.objects.all().exclude(status=misc.IN_QUEUE_STATUS).exclude(status=misc.CLOSED_STATUS)
+        orders = Order.objects.all().exclude(status=const.IN_QUEUE_STATUS).exclude(status=const.CLOSED_STATUS)
 
         for order in orders:
 
             if order.date_return:
                 if order.date_return < datetime.date.today():
-                    order.status = misc.OVERDUE_STATUS
+                    order.status = const.OVERDUE_STATUS
                     order.save()
 
         Order.queue_validation()
@@ -225,7 +225,7 @@ class Order(models.Model):
         method to get priority queue for document
         :return:
         """
-        orders_in_queue = Order.objects.filter(status=misc.IN_QUEUE_STATUS).filter(copy=None)
+        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).filter(copy=None)
 
         # TODO priority queue for orders
 
@@ -239,7 +239,7 @@ class Order(models.Model):
         attach copy to the order if exist available copy
         :return:
         """
-        if self.status != misc.IN_QUEUE_STATUS:
+        if self.status != const.IN_QUEUE_STATUS:
             return
         if self.copy:
             return
@@ -257,7 +257,7 @@ class Order(models.Model):
         accept order in queue if it has copy
         :return:
         """
-        if self.status != misc.IN_QUEUE_STATUS:
+        if self.status != const.IN_QUEUE_STATUS:
             return
         self.attach_copy()
         if not self.copy:
@@ -267,7 +267,7 @@ class Order(models.Model):
         delta = datetime.timedelta(days=1)
 
         # books are checked out for three weeks
-        if self.user.role == misc.BASIC_USER_ROLE:
+        if self.user.role == const.BASIC_USER_ROLE:
             delta = datetime.timedelta(weeks=3)
 
         # current best sellers, in which case the limit is two weeks
@@ -275,24 +275,24 @@ class Order(models.Model):
             delta = datetime.timedelta(weeks=2)
 
         # checked out by a faculty member, in which case the limit is 4 weeks
-        if self.user.role == (misc.LIBRARIAN_ROLE or
-                              misc.VISITING_PROFESSOR_ROLE or
-                              misc.TEACHER_ASSISTANT_ROLE or
-                              misc.INSTRUCTOR_ROLE or
-                              misc.PROFESSOR_ROLE):
+        if self.user.role == (const.LIBRARIAN_ROLE or
+                              const.VISITING_PROFESSOR_ROLE or
+                              const.TEACHER_ASSISTANT_ROLE or
+                              const.INSTRUCTOR_ROLE or
+                              const.PROFESSOR_ROLE):
             delta = datetime.timedelta(weeks=4)
 
         # AV materials and journals may be checked out for two weeks.
-        if self.copy.document.type == (misc.JOURNAL_TYPE or misc.AV_TYPE):
+        if self.copy.document.type == (const.JOURNAL_TYPE or const.AV_TYPE):
             delta = datetime.timedelta(weeks=2)
 
         # Visiting Professor - limit is 1 week (regardless the type of the document)
-        if self.user.role == misc.VISITING_PROFESSOR_ROLE:
+        if self.user.role == const.VISITING_PROFESSOR_ROLE:
             delta = datetime.timedelta(weeks=1)
 
         self.date_return = datetime.date.today() + delta
 
-        self.status = misc.BOOKED_STATUS
+        self.status = const.BOOKED_STATUS
         self.save()
 
     def renew(self):
@@ -303,7 +303,7 @@ class Order(models.Model):
         if not self.is_renewable:
             return
 
-        self.status = misc.CLOSED_STATUS
+        self.status = const.CLOSED_STATUS
         self.date_return = datetime.date.today()
         self.save()
 
@@ -315,23 +315,23 @@ class Order(models.Model):
 
     def close(self):
         """
-
-        :return:
+        method to close unclosed order and return copy
+        :return: overdue sum if any
         """
-        if self.status == misc.CLOSED_STATUS:
+        if self.status == const.CLOSED_STATUS:
             return None
 
         overdue_sum = 0
-        if self.status == misc.OVERDUE_STATUS:
+        if self.status == const.OVERDUE_STATUS:
             overdue_days = (datetime.date.today() - self.date_return).days
             overdue_sum = min(overdue_days * 100, self.copy.document.price)
 
         # if order closed immediately copies number must no change
-        if self.status != misc.IN_QUEUE_STATUS:
+        if self.status != const.IN_QUEUE_STATUS:
             self.date_return = datetime.date.today()
 
         self.document.return_copy(self.copy)
-        self.status = misc.CLOSED_STATUS
+        self.status = const.CLOSED_STATUS
         self.save()
 
         return overdue_sum
@@ -341,14 +341,14 @@ class Order(models.Model):
 
     def is_renewable(self):
         """
-
+        method to check is it possible to renew an item
         :return:
         """
-        if self.status == misc.OVERDUE_STATUS:
+        if self.status == const.OVERDUE_STATUS:
             return False
 
         if not self.document.copies_available:
-            orders_on_copy = Order.objects.filter(status=misc.IN_QUEUE_STATUS)
+            orders_on_copy = Order.objects.filter(status=const.IN_QUEUE_STATUS)
             orders_on_copy = orders_on_copy.filter(document=self.document).filter(copy=None)
             if orders_on_copy:
                 return False
@@ -397,6 +397,14 @@ class UserTelegram(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
+        """
+        method to create token in the same time as user creation
+        :param force_insert:
+        :param force_update:
+        :param using:
+        :param update_fields:
+        :return:
+        """
 
         self.generate_token()
 

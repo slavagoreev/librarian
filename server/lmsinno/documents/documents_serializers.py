@@ -1,4 +1,4 @@
-from .. import misc
+from .. import const
 from rest_framework import serializers
 
 from ..models import Document, Author, Tag, Copy, Order
@@ -41,7 +41,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_copies_available(obj):
-        return len(Copy.objects.filter(document=obj).filter(status=misc.NOT_ORDERED_STATUS))
+        return len(Copy.objects.filter(document=obj).filter(status=const.NOT_ORDERED_STATUS))
 
 
 class DocumentResponseSerializer(serializers.ModelSerializer):
@@ -69,7 +69,7 @@ class DocumentResponseSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_copies_available(obj):
-        return len(Copy.objects.filter(document=obj).filter(status=misc.NOT_ORDERED_STATUS))
+        return len(Copy.objects.filter(document=obj).filter(status=const.NOT_ORDERED_STATUS))
 
     @staticmethod
     def get_authors(obj):

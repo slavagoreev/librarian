@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .copies_serializers import CopySerializer, CopyDetailSerializer
-from .. import misc
+from .. import const
 from ..models import Copy, Document, Order
 from ..permissions import LibrariantPermission
 
@@ -32,15 +32,15 @@ class CopyDetail(APIView):
             Order.queue_validation()
 
             document = Document.objects.get(pk=copy.document_id)
-            document.copies_available = len(Copy.objects.filter(document=document).filter(status=misc.NOT_ORDERED_STATUS))
+            document.copies_available = len(Copy.objects.filter(document=document).filter(status=const.NOT_ORDERED_STATUS))
             document.save()
 
-            result['status'] = misc.HTTP_200_OK
+            result['status'] = const.HTTP_200_OK
             result['data'] = CopyDetailSerializer(Copy.objects.get(pk=copy.pk)).data
 
             return Response(result, status=status.HTTP_200_OK)
 
-        result['status'] = misc.HTTP_400_BAD_REQUEST
+        result['status'] = const.HTTP_400_BAD_REQUEST
         result['data'] = serializer.errors
 
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
@@ -60,12 +60,12 @@ class CopyDetail(APIView):
         try:
             copy = Copy.objects.get(pk=copy_id)
         except Copy.DoesNotExist:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = CopyDetailSerializer(copy)
 
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
         result['data'] = serializer.data
 
         return Response(result, status=status.HTTP_200_OK)
@@ -84,7 +84,7 @@ class CopyDetail(APIView):
 
         try:
             document = Document.objects.get(document_id=copy_id)
-            copies = Copy.objects.filter(document=document).filter(status=misc.NOT_ORDERED_STATUS)
+            copies = Copy.objects.filter(document=document).filter(status=const.NOT_ORDERED_STATUS)
 
             if not copies:
                 raise FileNotFoundError
@@ -95,12 +95,12 @@ class CopyDetail(APIView):
             document.save()
 
         except Document.DoesNotExist:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except FileNotFoundError:
             result['data'] = 'no copy to delete'
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
