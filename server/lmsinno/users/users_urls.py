@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^$', users_views.Users.as_view()),
     url(r'^social/', include('social_django.urls', namespace='social')),  # <- Here
     url(r'^registration/$', users_views.Registration.as_view()),
+    url(r'^registration/account-confirm-email/(?P<key>[-:\w]+)/$', users_views.ConfirmEmail.as_view(),
+        name='account_confirm_email'),
     url(r'^registration/', include('rest_auth.registration.urls')),
     url(r'^profile/', users_views.MyDetail.as_view()),
     url(r'^token/', obtain_jwt_token),

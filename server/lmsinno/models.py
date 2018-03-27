@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.db import models
 
+from django.utils.crypto import get_random_string
+
 from rest_framework_jwt.settings import api_settings
 from rest_framework.authtoken.models import Token
 
@@ -219,6 +221,10 @@ class Order(models.Model):
 
     @staticmethod
     def get_queue():
+        """
+        method to get priority queue for document
+        :return:
+        """
         orders_in_queue = Order.objects.filter(status=misc.IN_QUEUE_STATUS).filter(copy=None)
 
         # TODO priority queue for orders
@@ -290,6 +296,10 @@ class Order(models.Model):
         self.save()
 
     def renew(self):
+        """
+
+        :return:
+        """
         if not self.is_renewable:
             return
 
@@ -330,6 +340,10 @@ class Order(models.Model):
         pass
 
     def is_renewable(self):
+        """
+
+        :return:
+        """
         if self.status == misc.OVERDUE_STATUS:
             return False
 
@@ -359,3 +373,28 @@ class TagOfDocument(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(self.document, self.tag)
+
+
+class UserTelegram(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    alias = models.CharField(default=None, max_length=1255, null=True)
+    token = models.CharField(unique=True, default=None, max_length=255, null=True)
+
+    def generate_token(self):
+        """
+        method to generate token
+        :return:
+        """
+        if self.token:
+            return
+
+        self.token = get_random_string(128)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+
+        self.generate_token()
+
+        models.Model.save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None)
+

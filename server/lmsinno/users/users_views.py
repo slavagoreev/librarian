@@ -1,5 +1,7 @@
+from allauth.account.models import EmailAddress, EmailConfirmation, EmailConfirmationHMAC
+
 try:
-    from rest_auth.registration.views import RegisterView
+    from rest_auth.registration.views import RegisterView, VerifyEmailView
 except ImportError:
     raise ImportError("rest_auth needs to be added to INSTALLED_APPS.")
 
@@ -59,6 +61,7 @@ class UserDetail(APIView):
 
         try:
             user = User.objects.get(pk=user_id)
+            print(EmailAddress.objects.get(user=user).verified)
         except User.DoesNotExist:
             result['status'] = misc.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
@@ -177,3 +180,23 @@ class Registration(RegisterView):
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         return RegisterView.create(self, request, *args, **kwargs)
+
+
+class ConfirmEmail(APIView):
+    @staticmethod
+    def get(request, key):
+        user = User.objects.first()
+        print(key)
+
+        #print(EmailConfirmation.objects.get(EmailAddress.objects.get(user=user)))
+        print(EmailAddress.objects.get(user=user))
+
+        print(EmailConfirmationHMAC)
+
+        print(EmailAddress.objects.get(user=user).verified)
+
+        view = VerifyEmailView()
+        view.post(request=request)
+
+        result = {'status': '', 'data': {}}
+        return Response(result, status=status.HTTP_200_OK)
