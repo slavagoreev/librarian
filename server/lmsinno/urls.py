@@ -7,6 +7,8 @@ urlpatterns = [
     url(r'^$', generic.RedirectView.as_view(
         url='/api/', permanent=False)),
 
+    url(r'api/telegram/', include('django_telegrambot.urls')),
+
     path(r'api/documents/', include('lmsinno.documents.documents_urls')),
 
     path(r'api/copies/', include('lmsinno.copies.copies_urls')),
