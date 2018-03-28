@@ -266,9 +266,11 @@ class MyThread(Thread):
         self.daemon = True
 
     def run(self):
+        Order.overdue_validation()
         while True:
-            time.sleep(datetime.timedelta(hours=12).seconds)
-            Order.overdue_validation()
+            if 1 >= datetime.datetime.today().time().hour >= 0:
+                Order.overdue_validation()
+            time.sleep(datetime.timedelta(hours=1).seconds)
 
 
 MyThread().start()
