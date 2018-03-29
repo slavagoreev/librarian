@@ -8,6 +8,7 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework.authtoken.models import Token
 
 from . import const
+from .tg_bot.engine import send_message
 
 import datetime
 import jwt
@@ -252,7 +253,10 @@ class Order(models.Model):
             self.date_attach = datetime.datetime.today()
             self.copy = copy
             self.save()
-            # TODO notifications
+
+            # notification
+            msg = "Dear " + self.user.first_name + ",\n\nThe document " + self.copy.document.title + " is now available to checkout."
+            send_message(35378149, msg)
 
     def accept_booking(self):
         """
