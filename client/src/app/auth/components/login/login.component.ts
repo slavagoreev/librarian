@@ -9,6 +9,7 @@ import { getAuthStatus } from '../../reducers/selectors';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -20,22 +21,23 @@ export class LoginComponent implements OnInit, OnDestroy {
   title = environment.AppName;
   loginSubs: Subscription;
   returnUrl: string;
+  nativeWindow: any;
 
   constructor(
     private fb: FormBuilder,
     private store: Store<AppState>,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.redirectIfUserLoggedIn();
-    this.innerHeight =window.innerHeight;
+    this.nativeWindow = authService.getNativeWindow();
+    this.innerHeight = window.innerHeight;
   }
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerHeight = window.innerHeight;
   }
-
 
   ngOnInit() {
     this.initForm();
@@ -46,10 +48,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   onSubmit() {
     const values = this.signInForm.value;
     const keys = Object.keys(values);
-    let telegramAuthWindow = window.open("https://oauth.telegram.org/auth?bot_id=563324296&origin=https%3A%2F%2Ftrainno.ru&request_access=write", "", "width=550,height=450");
 
     if (this.signInForm.valid) {
-      // console.log (this.signInForm)
+      let newWindow = this.nativeWindow.open("https://oauth.telegram.org/auth?bot_id=563324296&origin=https%3A%2F%2Ftrainno.ru&request_access=write", "telegramAuthWindow", "width=550,height=450");
+      // console.log(newWindow);
       this.loginSubs = this.authService.login(values).subscribe(data => {
         const error = data.error;
         if (error) {
@@ -68,6 +70,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
     }
   }
+
 
   private pushErrorFor(ctrl_name: string, msg: string) {
     this.signInForm.controls[ctrl_name].setErrors({'msg': msg});

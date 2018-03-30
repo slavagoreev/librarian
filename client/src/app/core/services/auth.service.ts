@@ -14,6 +14,11 @@ import { Router } from '@angular/router';
 import { NotificationService } from '../../shared/components/notification/notification.service';
 // Todo import { AuthActions } from '../../auth/actions/auth.actions';
 
+function _window(): any {
+  // return the global native browser window object
+  return window;
+}
+
 @Injectable()
 export class AuthService {
 
@@ -168,4 +173,11 @@ export class AuthService {
     localStorage.setItem('user', jsonData);
     localStorage.setItem('token', user_data.token);
   }
+
+
+  getNativeWindow(): any {
+    return _window();
+  }
+
+
 }
