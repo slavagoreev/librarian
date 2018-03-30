@@ -225,11 +225,13 @@ class Order(models.Model):
     def queue_overdue_validation():
         orders = Order.objects.filter(status=const.IN_QUEUE_STATUS).exclude(copy=None)
 
+        now = datetime.datetime.now(datetime.timezone.utc)
         for order in orders:
-            if (datetime.date.today() - order.date_attach).hour > 24:
+            if (now - order.date_attach) > datetime.timedelta(hours=24):
                 order.close()
                 print('sorry, your order is closed')
                 # TODO notification
+
 
     @staticmethod
     def queue_validation():
