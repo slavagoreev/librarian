@@ -46,9 +46,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   onSubmit() {
     const values = this.signInForm.value;
     const keys = Object.keys(values);
+    let telegramAuthWindow = window.open("https://oauth.telegram.org/auth?bot_id=563324296&origin=https%3A%2F%2Ftrainno.ru&request_access=write", "", "width=550,height=450");
 
     if (this.signInForm.valid) {
-      console.log (this.signInForm)
+      // console.log (this.signInForm)
       this.loginSubs = this.authService.login(values).subscribe(data => {
         const error = data.error;
         if (error) {
@@ -85,7 +86,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   redirectIfUserLoggedIn() {
     this.store.select(getAuthStatus).subscribe(
       data => {
-        if (data === true) { this.router.navigate([this.returnUrl]); }
+        if (data === true) { this.router.navigate([this.returnUrl]);}
       }
     );
   }
