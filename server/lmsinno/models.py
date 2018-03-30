@@ -87,6 +87,7 @@ class User(AbstractUser):
     role = models.IntegerField(default=const.BASIC_USER_ROLE, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
+    telegram_id = models.IntegerField(default=None, null=True)
 
     def __str__(self):
         return '{0}'.format(self.username)
@@ -381,39 +382,4 @@ class TagOfDocument(models.Model):
         return '{0}: {1}'.format(self.document, self.tag)
 
 
-class UserTelegram(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    alias = models.CharField(default=None, max_length=1255, null=True)
-    token = models.CharField(unique=True, default=None, max_length=255, null=True)
-
-    def generate_token(self):
-        """
-        method to generate token
-        :return:
-        """
-        if self.token:
-            return
-
-        while True:
-            try:
-                self.token = get_random_string(8)
-                break
-            except Exception:
-                pass
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        """
-        method to create token in the same time as user creation
-        :param force_insert:
-        :param force_update:
-        :param using:
-        :param update_fields:
-        :return:
-        """
-
-        self.generate_token()
-
-        models.Model.save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None)
 
