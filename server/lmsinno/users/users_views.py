@@ -61,7 +61,7 @@ class UserDetail(APIView):
 
         try:
             user = User.objects.get(pk=user_id)
-            print(EmailAddress.objects.get(user=user).verified)
+            # print(EmailAddress.objects.get(user=user).verified)
         except User.DoesNotExist:
             result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
