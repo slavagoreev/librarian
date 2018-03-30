@@ -195,7 +195,7 @@ class Order(models.Model):
     # date when order was created
     date_created = models.DateField(auto_now_add=True)
     # data when copy was attach to the order
-    date_attach = models.DateField(default=None, null=True)
+    date_attach = models.DateTimeField(default=None, null=True)
     # data when patron take his order
     date_accepted = models.DateField(default=None, null=True)
     # data when patron return his  order
@@ -220,6 +220,18 @@ class Order(models.Model):
                     order.save()
 
         Order.queue_validation()
+
+    @staticmethod
+    def queue_overdue_validation():
+        orders = Order.objects.filter(status=const.IN_QUEUE_STATUS).exclude(copy=None)
+
+        now = datetime.datetime.now(datetime.timezone.utc)
+        for order in orders:
+            if (now - order.date_attach) > datetime.timedelta(hours=24):
+                order.close()
+                print('sorry, your order is closed')
+                # TODO notification
+
 
     @staticmethod
     def queue_validation():

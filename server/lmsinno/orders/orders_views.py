@@ -222,9 +222,9 @@ class Booking(APIView):
             orders = Order.objects.all().filter(user=User.get_instance(request))
 
             for order in orders:
-                if order.document.document_id == document.document_id and order.status == (const.IN_QUEUE_STATUS or
-                                                                                           const.BOOKED_STATUS or
-                                                                                           const.OVERDUE_STATUS):
+                if order.document.document_id == document.document_id and (order.status == const.IN_QUEUE_STATUS or
+                                                                           order.status == const.BOOKED_STATUS or
+                                                                           order.status == const.OVERDUE_STATUS):
                     result['status'] = const.HTTP_400_BAD_REQUEST
                     result['data'] = {'details': 'you already booked this document'}
                     return Response(result, status=status.HTTP_400_BAD_REQUEST)
@@ -267,9 +267,11 @@ class MyThread(Thread):
 
     def run(self):
         Order.overdue_validation()
+        Order.queue_overdue_validation()
         while True:
             if 1 >= datetime.datetime.today().time().hour >= 0:
                 Order.overdue_validation()
+            Order.queue_overdue_validation()
             time.sleep(datetime.timedelta(hours=1).seconds)
 
 

