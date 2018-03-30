@@ -170,7 +170,6 @@ class MyDetail(APIView):
         result = {'status': '', 'data': {}}
 
         try:
-            print(telegram_id)
             user = User.get_instance(request)
             user.set_telegram_id(telegram_id)
 
