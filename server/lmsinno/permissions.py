@@ -62,6 +62,8 @@ class UserPermission(permissions.BasePermission):
             result = True
         elif request.method == 'POST':
             result = True
+        elif request.method == 'PATCH':
+            result = True
         else:
             result = False
 
