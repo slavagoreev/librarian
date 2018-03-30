@@ -50,6 +50,24 @@ class AuthenticatedUserPermission(permissions.BasePermission):
         return result
 
 
+class UserPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        user = User.get_instance(request)
+
+        if not user:
+            return False
+
+        if request.method == 'GET':
+            result = True
+        elif request.method == 'POST':
+            result = True
+        else:
+            result = False
+
+        return result
+
+
 class LibrariantPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):

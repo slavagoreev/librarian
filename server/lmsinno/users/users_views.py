@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .users_serializers import UserResponseDataSerializer, UserDetailSerializer
-from ..permissions import LibrariantPermission, UserDetailPermission
+from ..permissions import LibrariantPermission, UserDetailPermission, UserPermission
 from ..models import User
 from .. import const
 
@@ -135,7 +135,7 @@ class MyDetail(APIView):
     """
         Class to get one User by id
     """
-    permission_classes = (LibrariantPermission,)
+    permission_classes = (UserPermission,)
 
     @staticmethod
     def get(request, user_id):
@@ -156,6 +156,31 @@ class MyDetail(APIView):
 
         serializer = UserDetailSerializer(user)
         result['data'] = serializer.data
+        result['status'] = const.HTTP_200_OK
+        return Response(result, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def post(request, telegram_id):
+        """
+
+        :param request:
+        :param telegram_id:
+        :return:
+        """
+        result = {'status': '', 'data': {}}
+
+        try:
+            print(telegram_id)
+            user = User.get_instance(request)
+            user.set_telegram_id(telegram_id)
+
+        except User.DoesNotExist:
+            result['status'] = const.HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+        except ValueError:
+            result['status'] = const.HTTP_400_BAD_REQUEST
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
         result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
@@ -188,7 +213,7 @@ class ConfirmEmail(APIView):
         user = User.objects.first()
         print(key)
 
-        #print(EmailConfirmation.objects.get(EmailAddress.objects.get(user=user)))
+
         print(EmailAddress.objects.get(user=user))
 
         print(EmailConfirmationHMAC)
