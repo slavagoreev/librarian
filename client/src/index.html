@@ -39,13 +39,8 @@
 <script type="text/javascript">
   function onTelegramAuth(user) {
     var xhr = new XMLHttpRequest();
-    alert( user.id );
 
-    xhr.open('POST', '/submit', true);
-
-    xhr.onreadystatechange = function() {
-      alert( this.responseText );
-    };
+    xhr.open('POST', '/api/users/telegram/' + user.id.toString() + "/", true);
 
     xhr.send();
   }
