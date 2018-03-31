@@ -12,6 +12,7 @@ import _date = moment.unitOfTime._date;
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../shared/components/notification/notification.service';
+import {UserService} from "./user.service";
 // Todo import { AuthActions } from '../../auth/actions/auth.actions';
 
 function _window(): any {
@@ -36,7 +37,8 @@ export class AuthService {
     private store: Store<AppState>,
     private jwtHelper: JwtHelperService,
     private router : Router,
-    private notifications: NotificationService
+    private notifications: NotificationService,
+    private userService: UserService
   ) {
 
   }

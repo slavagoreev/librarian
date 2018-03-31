@@ -12,6 +12,7 @@ import { Subject } from 'rxjs/Subject';
 import { getUserRole } from '../auth/reducers/selectors';
 import { Router } from '@angular/router';
 import {AuthService} from "../core/services/auth.service";
+import {UserService} from "../core/services/user.service";
 
 @Component({
   selector: 'app-home',
@@ -36,7 +37,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private http: HttpService,
     private router: Router,
     private documentService: DocumentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {
     this.store.select(getUserRole).subscribe(res => this.permission = res == 2);
     this.loading$ = this.http.loading;
@@ -66,8 +68,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.documentService.getBestsellers().subscribe(res => {
       this.bestsellers$ = res;
     });
-    if (!this.authService.getUserData().telegram_id) {
-      window.open("https://oauth.telegram.org/auth?bot_id=563324296&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+    this.authService.telegramRegister();
+    let tg_id = 0;
+    this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
+      tg_id = res.telegram_id;
+    });
+    if (tg_id) {
+      window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
         "telegramAuthWindow", "width=550,height=450");
       this.sleep(6000);
       this.authService.telegramRegister();
