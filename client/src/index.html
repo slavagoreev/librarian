@@ -34,14 +34,3 @@
 </app-root>
 </body>
 </html>
-
-<script async src="https://telegram.org/js/telegram-widget.js?4" data-telegram-login="api_librarian_bot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
-<script type="text/javascript">
-  function onTelegramAuth(user) {
-    var xhr = new XMLHttpRequest();
-
-    xhr.open('POST', '/api/users/telegram/' + user.id.toString() + "/", true);
-    xhr.setRequestHeader('Bearer', 'JWT ' + localStorage.getItem("token"));
-    xhr.send();
-  }
-</script>
