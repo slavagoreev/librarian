@@ -6,7 +6,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { ReversePipe } from './pipes/reverse.pipe';
 import { NotificationService } from './components/notification/notification.service';
-import { ScriptHackComponent } from './components/script-hack/script-hack.component';
+// import { ScriptHackComponent } from './components/script-hack/script-hack.component';
 
 @NgModule({
   imports: [
@@ -17,7 +17,7 @@ import { ScriptHackComponent } from './components/script-hack/script-hack.compon
     LoaderComponent,
     NotificationComponent,
     NotFoundComponent,
-    ScriptHackComponent,
+//    ScriptHackComponent,
   ],
   providers: [
     WINDOW_PROVIDERS,
@@ -28,7 +28,7 @@ import { ScriptHackComponent } from './components/script-hack/script-hack.compon
     NotFoundComponent,
     NotificationComponent,
     ReversePipe,
-    ScriptHackComponent,
+//    ScriptHackComponent,
   ]
 })
 export class SharedModule { }
