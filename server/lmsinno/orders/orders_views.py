@@ -218,6 +218,12 @@ class Booking(APIView):
         result = {'status': '', 'data': {}}
 
         try:
+            user = User.get_instance(request=request)
+            if not user.telegram_id:
+                result['data'] = 'no telegram id was provided'
+                result['status'] = const.HTTP_400_BAD_REQUEST
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
             document = Document.objects.get(pk=document_id)
             orders = Order.objects.all().filter(user=User.get_instance(request))
 
@@ -234,8 +240,6 @@ class Booking(APIView):
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-            user = User.get_instance(request=request)
-
             order = Order.objects.create(
                 document=document,
                 user=user
@@ -248,7 +252,7 @@ class Booking(APIView):
             result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        except Document.DoesNotExist:
+        except Document.DoesNotExist or User.DoesNotExist:
 
             result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
