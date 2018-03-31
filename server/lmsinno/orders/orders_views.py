@@ -58,6 +58,27 @@ class OrdersQueue(APIView):
 
         return Response(result, status=status.HTTP_200_OK)
 
+    @staticmethod
+    def delete(request, document_id):
+        """
+
+        :param request:
+        :return:
+        """
+        result = {'status': '', 'data': {}}
+
+        try:
+            document = Document.objects.get(document_id=document_id)
+
+            Order.outstanding_request(document)
+
+        except Document.DoesNotExist:
+            result['status'] = const.HTTP_404_NOT_FOUND
+            return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+        result['status'] = const.HTTP_200_OK
+        return Response(result, status=status.HTTP_200_OK)
+
 
 class OrderDetail(APIView):
     permission_classes = (LibrariantPermission,)

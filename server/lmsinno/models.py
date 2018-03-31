@@ -254,6 +254,19 @@ class Order(models.Model):
 
         return orders_in_queue
 
+    @staticmethod
+    def outstanding_request(document):
+        orders = Order.objects.filter(document=document)
+        orders = orders.exclude(status=const.IN_QUEUE_STATUS)
+        for order in orders:
+            order.close()
+            msg = 'Sorry, but the document ' + order.document.title + \
+                  ' that you requested will not be available for checkout.' \
+                  '\n' \
+                  '\n' \
+                  'You may be able to book the document soon.'
+            send_message(order.user.telegram_id, msg)
+
     def attach_copy(self):
         """
         attach copy to the order if exist available copy
