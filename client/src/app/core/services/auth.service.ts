@@ -78,6 +78,7 @@ export class AuthService {
 
   telegramRegister(): Observable<any> {
     return this.http.post('users/telegram/', {}).map(data => {
+      console.log(data);
       return data.json();
     });
   }
