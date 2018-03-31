@@ -257,7 +257,7 @@ class Order(models.Model):
     @staticmethod
     def outstanding_request(document):
         orders = Order.objects.filter(document=document)
-        orders = orders.exclude(status=const.IN_QUEUE_STATUS)
+        orders = orders.filter(status=const.IN_QUEUE_STATUS)
         for order in orders:
             order.close()
             msg = 'Sorry, but the document ' + order.document.title + \
