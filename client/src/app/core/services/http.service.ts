@@ -108,7 +108,7 @@ export class HttpService extends Http {
 
   myPost(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
     this.requestInterceptor();
-    return super.get(url, body)
+    return super.post(url, body)
       .catch(this.onCatch.bind(this))
       .do((res: Response) => {
         this.onSubscribeSuccess(res);
