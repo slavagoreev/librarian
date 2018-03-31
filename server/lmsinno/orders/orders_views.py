@@ -63,6 +63,7 @@ class OrdersQueue(APIView):
         """
 
         :param request:
+        :param document_id:
         :return:
         """
         result = {'status': '', 'data': {}}

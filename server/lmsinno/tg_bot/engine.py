@@ -4,7 +4,7 @@ from ..const import BOT_KEY
 
 
 def send_message(user, msg):
-    link = 'https://api.telegram.org/bot'+BOT_KEY+'/sendMessage?chat_id=' + user + '&text=' + msg
+    link = 'https://api.telegram.org/bot'+BOT_KEY+'/sendMessage?chat_id=' + str(user) + '&text=' + msg
     rq.get(link)
 
 
