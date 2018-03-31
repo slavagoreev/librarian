@@ -87,7 +87,7 @@ class User(AbstractUser):
     role = models.IntegerField(default=const.BASIC_USER_ROLE, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
     phone = models.DecimalField(unique=True, default=0, max_digits=11, decimal_places=0)
-    telegram_id = models.IntegerField(default=None, null=True)
+    telegram_id = models.IntegerField(default=0)
 
     def __str__(self):
         return '{0}'.format(self.username)
