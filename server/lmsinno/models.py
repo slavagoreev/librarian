@@ -273,7 +273,7 @@ class Order(models.Model):
 
             # notification
             msg = "Dear " + self.user.first_name + ",\n\nThe document " + self.copy.document.title + " is now available to checkout."
-            send_message(self.user.username, msg)
+            send_message(self.user.telegram_id, msg)
 
     def accept_booking(self):
         """
