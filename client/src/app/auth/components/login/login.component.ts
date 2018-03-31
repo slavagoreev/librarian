@@ -22,7 +22,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   title = environment.AppName;
   loginSubs: Subscription;
   returnUrl: string;
-  nativeWindow: any;
 
   constructor(
     private fb: FormBuilder,
@@ -33,7 +32,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private http: HttpService
   ) {
     this.redirectIfUserLoggedIn();
-    this.nativeWindow = authService.getNativeWindow();
     this.innerHeight = window.innerHeight;
   }
   @HostListener('window:resize', ['$event'])

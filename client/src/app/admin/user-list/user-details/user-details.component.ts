@@ -19,7 +19,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
     private authService: AuthService,
     private userService: UserService,
-    private router : ActivatedRoute
+    private router: ActivatedRoute
   ) {
     this.subscription = this.router.params.subscribe((params: any) => {
       this.userId = params['id'] || authService.getUserData().id;
@@ -27,7 +27,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         .getUserData(this.userId)
         .subscribe(res => this.user = res as User);
     });
-    this.innerHeight =window.innerHeight;
+    this.innerHeight = window.innerHeight;
   }
   @HostListener('window:resize', ['$event'])
   onResize(event) {

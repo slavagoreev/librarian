@@ -11,6 +11,7 @@ import { LoaderComponent } from '../shared/components/loader/loader.component';
 import { Subject } from 'rxjs/Subject';
 import { getUserRole } from '../auth/reducers/selectors';
 import { Router } from '@angular/router';
+import {AuthService} from "../core/services/auth.service";
 
 @Component({
   selector: 'app-home',
@@ -34,7 +35,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private actions: DocumentActions,
     private http: HttpService,
     private router: Router,
-    private documentService: DocumentService
+    private documentService: DocumentService,
+    private authService: AuthService
   ) {
     this.store.select(getUserRole).subscribe(res => this.permission = res == 2);
     this.loading$ = this.http.loading;
@@ -64,6 +66,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.documentService.getBestsellers().subscribe(res => {
       this.bestsellers$ = res;
     });
+    if (!this.authService.getUserData().telegram_id) {
+      window.open("https://oauth.telegram.org/auth?bot_id=563324296&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+        "telegramAuthWindow", "width=550,height=450");
+      this.sleep(6000);
+      this.authService.telegramRegister();
+    }
+  }
+  sleep(milliseconds) {
+    let start = new Date().getTime();
+    for (let i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds){
+        break;
+      }
+    }
   }
   selectDocument(document_id: number){
     this.store.dispatch(this.actions.getDocumentDetail(document_id));

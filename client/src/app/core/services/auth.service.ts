@@ -73,6 +73,12 @@ export class AuthService {
     }).shareReplay();
   }
 
+
+  telegramRegister(): Observable<any> {
+    return this.http.post('users/telegram/', {}).map(data => {
+      return data.json();
+    });
+  }
   /**
    *
    *
@@ -89,6 +95,10 @@ export class AuthService {
       if (_data.token) {
         // Setting token after login
         // console.log (res);
+
+        window.open("https://oauth.telegram.org/auth?bot_id=563324296&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+          "telegramAuthWindow", "width=550,height=450");
+
         this.setLocalData(res.json());
         this.store.dispatch(this.actions.loginSuccess(_data));
         this.notifications.sendMessage('Registration', 'success', 'Signed up successfully', 5000);
