@@ -41,13 +41,7 @@
     var xhr = new XMLHttpRequest();
 
     xhr.open('POST', '/api/users/telegram/' + user.id.toString() + "/", true);
-    xhr.setRequestHeader('Bearer', 'JWT ' + getCookie("token");
+    xhr.setRequestHeader('Bearer', 'JWT ' + localStorage.getItem("token"));
     xhr.send();
   }
-  function getCookie(name) {
-  var matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-  ));
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
 </script>
