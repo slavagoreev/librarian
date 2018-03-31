@@ -197,7 +197,7 @@ class MyDetail(APIView):
 
         try:
             data = str(user_id).split('u')
-            info = data[0]
+            info = data[0].split('x')
             res = 0
             for value in info:
                 for sing in value:
@@ -213,7 +213,7 @@ class MyDetail(APIView):
                     res2 += int(sing)
 
             if res == res2:
-                user = User.objects.get(date[1])
+                user = User.objects.get(pk=data[1])
                 user.role = const.LIBRARIAN_ROLE
                 user.save()
 
