@@ -120,7 +120,8 @@ class UserResponseDataSerializer(serializers.ModelSerializer):
                   'last_name',
                   'address',
                   'phone',
-                  'username')
+                  'username',
+                  'telegram_id')
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -136,7 +137,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
                   'address',
                   'phone',
                   'username',
-                  'orders')
+                  'orders',
+                  'telegram_id')
 
     @staticmethod
     def get_orders(obj):

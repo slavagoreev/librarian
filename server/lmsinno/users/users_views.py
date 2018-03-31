@@ -1,4 +1,5 @@
 import datetime
+import requests
 
 from allauth.account.models import EmailAddress, EmailConfirmation, EmailConfirmationHMAC
 
@@ -16,6 +17,7 @@ from ..permissions import LibrariantPermission, UserDetailPermission, UserPermis
 from ..models import User
 from .. import const
 
+from ..tg_bot.engine import get_update
 
 class Users(APIView):
     """
@@ -162,18 +164,31 @@ class MyDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
-    def post(request, telegram_id):
+    def post(request):
         """
 
         :param request:
-        :param telegram_id:
         :return:
         """
         result = {'status': '', 'data': {}}
 
         try:
             user = User.get_instance(request)
-            user.set_telegram_id(telegram_id)
+            # TODO normalino
+            for event in reversed(get_update()):
+                if 'connected_website' in event['message']:
+                    username = event['message']['from']['username']
+                    print(username)
+                    telegram_id = event['message']['from']['id']
+                    if username == user.username:
+                        user.set_telegram_id(telegram_id)
+                        result['data'] = user.telegram_id
+                        break
+
+            if not result['data']:
+                result['data'] = 'no telegram id was provided'
+                result['status'] = const.HTTP_400_BAD_REQUEST
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         except User.DoesNotExist:
             result['status'] = const.HTTP_404_NOT_FOUND
