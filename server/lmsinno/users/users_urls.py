@@ -21,5 +21,5 @@ urlpatterns = [
 
     url(r'^token/', obtain_jwt_token),
     url(r'^token/refresh/', refresh_jwt_token),
-    url(r'^telegram/(?P<telegram_id>[-:\w]+)/$', users_views.MyDetail.as_view())
+    url(r'^telegram/$', users_views.MyDetail.as_view())
 ]
