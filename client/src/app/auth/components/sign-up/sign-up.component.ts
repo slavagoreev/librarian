@@ -78,7 +78,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
         'email': [email, Validators.compose([Validators.required, Validators.email]) ],
         'password1': [password1, Validators.compose([Validators.required, Validators.minLength(8)]) ],
         'password2': [password2, Validators.compose([Validators.required, Validators.minLength(8)]) ],
-        'phone': [phone, Validators.compose([Validators.required, Validators.minLength(11), Validators.maxLength(11),Validators.pattern('[0-9]{11}')]) ],
+        'phone': [phone, Validators.compose([Validators.required, Validators.minLength(11), Validators.maxLength(11), Validators.pattern('[0-9]{11}')]) ],
         'first_name': [first_name],
         'last_name': [last_name],
         'username': [username, Validators.required],
@@ -90,7 +90,10 @@ export class SignUpComponent implements OnInit, OnDestroy {
   redirectIfUserLoggedIn() {
     this.store.select(getAuthStatus).subscribe(
       data => {
-        if (data === true) { this.router.navigateByUrl('/'); }
+        if (data === true) {
+          // TODO the popup window
+          this.router.navigateByUrl('/');
+        }
       }
     );
   }
