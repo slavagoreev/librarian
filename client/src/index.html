@@ -39,14 +39,14 @@
 <script type="text/javascript">
   function onTelegramAuth(user) {
     var xhr = new XMLHttpRequest();
+    alert( user.id );
 
     xhr.open('POST', '/submit', true);
-    xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
 
     xhr.onreadystatechange = function() {
       alert( this.responseText );
-    }
+    };
 
-    xhr.send(user.id);
+    xhr.send();
   }
 </script>
