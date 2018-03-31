@@ -6,6 +6,7 @@ import { getUserRole } from '../../../auth/reducers/selectors';
 import {UserService} from "../../../core/services/user.service";
 import {Router} from "@angular/router";
 import {DocumentService} from '../../../core/services/document.service';
+import {AuthService} from "../../../core/services/auth.service";
 
 @Component({
   selector: 'app-document-info',
@@ -22,9 +23,21 @@ export class DocumentInfoComponent implements OnInit {
     @Inject(DOCUMENT) private documentEl: Document,
     @Inject(WINDOW) private window,
     private userService: UserService,
+    private authService: AuthService,
     private documentService: DocumentService,
     private router: Router,
-  ) { }
+  ) {
+    let tg_id = -1;
+    this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
+      tg_id = res.telegram_id;
+    });
+    if (tg_id == 0) {
+      // window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+      //   "telegramAuthWindow", "width=550,height=450");
+      // this.sleep(6000);
+      this.authService.telegramRegister().subscribe(res => {});
+    }
+  }
 
   bookDocument(documentId: number) {
     this.userService.bookTheDocument(documentId).subscribe(() => {
@@ -34,6 +47,7 @@ export class DocumentInfoComponent implements OnInit {
 
   ngOnInit() {
     this.description = this.document.description.substr(0, 200);
+
   }
   extendDescription($event) {
     this.description = this.document.description;

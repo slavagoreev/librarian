@@ -19,6 +19,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   formSubmit = false;
   title = environment.AppName;
   registerSubs: Subscription;
+  nativeWindow: any;
 
   constructor(
     private fb: FormBuilder,
@@ -26,6 +27,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService
   ) {
+    this.nativeWindow = authService.getNativeWindow();
     this.redirectIfUserLoggedIn();
   }
 
