@@ -48,9 +48,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       .map(res => { res.map(doc => doc as Document); return res})
       .do(this.processData);
     this.getDocuments(() => {});
-    this.authService.telegramRegister().subscribe(res => {
-      console.log(res);
-    });
     let tg_id = 0;
     this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
       tg_id = res.telegram_id;

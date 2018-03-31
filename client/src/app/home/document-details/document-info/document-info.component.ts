@@ -27,7 +27,7 @@ export class DocumentInfoComponent implements OnInit {
     private documentService: DocumentService,
     private router: Router,
   ) {
-    let tg_id = 0;
+    let tg_id = -1;
     this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
       tg_id = res.telegram_id;
     });
