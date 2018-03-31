@@ -51,13 +51,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     let tg_id = 0;
     this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
       tg_id = res.telegram_id;
+      if (!tg_id) {
+        window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+          "telegramAuthWindow", "width=550,height=450");
+        // this.sleep(6000);
+        this.authService.telegramRegister().subscribe(res => {});
+      }
     });
-    if (tg_id == 0) {
-      window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
-        "telegramAuthWindow", "width=550,height=450");
-      // this.sleep(6000);
-      this.authService.telegramRegister().subscribe(res => {});
-    }
   }
   getDocuments(cb) {
     // console.error ('should load')
