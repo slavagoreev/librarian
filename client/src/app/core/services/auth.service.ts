@@ -113,6 +113,12 @@ export class AuthService {
     });
   }
 
+  loginTelegram(): Observable<any> {
+    return this.http.myPost("https://oauth.telegram.org/auth/get?bot_id=531675494", {'origin': 'https://trainno.ru'}).map(res => {
+      console.log(1);
+    });
+  }
+
 
   /**
    *

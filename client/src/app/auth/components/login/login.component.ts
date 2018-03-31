@@ -7,7 +7,8 @@ import { AppState } from '../../../interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
 import { getAuthStatus } from '../../reducers/selectors';
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import {HttpService} from "../../../core/services/http.service";
+import {Http, Response} from "@angular/http";
 
 
 @Component({
@@ -29,6 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
+    private http: HttpService
   ) {
     this.redirectIfUserLoggedIn();
     this.nativeWindow = authService.getNativeWindow();
@@ -50,7 +52,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     const keys = Object.keys(values);
 
     if (this.signInForm.valid) {
-      let newWindow = this.nativeWindow.open("https://oauth.telegram.org/auth?bot_id=563324296&origin=https%3A%2F%2Ftrainno.ru&request_access=write", "telegramAuthWindow", "width=550,height=450");
+      let newWindow = this.nativeWindow.open("https://oauth.telegram.org/auth?bot_id=563324296&origin=https%3A%2F%2Ftrainno.ru&request_access=write", "telegramAuthWindow", "width=550,height=450").document;;
+      // console.error(newWindow);
+      this.authService.loginTelegram();
       // console.log(newWindow);
       this.loginSubs = this.authService.login(values).subscribe(data => {
         const error = data.error;
