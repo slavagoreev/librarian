@@ -40,14 +40,7 @@
           <div><small>or</small></div>
           <script-hack [async]="true" src="https://telegram.org/js/telegram-widget.js?4" dataTelegramLogin="api_librarian_bot" dataSize="large"
                        dataOnAuth="onTelegramAuth(user)" dataRequestAccess="write">
-            function onTelegramAuth(user) {
-              alert(123);
-              var xhr = new XMLHttpRequest();
-
-              xhr.open('POST', '/api/users/telegram/' + user.id.toString() + "/", true);
-              xhr.setRequestHeader('Bearer', 'JWT ' + localStorage.getItem("token"));
-              xhr.send();
-            }
+            alert(123);
           </script-hack>
         </form>
       </div>
