@@ -229,7 +229,10 @@ class Order(models.Model):
                 if order.date_return < datetime.date.today():
                     order.status = const.OVERDUE_STATUS
                     order.save()
-                    # TODO overdue notify
+                    msg = 'Sorry, but you must return the document ' + order.document.title + \
+                          'as soon as possible and pay overdue compensation'
+
+                    send_message(order.user.telegram_id, msg)
 
         Order.queue_validation()
 
