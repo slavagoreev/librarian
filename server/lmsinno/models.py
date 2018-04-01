@@ -271,12 +271,11 @@ class Order(models.Model):
 
         :return: orders in queue
         """
-        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).filter(copy=None)
+        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).exclude(copy=None)
 
         # TODO priority queue for orders
 
-        orders_in_queue = orders_in_queue.order_by('-date_created')
-        orders_in_queue = orders_in_queue.order_by('-user__role')
+        orders_in_queue = orders_in_queue.order_by('user__role')[::-1]
 
         return orders_in_queue
 
