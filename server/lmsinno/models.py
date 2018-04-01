@@ -271,13 +271,13 @@ class Order(models.Model):
 
         :return: orders in queue
         """
-        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).exclude(copy=None)[::-1]
+        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).exclude(copy=None)
 
         # TODO priority queue for orders
 
         orders_in_queue = orders_in_queue.order_by('-user__role')
 
-        return orders_in_queue
+        return orders_in_queue[::-1]
 
     @staticmethod
     def outstanding_request(document):
