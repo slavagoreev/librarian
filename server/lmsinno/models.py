@@ -275,8 +275,8 @@ class Order(models.Model):
 
         # TODO priority queue for orders
 
-        orders_in_queue = orders_in_queue.order_by('-date_created')
-        orders_in_queue = orders_in_queue.order_by('-user__role')
+        orders_in_queue = orders_in_queue.order_by('date_created')
+        orders_in_queue = orders_in_queue.order_by('user__role')
 
         return orders_in_queue
 
