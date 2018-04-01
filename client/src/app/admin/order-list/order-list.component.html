@@ -28,7 +28,7 @@
             <a href="/documents/{{order.document.document_id}}">
               <span class="document-title">{{order.document.title}}</span>
             </a>
-            <span class="document-type">Booked by <a class="user" href="/librarian/user/{{order.user.id}}">{{order.user.first_name}} {{order.user.last_name}} (<p *ngIf="!isOrders">{{getRole(order.user.role)}}</p>)</a></span>
+            <span class="document-type">Booked by <a class="user" href="/librarian/user/{{order.user.id}}">{{order.user.first_name}} {{order.user.last_name}} <p *ngIf="!isOrders">({{getRole(order.user.role)}})</p></a></span>
           </td>
           <td>
             <div ngbDropdown *ngIf="!(order.status == 3); else closedOrder">
