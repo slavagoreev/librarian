@@ -31,15 +31,18 @@
             <span class="document-type">Booked by <a class="user" href="/librarian/user/{{order.user.id}}">{{order.user.first_name}} {{order.user.last_name}}</a></span>
           </td>
           <td>
-            <div ngbDropdown>
+            <div ngbDropdown *ngIf="!(order.status == 3); else closedOrder">
               <button id="orderStatus" ngbDropdownToggle>
                 <span>{{ statusStr(order.status) }}</span>
               </button>
-              <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="orderStatus" *ngIf="!(order.status == 3)">
+              <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="orderStatus">
                 <button class="dropdown-item" *ngIf="isOrders" (click)="selectStatus(order.order_id, 1)">Accept</button>
                 <button class="dropdown-item" (click)="selectStatus(order.order_id, 3)">Close</button>
               </div>
             </div>
+            <ng-template #closedOrder>
+              <span>{{ statusStr(order.status) }}</span>
+            </ng-template>
           </td>
           <!-- 4..6 -->
           <td>
