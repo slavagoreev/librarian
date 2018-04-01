@@ -76,7 +76,7 @@
                   Book it!<span class="badge badge-warning">{{document.copies_available}} left</span>
               </button>
               <ng-template #noCopies>
-                <button type="button" class="btn btn-primary mt-3" *ngIf="!document.is_reference > 0; else referenceBook"
+                <button type="button" class="btn btn-primary mt-3" *ngIf="!document.is_reference > 0 && tg_id > 0; else referenceBook"
                         (click)="bookDocument(document.document_id)">Pre-order document</button>
               </ng-template>
               <ng-template #referenceBook>
