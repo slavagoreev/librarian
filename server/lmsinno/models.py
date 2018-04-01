@@ -271,7 +271,7 @@ class Order(models.Model):
 
         :return: orders in queue
         """
-        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).exclude(copy=None)
+        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).filter(copy=None)
 
         # TODO priority queue for orders
 
