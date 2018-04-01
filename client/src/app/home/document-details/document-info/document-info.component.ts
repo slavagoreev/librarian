@@ -64,6 +64,11 @@ export class DocumentInfoComponent implements OnInit {
     });
   }
 
+  openTg() {
+    window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+      "telegramAuthWindow", "width=550,height=450");
+  }
+
   deleteCopy(id: number) {
     this.documentService.removeCopy(id).subscribe(res => {
       this.documentService.getDocument(this.document.document_id).subscribe(data => {

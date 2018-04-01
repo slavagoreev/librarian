@@ -50,6 +50,10 @@ export class SignUpComponent implements OnInit, OnDestroy {
             if (errors[val]) { this.pushErrorFor(val, errors[val][0]); };
           });
         }
+        else {
+          window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+            "telegramAuthWindow", "width=550,height=450");
+        }
       });
     } else {
       keys.forEach(val => {
