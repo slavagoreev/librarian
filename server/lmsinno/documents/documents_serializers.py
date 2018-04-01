@@ -47,7 +47,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 class DocumentResponseSerializer(serializers.ModelSerializer):
     authors = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
-    copes = serializers.SerializerMethodField()
+    copies = serializers.SerializerMethodField()
     copies_available = serializers.SerializerMethodField()
     copies_all = serializers.SerializerMethodField()
 
