@@ -76,14 +76,14 @@
                   Book it!<span class="badge badge-warning">{{document.copies_available}} left</span>
               </button>
               <ng-template #noCopies>
-                <button type="button" class="btn btn-primary mt-3" *ngIf="!document.is_reference > 0; else referenceBook"
+                <button type="button" class="btn btn-primary mt-3" *ngIf="!document.is_reference > 0 && tg_id > 0; else referenceBook"
                         (click)="bookDocument(document.document_id)">Pre-order document</button>
               </ng-template>
               <ng-template #referenceBook>
                 <p class="text-muted italic" *ngIf="tg_id > 0; else noTelegramId">Reference book</p>
-                <ng-template #noTelegramId>
-                  <p class="text-muted italic">No Telegram were provided. <a href="https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write">Register now</a></p>
-                </ng-template>
+              </ng-template>
+              <ng-template #noTelegramId>
+                <p class="text-muted italic">No Telegram were provided. <a href="" (click)="openTg()">Register now</a></p>
               </ng-template>
             </td>
             <td></td>

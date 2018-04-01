@@ -118,7 +118,7 @@
             <td>
               <input type="text" class="form-control"
                      id="description" formControlName="description"
-                     placeholder="Phone number"
+                     placeholder="Description"
                      value="" #addDescription
                      [ngClass]="{
                           'is-invalid' : userEditInfoForm.get('description').errors && userEditInfoForm.get('description').dirty
@@ -134,7 +134,7 @@
               <input type="text" class="form-control"
                      id="cover" formControlName="cover"
                      value="" #addCover
-                     placeholder="Address"
+                     placeholder="Cover link"
                      [ngClass]="{
                             'is-invalid' : userEditInfoForm.get('cover').errors && userEditInfoForm.get('cover').dirty
                          }">

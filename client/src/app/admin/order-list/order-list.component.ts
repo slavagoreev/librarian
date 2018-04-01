@@ -43,6 +43,35 @@ export class OrderListComponent implements OnInit {
     if (status == 4) return 'Extended';
   }
 
+  /*
+    <option value="100" [selected]="user.role === 100">Patron</option>
+    <option value="210" [selected]="user.role === 210">Instructor</option>
+    <option value="220" [selected]="user.role === 220">Teacher Assistant</option>
+    <option value="230" [selected]="user.role === 230">Visiting Professor</option>
+    <option value="240" [selected]="user.role === 240">Professor</option>
+    <option value="300" [selected]="user.role === 300">Librarian</option>
+   */
+  getRole(role: number) {
+    if (role === 100) {
+      return "Stud.";
+    }
+    if (role === 210) {
+      return "Inst.";
+    }
+    if (role === 220) {
+      return "T.A";
+    }
+    if (role === 230) {
+      return "V.P";
+    }
+    if (role === 240) {
+      return "Prof.";
+    }
+    if (role === 300) {
+      return "Libr.";
+    }
+  }
+
   observeOrders() {
     this.userService.getAllOrders().subscribe(res => {
       this.orders$ = Observable.of(res);

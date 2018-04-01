@@ -32,7 +32,7 @@ export class DocumentInfoComponent implements OnInit {
     this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
       this.tg_id = res.telegram_id;
     });
-    if (this.tg_id <= 0) {
+    if (this.tg_id < 1) {
       // window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
       //   "telegramAuthWindow", "width=550,height=450");
       // this.sleep(6000);
@@ -47,6 +47,7 @@ export class DocumentInfoComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.tg_id);
     this.description = this.document.description.substr(0, 200);
 
   }
@@ -61,6 +62,11 @@ export class DocumentInfoComponent implements OnInit {
         this.document = data;
       });
     });
+  }
+
+  openTg() {
+    window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+      "telegramAuthWindow", "width=550,height=450");
   }
 
   deleteCopy(id: number) {
