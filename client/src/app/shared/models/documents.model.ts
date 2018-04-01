@@ -12,6 +12,7 @@ export class Document {
   price: number;
   is_reference: boolean;
   copies_available: number;
+  copies_all: number;
   cover?: string;
   // date_added: Date;
   authors?: Author[] = [];
