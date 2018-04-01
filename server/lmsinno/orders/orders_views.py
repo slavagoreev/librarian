@@ -54,7 +54,7 @@ class OrdersQueue(APIView):
 
         orders_in_queue = OrderDetailSerializer(Order.get_queue(), many=True)
 
-        result['data'] = orders_in_queue.data[::-1]
+        result['data'] = orders_in_queue.data
 
         return Response(result, status=status.HTTP_200_OK)
 

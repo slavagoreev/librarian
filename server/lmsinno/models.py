@@ -260,7 +260,7 @@ class Order(models.Model):
 
         :return: None
         """
-        queue = Order.get_queue()
+        queue = Order.get_queue()[::-1]
         for order in queue:
             order.attach_copy()
 
@@ -278,7 +278,7 @@ class Order(models.Model):
         orders_in_queue = orders_in_queue.order_by('-date_created')
         orders_in_queue = orders_in_queue.order_by('-user__role')
 
-        return orders_in_queue[::-1]
+        return orders_in_queue
 
     @staticmethod
     def outstanding_request(document):
