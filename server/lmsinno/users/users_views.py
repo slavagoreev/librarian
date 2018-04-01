@@ -178,7 +178,6 @@ class MyDetail(APIView):
             for event in reversed(get_update()):
                 if 'connected_website' in event['message']:
                     username = event['message']['from']['username']
-                    print(username)
                     telegram_id = event['message']['from']['id']
                     if username == user.username:
                         user.set_telegram_id(telegram_id)
