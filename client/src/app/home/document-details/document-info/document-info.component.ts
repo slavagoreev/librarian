@@ -19,6 +19,7 @@ export class DocumentInfoComponent implements OnInit {
   thumbIsFixed: boolean;
   thumbWidth: number;
   description: string;
+  tg_id: number;
   constructor(
     @Inject(DOCUMENT) private documentEl: Document,
     @Inject(WINDOW) private window,
@@ -27,11 +28,11 @@ export class DocumentInfoComponent implements OnInit {
     private documentService: DocumentService,
     private router: Router,
   ) {
-    let tg_id = -1;
+    this.tg_id = -1;
     this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
-      tg_id = res.telegram_id;
+      this.tg_id = res.telegram_id;
     });
-    if (tg_id == 0) {
+    if (this.tg_id <= 0) {
       // window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
       //   "telegramAuthWindow", "width=550,height=450");
       // this.sleep(6000);

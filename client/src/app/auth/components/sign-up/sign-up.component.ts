@@ -93,7 +93,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
     this.store.select(getAuthStatus).subscribe(
       data => {
         if (data === true) {
-          // TODO the popup window
           this.router.navigateByUrl('/');
         }
       }
