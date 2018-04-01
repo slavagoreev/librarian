@@ -2,8 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.db import models
 
-from django.utils.crypto import get_random_string
-
 from rest_framework_jwt.settings import api_settings
 from rest_framework.authtoken.models import Token
 
@@ -18,8 +16,6 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
 class Document(models.Model):
-    # Type of Documents:
-    # 0 - Book; 1 - Journal article; 2 - AV
     DOCUMENT_TYPE_CHOICES = [(const.BOOK_TYPE, 'Book'),
                              (const.JOURNAL_TYPE, 'Journal article'),
                              (const.AV_TYPE, 'AV')]
@@ -41,6 +37,12 @@ class Document(models.Model):
         return self.title
 
     def take_copy(self):
+        """
+        Method to take one copy of particular document
+        if such copy is available
+
+        :return: copy if such copy is available, None otherwise
+        """
 
         copies = Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS)
 
@@ -58,6 +60,13 @@ class Document(models.Model):
         return copy
 
     def return_copy(self, copy):
+        """
+        Method to return one copy of particular document
+
+        :param copy: copy to return
+        :return: None
+        """
+
         if not copy:
             return
         if copy.document != self:
@@ -75,8 +84,6 @@ class Document(models.Model):
 
 
 class User(AbstractUser):
-    # Type of User:
-    # 0 - basic user; 1 - Faculty; 2 - Librarian
     USER_TYPE_CHOICES = [(const.BASIC_USER_ROLE, 'Basic user'),
                          (const.INSTRUCTOR_ROLE, 'Instructor'),
                          (const.TEACHER_ASSISTANT_ROLE, 'Teacher Assistant'),
@@ -90,7 +97,7 @@ class User(AbstractUser):
     telegram_id = models.IntegerField(default=0)
 
     def __str__(self):
-        return '{0}'.format(self.username)
+        return '{0} {1} ({2})'.format(self.first_name, self.last_name, self.username)
 
     def set_role(self, role):
         self.role = role
@@ -117,6 +124,12 @@ class User(AbstractUser):
 
     @staticmethod
     def get_instance(request):
+        """
+        Method to recognize user by his request
+
+        :param request: API request
+        :return: user instance if such exist, None otherwise
+        """
         if 'HTTP_HOST' in request.META:
             try:
                 token = re.split(' ', request.META['HTTP_BEARER'])[1]
@@ -164,9 +177,8 @@ class DocumentOfAuthor(models.Model):
 
 
 class Copy(models.Model):
-    # Type of Order Status
-    # 0 - not ordered; 1 - ordered
-    ORDER_STATUS_TYPE_CHOICES = [(i, i) for i in range(2)]
+    ORDER_STATUS_TYPE_CHOICES = [(const.NOT_ORDERED_STATUS, 'Not ordered'),
+                                 (const.ORDERED_STATUS, 'Ordered')]
 
     copy_id = models.AutoField(primary_key=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE, to_field='document_id')
@@ -179,8 +191,6 @@ class Copy(models.Model):
 
 
 class Order(models.Model):
-    # Type of Status:
-    # 0 - in queue; 1 - booked; 2 - overdue; 3 - closed; 4 - extended
     STATUS_TYPE_CHOICES = [(const.IN_QUEUE_STATUS, 'In queue'),
                            (const.BOOKED_STATUS, 'Booked'),
                            (const.OVERDUE_STATUS, 'Overdue'),
@@ -202,39 +212,54 @@ class Order(models.Model):
     date_return = models.DateField(default=None, null=True)
 
     def __str__(self):
-        return '{0}: {1}'.format(self.user, self.document)
+        return '{0}: {1} ({2})'.format(self.user, self.document, self.status)
 
     @staticmethod
     def overdue_validation():
         """
+        Method to check orders for overdue
 
-        :return:
+        :return: None
         """
-        orders = Order.objects.all().exclude(status=const.IN_QUEUE_STATUS).exclude(status=const.CLOSED_STATUS)
+        booked_orders = Order.objects.filter(status=const.BOOKED_STATUS)
 
-        for order in orders:
+        for order in booked_orders:
 
             if order.date_return:
                 if order.date_return < datetime.date.today():
                     order.status = const.OVERDUE_STATUS
                     order.save()
+                    # TODO overdue notify
 
         Order.queue_validation()
 
     @staticmethod
     def queue_overdue_validation():
+        """
+        Method to notify people who did not check out
+        his order in 24 hours
+
+        :return: None
+        """
         orders = Order.objects.filter(status=const.IN_QUEUE_STATUS).exclude(copy=None)
 
         now = datetime.datetime.now(datetime.timezone.utc)
         for order in orders:
             if (now - order.date_attach) > datetime.timedelta(hours=24):
                 order.close()
-                print('sorry, your order is closed')
-                # TODO notification
+                msg = 'Sorry, but you did not checkout the document ' + order.document.title + \
+                      'in time, so this order was closed.'
 
+                send_message(order.user.telegram_id, msg)
 
     @staticmethod
     def queue_validation():
+        """
+        Method to control people who are
+        waiting for the document in queue
+
+        :return: None
+        """
         queue = Order.get_queue()
         for order in queue:
             order.attach_copy()
@@ -242,8 +267,9 @@ class Order(models.Model):
     @staticmethod
     def get_queue():
         """
-        method to get priority queue for document
-        :return:
+        Method to get priority queue for document
+
+        :return: orders in queue
         """
         orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).filter(copy=None)
 
@@ -256,6 +282,13 @@ class Order(models.Model):
 
     @staticmethod
     def outstanding_request(document):
+        """
+        Method to place an outstanding request for a document
+        and notify people who are waiting in queue
+
+        :param document: document to remove
+        :return: None
+        """
         orders = Order.objects.filter(document=document)
         orders = orders.filter(status=const.IN_QUEUE_STATUS)
         for order in orders:
@@ -269,8 +302,9 @@ class Order(models.Model):
 
     def attach_copy(self):
         """
-        attach copy to the order if exist available copy
-        :return:
+        Method to attach copy to the order if exist available copy
+
+        :return: None
         """
         if self.status != const.IN_QUEUE_STATUS:
             return
@@ -285,13 +319,16 @@ class Order(models.Model):
             self.save()
 
             # notification
-            msg = "Dear " + self.user.first_name + ",\n\nThe document " + self.copy.document.title + " is now available to checkout."
-            send_message(str(self.user.telegram_id), msg)
+            msg = "Dear " + self.user.first_name + ",\n\nThe document " + \
+                  self.copy.document.title + " is now available to checkout."
+
+            send_message(self.user.telegram_id, msg)
 
     def accept_booking(self):
         """
-        accept order in queue if it has copy
-        :return:
+        Method to accept order in queue if it has copy
+
+        :return: None
         """
         if self.status != const.IN_QUEUE_STATUS:
             return
@@ -351,7 +388,8 @@ class Order(models.Model):
 
     def close(self):
         """
-        method to close unclosed order and return copy
+        Method to close unclosed order and return copy
+
         :return: overdue sum if any
         """
         if self.status == const.CLOSED_STATUS:
@@ -377,7 +415,8 @@ class Order(models.Model):
 
     def is_renewable(self):
         """
-        method to check is it possible to renew an item
+        Method to check is it possible to renew an item
+
         :return:
         """
         if self.status == const.OVERDUE_STATUS:

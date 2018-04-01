@@ -287,6 +287,9 @@ class Booking(APIView):
 
 
 class MyThread(Thread):
+    """
+    Separate thread for validations
+    """
     def __init__(self):
         Thread.__init__(self)
         self.daemon = True
