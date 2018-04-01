@@ -203,7 +203,7 @@ class Order(models.Model):
     status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=const.IN_QUEUE_STATUS)
 
     # date when order was created
-    date_created = models.DateField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True)
     # data when copy was attach to the order
     date_attach = models.DateTimeField(default=None, null=True)
     # data when patron take his order
@@ -260,8 +260,8 @@ class Order(models.Model):
 
         :return: None
         """
-        queue = Order.get_queue()[::-1]
-        for order in queue:
+        queue = Order.get_queue()
+        for order in reversed(queue):
             order.attach_copy()
 
     @staticmethod
@@ -271,10 +271,11 @@ class Order(models.Model):
 
         :return: orders in queue
         """
-        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).exclude(copy=None)
+        orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).filter(copy=None)
 
         # TODO priority queue for orders
 
+        orders_in_queue = orders_in_queue.order_by('-date_created')
         orders_in_queue = orders_in_queue.order_by('-user__role')
 
         return orders_in_queue
