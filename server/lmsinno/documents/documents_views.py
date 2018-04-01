@@ -21,10 +21,11 @@ class DocumentDetailByDocumentID(APIView):
     def get(request, document_id):
         """
         GET request to get one particular document
-        :param request:
-        :param document_id:
-        :return: HTTP_200_OK and JSON-Documents: if documents with such id exists
-                 HTTP_404_NOT_FOUND: if document with such id doesn`t exist
+        ---
+            :param request:
+            :param document_id:
+            :return: HTTP_200_OK and JSON-Documents: if documents with such id exists
+                     HTTP_404_NOT_FOUND: if document with such id doesn`t exist
         """
 
         result = {'status': '', 'data': {}}
@@ -53,9 +54,10 @@ class DocumentsByCriteria(APIView):
     def get(request):
         """
         GET request to get set of document by criteria
-        :param request:
-        :return: HTTP_200_OK and JSON-Documents: if documents with such criteria exists
-                 HTTP_404_NOT_FOUND: if documents with such criteria doesn`t exists
+        ---
+            :param request:
+            :return: HTTP_200_OK and JSON-Documents: if documents with such criteria exists
+                     HTTP_404_NOT_FOUND: if documents with such criteria doesn`t exists
         """
         DEFAULT_SIZE = 50
         DEFAULT_OFFSET = 0
@@ -105,9 +107,10 @@ class DocumentsByCriteria(APIView):
     def post(request):
         """
         POST request: add one particular document
-        :param request: input params
-        :return: HTTP_202_ACCEPTED: if document was added successful
-                 HTTP_400_BAD_REQUEST and JSON-errors: if wrong format of input data
+        ---
+            :param request: input params
+            :return: HTTP_202_ACCEPTED: if document was added successful
+                     HTTP_400_BAD_REQUEST and JSON-errors: if wrong format of input data
         """
 
         # TODO change from POST to DATA
@@ -146,10 +149,11 @@ class DocumentsByCriteria(APIView):
         # TODO AUTHORIZATION
         """
         DELETE request: delete one particular document by ID
-        :param request:
-        :return: HTTP_200_OK: if document was deleted success
-                 HTTP_404_NOT_FOUND: if document with such id not found
-                 HTTP_400_BAD_REQUEST: if wrong format of input data
+        ---
+            :param request:
+            :return: HTTP_200_OK: if document was deleted success
+                     HTTP_404_NOT_FOUND: if document with such id not found
+                     HTTP_400_BAD_REQUEST: if wrong format of input data
         """
         document_id = request.query_params.get('id')
 
@@ -168,10 +172,11 @@ class DocumentsByCriteria(APIView):
     def patch(request):
         """
         PATCH one particular document by ID
-        :param request:
-        :return: HTTP_202_ACCEPTED: if document was changed successfully
-                 HTTP_404_NOT_FOUND: if document with such ID doesn`t exist
-                 HTTP_400_BAD_REQUEST: if format of input data is wrong
+        ---
+            :param request:
+            :return: HTTP_202_ACCEPTED: if document was changed successfully
+                     HTTP_404_NOT_FOUND: if document with such ID doesn`t exist
+                     HTTP_400_BAD_REQUEST: if format of input data is wrong
         """
 
         result = {'status': '', 'data': {}}
@@ -224,6 +229,14 @@ class DocumentDetailByCopyID(APIView):
 
     @staticmethod
     def get(request, copy_id):
+        """
+        Get document detail by copy ID
+        ---
+            :param request:
+            :param copy_id:
+            :return: HTTP_200_OK: document json
+                     HTTP_404_NOT_FOUND: if document with such ID doesn`t exist
+        """
         result = {'status': '', 'data': {}}
 
         try:
@@ -243,6 +256,12 @@ class Bestsellers(APIView):
 
     @staticmethod
     def get(request):
+        """
+        Get all bestsellers
+        ---
+            :param request:
+            :return: HTTP_200_OK: bestsellers json
+        """
         result = {'status': '', 'data': {}}
 
         bestsellers = Document.objects.filter(is_bestseller=True)

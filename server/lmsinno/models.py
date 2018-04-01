@@ -208,7 +208,7 @@ class Order(models.Model):
     date_attach = models.DateTimeField(default=None, null=True)
     # data when patron take his order
     date_accepted = models.DateField(default=None, null=True)
-    # data when patron return his  order
+    # data when patron return his order
     date_return = models.DateField(default=None, null=True)
 
     def __str__(self):
