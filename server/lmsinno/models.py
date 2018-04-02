@@ -316,7 +316,7 @@ class Order(models.Model):
         copy = self.document.take_copy()
 
         if copy:
-            self.date_attach = datetime.datetime.today()
+            self.date_attach = datetime.datetime.now(datetime.timezone.utc)
             self.copy = copy
             self.save()
 

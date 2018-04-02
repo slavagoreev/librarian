@@ -301,7 +301,7 @@ class MyThread(Thread):
             if 1 >= datetime.datetime.today().time().hour >= 0:
                 Order.overdue_validation()
             Order.queue_overdue_validation()
-            time.sleep(datetime.timedelta(hours=1).seconds)
+            time.sleep(datetime.timedelta(minutes=60).seconds)
 
 
 MyThread().start()
