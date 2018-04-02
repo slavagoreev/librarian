@@ -203,12 +203,12 @@ class Order(models.Model):
     status = models.IntegerField(choices=STATUS_TYPE_CHOICES, default=const.IN_QUEUE_STATUS)
 
     # date when order was created
-    date_created = models.DateField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True)
     # data when copy was attach to the order
     date_attach = models.DateTimeField(default=None, null=True)
     # data when patron take his order
     date_accepted = models.DateField(default=None, null=True)
-    # data when patron return his  order
+    # data when patron return his order
     date_return = models.DateField(default=None, null=True)
 
     def __str__(self):
@@ -229,7 +229,10 @@ class Order(models.Model):
                 if order.date_return < datetime.date.today():
                     order.status = const.OVERDUE_STATUS
                     order.save()
-                    # TODO overdue notify
+                    msg = 'Sorry, but you must return the document ' + order.document.title + \
+                          'as soon as possible and pay overdue compensation'
+
+                    send_message(order.user.telegram_id, msg)
 
         Order.queue_validation()
 
@@ -261,7 +264,7 @@ class Order(models.Model):
         :return: None
         """
         queue = Order.get_queue()
-        for order in queue:
+        for order in reversed(queue):
             order.attach_copy()
 
     @staticmethod
@@ -275,8 +278,7 @@ class Order(models.Model):
 
         # TODO priority queue for orders
 
-        orders_in_queue = orders_in_queue.order_by('-user__role')
-        orders_in_queue = orders_in_queue.reverse()[::-1]
+        orders_in_queue = orders_in_queue.order_by('-user__role', '-date_created')
 
         return orders_in_queue
 

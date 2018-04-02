@@ -29,7 +29,7 @@ class Orders(APIView):
 
         result = {'status': '', 'data': {}}
 
-        orders = OrderDetailSerializer(Order.objects.all().exclude(copy=None), many=True)
+        orders = OrderDetailSerializer(Order.objects.exclude(copy=None), many=True)
 
         result['data'] = orders.data
 

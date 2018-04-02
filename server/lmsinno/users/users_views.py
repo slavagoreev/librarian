@@ -264,14 +264,6 @@ class ConfirmEmail(APIView):
     @staticmethod
     def get(request, key):
         user = User.objects.first()
-        print(key)
-
-
-        print(EmailAddress.objects.get(user=user))
-
-        print(EmailConfirmationHMAC)
-
-        print(EmailAddress.objects.get(user=user).verified)
 
         view = VerifyEmailView()
         view.post(request=request)
