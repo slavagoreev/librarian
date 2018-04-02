@@ -177,7 +177,7 @@ class MyDetail(APIView):
             # TODO normalino
             updates = get_update()
             if updates:
-                for event in reversed(get_update()):
+                for event in reversed(updates):
                     if 'connected_website' in event['message']:
                         username = event['message']['from']['username']
                         telegram_id = event['message']['from']['id']
