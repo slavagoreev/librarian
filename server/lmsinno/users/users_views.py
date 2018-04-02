@@ -175,14 +175,16 @@ class MyDetail(APIView):
         try:
             user = User.get_instance(request)
             # TODO normalino
-            for event in reversed(get_update()):
-                if 'connected_website' in event['message']:
-                    username = event['message']['from']['username']
-                    telegram_id = event['message']['from']['id']
-                    if username == user.username:
-                        user.set_telegram_id(telegram_id)
-                        result['data'] = user.telegram_id
-                        break
+            updates = get_update()
+            if updates:
+                for event in reversed(get_update()):
+                    if 'connected_website' in event['message']:
+                        username = event['message']['from']['username']
+                        telegram_id = event['message']['from']['id']
+                        if username == user.username:
+                            user.set_telegram_id(telegram_id)
+                            result['data'] = user.telegram_id
+                            break
 
             if not result['data']:
                 result['data'] = 'no telegram id was provided'
