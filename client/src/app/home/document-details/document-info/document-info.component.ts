@@ -33,9 +33,6 @@ export class DocumentInfoComponent implements OnInit {
       this.tg_id = res.telegram_id;
     });
     if (this.tg_id < 1) {
-      // window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
-      //   "telegramAuthWindow", "width=550,height=450");
-      // this.sleep(6000);
       this.authService.telegramRegister().subscribe(res => {});
     }
   }
@@ -66,7 +63,7 @@ export class DocumentInfoComponent implements OnInit {
 
   openTg() {
     window.open("https://oauth.telegram.org/auth?bot_id=566111170&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
-      "telegramAuthWindow", "width=550,height=450");
+      "", "width=550,height=450");
   }
 
   deleteCopy(id: number) {
