@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_swagger',
     'lmsinno',
-
 ]
 
 REST_USE_JWT = True

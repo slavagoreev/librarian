@@ -11,4 +11,5 @@ export class User {
   address?: string;
   phone?: number;
   orders?: Order[];
+  telegram_id: number;
 }

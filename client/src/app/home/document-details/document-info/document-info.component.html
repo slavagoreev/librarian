@@ -57,18 +57,33 @@
             <td class="bold">Price</td>
             <td>{{document.price}} ₽</td>
           </tr>
+          <tr *ngIf="permission">
+            <td class="bold">All copies of document</td>
+            <td>{{document.copies_all}}</td>
+          </tr>
+          <tr *ngIf="permission">
+            <td class="bold">Booked copies</td>
+            <td>{{document.copies_all - document.copies_available}}</td>
+          </tr>
+          <tr *ngIf="permission">
+            <td class="bold">In stock</td>
+            <td>{{document.copies_available}}</td>
+          </tr>
           <tr>
             <td>
               <button type="button" class="btn btn-primary mt-3"
-                      (click)="bookDocument(document.document_id)" *ngIf="document.copies_available > 0 && !document.is_reference; else noCopies">
+                      (click)="bookDocument(document.document_id)" *ngIf="document.copies_available > 0 && !document.is_reference && tg_id > 0; else noCopies">
                   Book it!<span class="badge badge-warning">{{document.copies_available}} left</span>
               </button>
               <ng-template #noCopies>
-                <button type="button" class="btn btn-primary mt-3"
+                <button type="button" class="btn btn-primary mt-3" *ngIf="!document.is_reference > 0 && tg_id > 0; else referenceBook"
                         (click)="bookDocument(document.document_id)">Pre-order document</button>
               </ng-template>
               <ng-template #referenceBook>
-                <p class="text-muted italic">Reference book</p>
+                <p class="text-muted italic" *ngIf="tg_id > 0; else noTelegramId">Reference book</p>
+              </ng-template>
+              <ng-template #noTelegramId>
+                <p class="text-muted italic">No Telegram were provided. <a href="" (click)="openTg()">Register now</a></p>
               </ng-template>
             </td>
             <td></td>

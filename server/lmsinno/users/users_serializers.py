@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 
 from ..orders.orders_serializers import OrderSerializer
-from ..models import User, Order, UserTelegram
+from ..models import User, Order
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -101,10 +101,6 @@ class UserSafeSerializer(serializers.Serializer):
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
 
-        UserTelegram.objects.create(
-            user=user
-        )
-
         return user
 
 
@@ -124,7 +120,8 @@ class UserResponseDataSerializer(serializers.ModelSerializer):
                   'last_name',
                   'address',
                   'phone',
-                  'username')
+                  'username',
+                  'telegram_id')
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -140,7 +137,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
                   'address',
                   'phone',
                   'username',
-                  'orders')
+                  'orders',
+                  'telegram_id')
 
     @staticmethod
     def get_orders(obj):

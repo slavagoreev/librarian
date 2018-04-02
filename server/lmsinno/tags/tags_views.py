@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from .tags_serializers import TagSerializer
 from ..models import Tag
-from .. import misc
+from .. import const
 
 
 class TagDetail(APIView):
@@ -27,12 +27,12 @@ class TagDetail(APIView):
         try:
             tag = Tag.objects.get(pk=tag_id)
         except Tag.DoesNotExist:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         tag_serializer = TagSerializer(tag)
         result['data'] = tag_serializer.data
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
 
@@ -65,12 +65,12 @@ class TagByCriteria(APIView):
         tags_query_set = tags_query_set.filter().order_by('name')[int(offset): int(offset) + int(size)]
 
         if not tags_query_set:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         tags_serializer = TagSerializer(tags_query_set, many=True)
         result['data'] = tags_serializer.data
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
 
@@ -89,17 +89,17 @@ class TagByCriteria(APIView):
         name = request.POST.get('name', None)
 
         if not name:
-            result['status'] = misc.HTTP_400_BAD_REQUEST
+            result['status'] = const.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         tag_query_set = Tag.objects.filter(name__iexact=name)
 
         if tag_query_set:
-            result['status'] = misc.HTTP_409_CONFLICT
+            result['status'] = const.HTTP_409_CONFLICT
             return Response(result, status=status.HTTP_409_CONFLICT)
 
         tag = Tag.objects.create(name=name)
-        result['status'] = misc.HTTP_201_CREATED
+        result['status'] = const.HTTP_201_CREATED
         result['data']['tag_id'] = tag.tag_id
 
         return Response(result, status=status.HTTP_201_CREATED)

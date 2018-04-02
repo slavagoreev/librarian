@@ -19,6 +19,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   formSubmit = false;
   title = environment.AppName;
   registerSubs: Subscription;
+  nativeWindow: any;
 
   constructor(
     private fb: FormBuilder,
@@ -26,6 +27,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService
   ) {
+    this.nativeWindow = authService.getNativeWindow();
     this.redirectIfUserLoggedIn();
   }
 
@@ -39,6 +41,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
     this.formSubmit = true;
     if (this.signUpForm.valid) {
       // console.log (this.signUpForm);
+      window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+        "telegramAuthWindow", "width=550,height=450");
       this.registerSubs = this.authService.register(values).subscribe(data => {
         const errors = data;
         // console.log (data);
@@ -78,7 +82,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
         'email': [email, Validators.compose([Validators.required, Validators.email]) ],
         'password1': [password1, Validators.compose([Validators.required, Validators.minLength(8)]) ],
         'password2': [password2, Validators.compose([Validators.required, Validators.minLength(8)]) ],
-        'phone': [phone, Validators.compose([Validators.required, Validators.minLength(11), Validators.maxLength(11),Validators.pattern('[0-9]{11}')]) ],
+        'phone': [phone, Validators.compose([Validators.required, Validators.minLength(11), Validators.maxLength(11), Validators.pattern('[0-9]{11}')]) ],
         'first_name': [first_name],
         'last_name': [last_name],
         'username': [username, Validators.required],
@@ -90,7 +94,9 @@ export class SignUpComponent implements OnInit, OnDestroy {
   redirectIfUserLoggedIn() {
     this.store.select(getAuthStatus).subscribe(
       data => {
-        if (data === true) { this.router.navigateByUrl('/'); }
+        if (data === true) {
+          this.router.navigateByUrl('/');
+        }
       }
     );
   }

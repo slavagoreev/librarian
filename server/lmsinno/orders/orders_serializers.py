@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from .. import misc
-from ..models import Order, User
-from ..users import users_serializers
+
 from ..documents import documents_serializers
+from ..users import users_serializers
+from ..models import Order, User
+from .. import const
 
 import datetime
 
@@ -42,9 +43,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_overdue_sum(obj):
         sum = 0
-        if obj.status == 2:
+        if obj.status == const.OVERDUE_STATUS:
             overdue_days = (datetime.date.today() - obj.date_return).days
-            sum = max(min(overdue_days * 100, obj.copy.document.price), 0)
+            sum = max(min(overdue_days * const.OVERDUE_CONST, obj.copy.document.price), 0)
 
         return sum
 

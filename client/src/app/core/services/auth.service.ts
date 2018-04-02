@@ -12,7 +12,13 @@ import _date = moment.unitOfTime._date;
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../shared/components/notification/notification.service';
+import {UserService} from "./user.service";
 // Todo import { AuthActions } from '../../auth/actions/auth.actions';
+
+function _window(): any {
+  // return the global native browser window object
+  return window;
+}
 
 @Injectable()
 export class AuthService {
@@ -31,7 +37,8 @@ export class AuthService {
     private store: Store<AppState>,
     private jwtHelper: JwtHelperService,
     private router : Router,
-    private notifications: NotificationService
+    private notifications: NotificationService,
+    private userService: UserService
   ) {
 
   }
@@ -68,6 +75,13 @@ export class AuthService {
     }).shareReplay();
   }
 
+
+  telegramRegister(): Observable<any> {
+    return this.http.post('users/telegram/', {}).map(data => {
+      console.log(data);
+      return data.json();
+    });
+  }
   /**
    *
    *
@@ -84,6 +98,7 @@ export class AuthService {
       if (_data.token) {
         // Setting token after login
         // console.log (res);
+
         this.setLocalData(res.json());
         this.store.dispatch(this.actions.loginSuccess(_data));
         this.notifications.sendMessage('Registration', 'success', 'Signed up successfully', 5000);
@@ -107,7 +122,6 @@ export class AuthService {
       return _data;
     });
   }
-
 
   /**
    *
@@ -168,4 +182,11 @@ export class AuthService {
     localStorage.setItem('user', jsonData);
     localStorage.setItem('token', user_data.token);
   }
+
+
+  getNativeWindow(): any {
+    return _window();
+  }
+
+
 }

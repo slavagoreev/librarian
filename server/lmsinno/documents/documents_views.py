@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .documents_serializers import DocumentSerializer, DocumentResponseSerializer
 from ..models import Copy, Document, Tag, TagOfDocument, Author, DocumentOfAuthor
 from ..permissions import DocumentPermission
-from .. import misc
+from .. import const
 
 import re
 
@@ -21,10 +21,11 @@ class DocumentDetailByDocumentID(APIView):
     def get(request, document_id):
         """
         GET request to get one particular document
-        :param request:
-        :param document_id:
-        :return: HTTP_200_OK and JSON-Documents: if documents with such id exists
-                 HTTP_404_NOT_FOUND: if document with such id doesn`t exist
+        ---
+            :param request:
+            :param document_id:
+            :return: HTTP_200_OK and JSON-Documents: if documents with such id exists
+                     HTTP_404_NOT_FOUND: if document with such id doesn`t exist
         """
 
         result = {'status': '', 'data': {}}
@@ -32,11 +33,11 @@ class DocumentDetailByDocumentID(APIView):
         try:
             document = Document.objects.get(pk=document_id)
         except Document.DoesNotExist:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = DocumentResponseSerializer(document)
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
         result['data'] = serializer.data
 
         return Response(result, status=status.HTTP_200_OK)
@@ -53,9 +54,10 @@ class DocumentsByCriteria(APIView):
     def get(request):
         """
         GET request to get set of document by criteria
-        :param request:
-        :return: HTTP_200_OK and JSON-Documents: if documents with such criteria exists
-                 HTTP_404_NOT_FOUND: if documents with such criteria doesn`t exists
+        ---
+            :param request:
+            :return: HTTP_200_OK and JSON-Documents: if documents with such criteria exists
+                     HTTP_404_NOT_FOUND: if documents with such criteria doesn`t exists
         """
         DEFAULT_SIZE = 50
         DEFAULT_OFFSET = 0
@@ -95,19 +97,20 @@ class DocumentsByCriteria(APIView):
         result['data'] = serializer.data
 
         if serializer.data:
-            result['status'] = misc.HTTP_200_OK
+            result['status'] = const.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
 
-        result['status'] = misc.HTTP_404_NOT_FOUND
+        result['status'] = const.HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
     def post(request):
         """
         POST request: add one particular document
-        :param request: input params
-        :return: HTTP_202_ACCEPTED: if document was added successful
-                 HTTP_400_BAD_REQUEST and JSON-errors: if wrong format of input data
+        ---
+            :param request: input params
+            :return: HTTP_202_ACCEPTED: if document was added successful
+                     HTTP_400_BAD_REQUEST and JSON-errors: if wrong format of input data
         """
 
         # TODO change from POST to DATA
@@ -136,7 +139,7 @@ class DocumentsByCriteria(APIView):
                     author_obj = Author.objects.create(name=author)
                 DocumentOfAuthor.objects.create(document_id=doc_obj.document_id, author_id=author_obj.author_id)
 
-            return Response({'status': misc.HTTP_202_ACCEPTED, 'data': {'document_id': doc_obj.document_id}},
+            return Response({'status': const.HTTP_202_ACCEPTED, 'data': {'document_id': doc_obj.document_id}},
                             status=status.HTTP_202_ACCEPTED)
         print(doc_serializer.is_valid())
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -146,10 +149,11 @@ class DocumentsByCriteria(APIView):
         # TODO AUTHORIZATION
         """
         DELETE request: delete one particular document by ID
-        :param request:
-        :return: HTTP_200_OK: if document was deleted success
-                 HTTP_404_NOT_FOUND: if document with such id not found
-                 HTTP_400_BAD_REQUEST: if wrong format of input data
+        ---
+            :param request:
+            :return: HTTP_200_OK: if document was deleted success
+                     HTTP_404_NOT_FOUND: if document with such id not found
+                     HTTP_400_BAD_REQUEST: if wrong format of input data
         """
         document_id = request.query_params.get('id')
 
@@ -157,21 +161,22 @@ class DocumentsByCriteria(APIView):
             try:
                 document = Document.objects.get(pk=document_id)
             except Document.DoesNotExist:
-                return Response({'status': misc.HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'status': const.HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
             serializer = DocumentSerializer(document)
             document.delete()
-            return Response({'status': misc.HTTP_200_OK, 'data': serializer.data})
+            return Response({'status': const.HTTP_200_OK, 'data': serializer.data})
         else:
-            return Response({'status': misc.HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': const.HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
     def patch(request):
         """
         PATCH one particular document by ID
-        :param request:
-        :return: HTTP_202_ACCEPTED: if document was changed successfully
-                 HTTP_404_NOT_FOUND: if document with such ID doesn`t exist
-                 HTTP_400_BAD_REQUEST: if format of input data is wrong
+        ---
+            :param request:
+            :return: HTTP_202_ACCEPTED: if document was changed successfully
+                     HTTP_404_NOT_FOUND: if document with such ID doesn`t exist
+                     HTTP_400_BAD_REQUEST: if format of input data is wrong
         """
 
         result = {'status': '', 'data': {}}
@@ -182,7 +187,7 @@ class DocumentsByCriteria(APIView):
             try:
                 document = Document.objects.get(pk=document_id)
             except Document.DoesNotExist:
-                result['status'] = misc.HTTP_404_NOT_FOUND
+                result['status'] = const.HTTP_404_NOT_FOUND
                 return Response(result, status=status.HTTP_404_NOT_FOUND)
 
             document_serializer = DocumentSerializer(document, data=request.data, partial=True)
@@ -211,11 +216,11 @@ class DocumentsByCriteria(APIView):
                         tag_obj = Tag.objects.create(name=tag)
                     TagOfDocument.objects.create(document_id=document.document_id, tag_id=tag_obj.tag_id)
 
-            result['status'] = misc.HTTP_202_ACCEPTED
+            result['status'] = const.HTTP_202_ACCEPTED
             result['data'] = document_serializer.data
             return Response(result, status=status.HTTP_202_ACCEPTED)
 
-        result['status'] = misc.HTTP_400_BAD_REQUEST
+        result['status'] = const.HTTP_400_BAD_REQUEST
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -224,15 +229,23 @@ class DocumentDetailByCopyID(APIView):
 
     @staticmethod
     def get(request, copy_id):
+        """
+        Get document detail by copy ID
+        ---
+            :param request:
+            :param copy_id:
+            :return: HTTP_200_OK: document json
+                     HTTP_404_NOT_FOUND: if document with such ID doesn`t exist
+        """
         result = {'status': '', 'data': {}}
 
         try:
             copy = Copy.objects.get(pk=copy_id)
         except Copy.DoesNotExist:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
         result['data'] = DocumentResponseSerializer(Document.objects.get(pk=copy.document_id)).data
 
         return Response(result, status=status.HTTP_200_OK)
@@ -243,14 +256,20 @@ class Bestsellers(APIView):
 
     @staticmethod
     def get(request):
+        """
+        Get all bestsellers
+        ---
+            :param request:
+            :return: HTTP_200_OK: bestsellers json
+        """
         result = {'status': '', 'data': {}}
 
         bestsellers = Document.objects.filter(is_bestseller=True)
         if not bestsellers:
-            result['status'] = misc.HTTP_404_NOT_FOUND
+            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = misc.HTTP_200_OK
+        result['status'] = const.HTTP_200_OK
         result['data'] = DocumentResponseSerializer(bestsellers, many=True).data
 
         return Response(result, status=status.HTTP_200_OK)

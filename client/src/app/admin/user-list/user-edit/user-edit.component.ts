@@ -92,7 +92,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
     const values = this.userEditInfoForm.value;
     const keys = Object.keys(values);
     if (this.userEditInfoForm.valid) {
-      console.log (this.userEditInfoForm);
+      // console.log (this.userEditInfoForm);
       /*this.userChangeSubscription = this.authService.register(values).subscribe(data => {
         const errors = data;
         console.log (data);

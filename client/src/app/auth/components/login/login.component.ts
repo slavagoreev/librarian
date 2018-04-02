@@ -7,7 +7,9 @@ import { AppState } from '../../../interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
 import { getAuthStatus } from '../../reducers/selectors';
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import {HttpService} from "../../../core/services/http.service";
+import {Http, Response} from "@angular/http";
+
 
 @Component({
   selector: 'app-login',
@@ -26,16 +28,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     private store: Store<AppState>,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpService
   ) {
     this.redirectIfUserLoggedIn();
-    this.innerHeight =window.innerHeight;
+    this.innerHeight = window.innerHeight;
   }
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerHeight = window.innerHeight;
   }
-
 
   ngOnInit() {
     this.initForm();
@@ -48,7 +50,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     const keys = Object.keys(values);
 
     if (this.signInForm.valid) {
-      console.log (this.signInForm)
+      // console.error(newWindow);
+      // console.log(newWindow);
       this.loginSubs = this.authService.login(values).subscribe(data => {
         const error = data.error;
         if (error) {
@@ -68,6 +71,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+
   private pushErrorFor(ctrl_name: string, msg: string) {
     this.signInForm.controls[ctrl_name].setErrors({'msg': msg});
   }
@@ -85,7 +89,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   redirectIfUserLoggedIn() {
     this.store.select(getAuthStatus).subscribe(
       data => {
-        if (data === true) { this.router.navigate([this.returnUrl]); }
+        if (data === true) { this.router.navigate([this.returnUrl]);}
       }
     );
   }
