@@ -251,7 +251,7 @@ class Order(models.Model):
             if (now - order.date_attach) > datetime.timedelta(hours=24):
                 order.close()
                 msg = 'Sorry, but you did not checkout the document ' + order.document.title + \
-                      'in time, so this order was closed.'
+                      ' in time, so this order was closed.'
 
                 send_message(order.user.telegram_id, msg)
 
@@ -292,14 +292,22 @@ class Order(models.Model):
         :return: None
         """
         orders = Order.objects.filter(document=document)
-        orders = orders.filter(status=const.IN_QUEUE_STATUS)
+        orders = orders.exclude(status=const.CLOSED_STATUS)
         for order in orders:
-            order.close()
-            msg = 'Sorry, but the document ' + order.document.title + \
-                  ' that you requested will not be available for checkout.' \
-                  '\n' \
-                  '\n' \
-                  'You may be able to book the document soon.'
+            if order.status == const.IN_QUEUE_STATUS:
+                order.close()
+                msg = 'Sorry, but the document ' + order.document.title + \
+                      ' that you requested will not be available for checkout.' \
+                      '\n' \
+                      '\n' \
+                      'You may be able to book the document soon.'
+
+            else:
+                msg = "Dear " + order.user.first_name + ",\n\nThe document " + \
+                      order.copy.document.title + " must be returned to the library as soon as possible."\
+                      '\n' \
+                      '\n' \
+                      'You may be able to book the document soon.'
             send_message(order.user.telegram_id, msg)
 
     def attach_copy(self):

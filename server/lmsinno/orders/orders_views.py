@@ -61,9 +61,8 @@ class OrdersQueue(APIView):
     @staticmethod
     def delete(request, document_id):
         """
-
-        :param request:
-        :param document_id:
+        Outstanding request for the document
+        :param document_id: document to request
         :return:
         """
         result = {'status': '', 'data': {}}
