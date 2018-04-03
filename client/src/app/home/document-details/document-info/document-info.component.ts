@@ -43,6 +43,14 @@ export class DocumentInfoComponent implements OnInit {
     });
   }
 
+  outstandingRequest(documentId: number) {
+    this.userService.outstandingRequest(documentId).subscribe(() => {
+      this.documentService.getDocument(this.document.document_id).subscribe(data => {
+        this.document = data;
+      });
+    });
+  }
+
   ngOnInit() {
     console.log(this.tg_id);
     this.description = this.document.description.substr(0, 200);
