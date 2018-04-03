@@ -11,6 +11,6 @@ def send_message(user, msg):
 def get_update():
     url = 'https://api.telegram.org/bot'+BOT_KEY+'/getUpdates'
     response = rq.get(url)
-    if response.json()['ok'] == 'true':
+    if response.json()['ok']:
         return response.json()['result']
     return None
