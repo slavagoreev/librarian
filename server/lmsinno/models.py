@@ -280,6 +280,7 @@ class Order(models.Model):
         orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).filter(copy=None)
         if document:
             orders_in_queue.filter(document=document)
+            print(document)
 
         # TODO priority queue for orders
 
@@ -338,13 +339,13 @@ class Order(models.Model):
                   self.copy.document.title + " is now available to checkout."
 
             send_message(self.user.telegram_id, msg)
-            next = Order.get_queue(self.document).last()
-            if next:
-                msg = "Dear " + next.user.first_name + ",\n\nThe document " + \
+            next_order = Order.get_queue(self.document).last()
+            if next_order:
+                msg = "Dear " + next_order.user.first_name + ",\n\nThe document " + \
                       self.copy.document.title + " will be available to checkout in " \
                       + str(self.get_time_delta().days) + " days."
 
-                send_message(next.user.telegram_id, msg)
+                send_message(next_order.user.telegram_id, msg)
 
 
     def accept_booking(self):
