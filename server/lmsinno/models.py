@@ -341,7 +341,7 @@ class Order(models.Model):
                       self.copy.document.title + " will be available to you after " \
                       + str(index+1) + " persons in queue."
 
-                send_message(next_orders.user.telegram_id, msg)
+                send_message(order.user.telegram_id, msg)
 
     def accept_booking(self):
         """
