@@ -392,7 +392,6 @@ class Order(models.Model):
         self.save()
 
     def get_time_delta(self):
-        self.date_accepted = datetime.date.today()
         delta = datetime.timedelta(days=1)
 
         # books are checked out for three weeks
