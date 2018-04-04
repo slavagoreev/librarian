@@ -338,7 +338,7 @@ class Order(models.Model):
             next_orders = Order.get_queue().filter(document=self.document)
             for index, order in enumerate(reversed(next_orders)):
                 msg = "Dear " + order.user.first_name + ",\n\nThe document " + \
-                      self.copy.document.title + " will be available to you after " \
+                      self.document.title + " will be available to you after " \
                       + str(index+1) + " persons in queue."
 
                 send_message(order.user.telegram_id, msg)
