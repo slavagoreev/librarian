@@ -233,6 +233,8 @@ class Order(models.Model):
                           'as soon as possible and pay overdue compensation'
 
                     send_message(order.user.telegram_id, msg)
+                    print(order.user.telegram_id)
+                    print(msg)
                     order.save()
 
         Order.queue_validation()
@@ -269,13 +271,15 @@ class Order(models.Model):
             order.attach_copy()
 
     @staticmethod
-    def get_queue():
+    def get_queue(document=None):
         """
         Method to get priority queue for document
 
         :return: orders in queue
         """
         orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).filter(copy=None)
+        if document:
+            orders_in_queue.filter(document=document)
 
         # TODO priority queue for orders
 
@@ -334,6 +338,14 @@ class Order(models.Model):
                   self.copy.document.title + " is now available to checkout."
 
             send_message(self.user.telegram_id, msg)
+            next = Order.get_queue(self.document).last()
+            if next:
+                msg = "Dear " + next.first_name + ",\n\nThe document " + \
+                      self.copy.document.title + " will be available to checkout in " \
+                      + self.get_time_delta().days + " days."
+
+                send_message(next.telegram_id, msg)
+
 
     def accept_booking(self):
         """
@@ -378,6 +390,36 @@ class Order(models.Model):
 
         self.status = const.BOOKED_STATUS
         self.save()
+
+    def get_time_delta(self):
+        self.date_accepted = datetime.date.today()
+        delta = datetime.timedelta(days=1)
+
+        # books are checked out for three weeks
+        if self.user.role == const.BASIC_USER_ROLE:
+            delta = datetime.timedelta(weeks=3)
+
+        # current best sellers, in which case the limit is two weeks
+        if self.copy.document.is_bestseller:
+            delta = datetime.timedelta(weeks=2)
+
+        # checked out by a faculty member, in which case the limit is 4 weeks
+        if self.user.role == (const.LIBRARIAN_ROLE or
+                              const.VISITING_PROFESSOR_ROLE or
+                              const.TEACHER_ASSISTANT_ROLE or
+                              const.INSTRUCTOR_ROLE or
+                              const.PROFESSOR_ROLE):
+            delta = datetime.timedelta(weeks=4)
+
+        # AV materials and journals may be checked out for two weeks.
+        if self.copy.document.type == (const.JOURNAL_TYPE or const.AV_TYPE):
+            delta = datetime.timedelta(weeks=2)
+
+        # Visiting Professor - limit is 1 week (regardless the type of the document)
+        if self.user.role == const.VISITING_PROFESSOR_ROLE:
+            delta = datetime.timedelta(weeks=1)
+
+        return delta
 
     def renew(self):
         """
