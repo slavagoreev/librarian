@@ -233,8 +233,6 @@ class Order(models.Model):
                           'as soon as possible and pay overdue compensation'
 
                     send_message(order.user.telegram_id, msg)
-                    print(order.user.telegram_id)
-                    print(msg)
                     order.save()
 
         Order.queue_validation()
@@ -271,16 +269,13 @@ class Order(models.Model):
             order.attach_copy()
 
     @staticmethod
-    def get_queue(document=None):
+    def get_queue():
         """
         Method to get priority queue for document
 
         :return: orders in queue
         """
         orders_in_queue = Order.objects.filter(status=const.IN_QUEUE_STATUS).filter(copy=None)
-        if document:
-            orders_in_queue.filter(document=document)
-            print(document)
 
         # TODO priority queue for orders
 
@@ -339,14 +334,14 @@ class Order(models.Model):
                   self.copy.document.title + " is now available to checkout."
 
             send_message(self.user.telegram_id, msg)
-            next_order = Order.get_queue(self.document).last()
-            if next_order:
-                msg = "Dear " + next_order.user.first_name + ",\n\nThe document " + \
-                      self.copy.document.title + " will be available to checkout in " \
-                      + str(self.get_time_delta().days) + " days."
 
-                send_message(next_order.user.telegram_id, msg)
+            next_orders = Order.get_queue().filter(document=self.document)
+            for index, order in enumerate(reversed(next_orders)):
+                msg = "Dear " + order.user.first_name + ",\n\nThe document " + \
+                      self.copy.document.title + " will be available to you after " \
+                      + str(index+1) + " persons in queue."
 
+                send_message(next_orders.user.telegram_id, msg)
 
     def accept_booking(self):
         """
