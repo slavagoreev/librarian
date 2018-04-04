@@ -342,7 +342,7 @@ class Order(models.Model):
             if next:
                 msg = "Dear " + next.user.first_name + ",\n\nThe document " + \
                       self.copy.document.title + " will be available to checkout in " \
-                      + self.get_time_delta().days + " days."
+                      + str(self.get_time_delta().days) + " days."
 
                 send_message(next.user.telegram_id, msg)
 
