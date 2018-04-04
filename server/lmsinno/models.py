@@ -340,11 +340,11 @@ class Order(models.Model):
             send_message(self.user.telegram_id, msg)
             next = Order.get_queue(self.document).last()
             if next:
-                msg = "Dear " + next.first_name + ",\n\nThe document " + \
+                msg = "Dear " + next.user.first_name + ",\n\nThe document " + \
                       self.copy.document.title + " will be available to checkout in " \
                       + self.get_time_delta().days + " days."
 
-                send_message(next.telegram_id, msg)
+                send_message(next.user.telegram_id, msg)
 
 
     def accept_booking(self):
