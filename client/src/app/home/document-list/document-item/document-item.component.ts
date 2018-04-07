@@ -5,6 +5,7 @@ import { AppState } from '../../../interfaces';
 import { DocumentActions } from '../../../document/reducers/document.actions';
 import { getUserRole } from '../../../auth/reducers/selectors';
 import { Router } from '@angular/router';
+import {Document} from "../../../shared/models/documents.model";
 
 @Component({
   selector: 'app-document-item',

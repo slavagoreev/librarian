@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import {Document} from "../../shared/models/documents.model";
 
 @Component({
   selector: 'app-document-list',
