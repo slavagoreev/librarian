@@ -228,11 +228,12 @@ class Order(models.Model):
             if order.date_return:
                 if order.date_return < datetime.date.today():
                     order.status = const.OVERDUE_STATUS
-                    order.save()
+
                     msg = 'Sorry, but you must return the document ' + order.document.title + \
                           'as soon as possible and pay overdue compensation'
 
                     send_message(order.user.telegram_id, msg)
+                    order.save()
 
         Order.queue_validation()
 
@@ -334,6 +335,14 @@ class Order(models.Model):
 
             send_message(self.user.telegram_id, msg)
 
+            next_orders = Order.get_queue().filter(document=self.document)
+            for index, order in enumerate(reversed(next_orders)):
+                msg = "Dear " + order.user.first_name + ",\n\nThe document " + \
+                      self.document.title + " will be available to you after " \
+                      + str(index+1) + " persons in queue."
+
+                send_message(order.user.telegram_id, msg)
+
     def accept_booking(self):
         """
         Method to accept order in queue if it has copy
@@ -377,6 +386,35 @@ class Order(models.Model):
 
         self.status = const.BOOKED_STATUS
         self.save()
+
+    def get_time_delta(self):
+        delta = datetime.timedelta(days=1)
+
+        # books are checked out for three weeks
+        if self.user.role == const.BASIC_USER_ROLE:
+            delta = datetime.timedelta(weeks=3)
+
+        # current best sellers, in which case the limit is two weeks
+        if self.copy.document.is_bestseller:
+            delta = datetime.timedelta(weeks=2)
+
+        # checked out by a faculty member, in which case the limit is 4 weeks
+        if self.user.role == (const.LIBRARIAN_ROLE or
+                              const.VISITING_PROFESSOR_ROLE or
+                              const.TEACHER_ASSISTANT_ROLE or
+                              const.INSTRUCTOR_ROLE or
+                              const.PROFESSOR_ROLE):
+            delta = datetime.timedelta(weeks=4)
+
+        # AV materials and journals may be checked out for two weeks.
+        if self.copy.document.type == (const.JOURNAL_TYPE or const.AV_TYPE):
+            delta = datetime.timedelta(weeks=2)
+
+        # Visiting Professor - limit is 1 week (regardless the type of the document)
+        if self.user.role == const.VISITING_PROFESSOR_ROLE:
+            delta = datetime.timedelta(weeks=1)
+
+        return delta
 
     def renew(self):
         """
