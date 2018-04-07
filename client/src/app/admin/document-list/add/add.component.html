@@ -66,9 +66,9 @@
                       [ngClass]="{
                           'is-invalid' : userEditInfoForm.get('document_type').errors && userEditInfoForm.get('document_type').dirty
                        }">
-                <option value=0 [selected]="document.document_type === 0">Book</option>
-                <option value=1 [selected]="document.document_type === 1">AV Material</option>
-                <option value=2 [selected]="document.document_type === 2">Journal</option>
+                <option value=0 [selected]="document.type === 0">Book</option>
+                <option value=1 [selected]="document.type === 1">AV Material</option>
+                <option value=2 [selected]="document.type === 2">Journal</option>
               </select>
               <div class="invalid-feedback">
                 {{userEditInfoForm.get('document_type')?.errors?.msg || 'This field is necessary'}}
