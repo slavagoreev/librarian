@@ -7,6 +7,7 @@ import {Document} from "../../shared/models/documents.model";
   styleUrls: ['./document-list.component.scss']
 })
 export class DocumentListComponent implements OnInit {
+  document: Document;
   @Input() documents;
   @Input() permission: boolean;
 

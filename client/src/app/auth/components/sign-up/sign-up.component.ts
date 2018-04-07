@@ -8,6 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { getAuthStatus } from '../../reducers/selectors';
 import { Subscription } from 'rxjs/Subscription';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {LoginComponent} from "../login/login.component";
 
 @Component({
   selector: 'app-sign-up',
@@ -15,6 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent implements OnInit, OnDestroy {
+  innerHeight: number;
   signUpForm: FormGroup;
   formSubmit = false;
   title = environment.AppName;

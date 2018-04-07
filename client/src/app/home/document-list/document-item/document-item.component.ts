@@ -13,7 +13,7 @@ import {Document} from "../../../shared/models/documents.model";
   styleUrls: ['./document-item.component.scss']
 })
 export class DocumentItemComponent implements OnInit {
-  @Input() document : Document;
+  @Input() document: Document;
   @Input() permission: boolean;
 
   constructor(
