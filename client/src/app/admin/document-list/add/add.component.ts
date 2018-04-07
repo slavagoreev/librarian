@@ -80,7 +80,7 @@ export class AddComponent implements OnInit {
         'year': [year, Validators.required],
         'description': [description],
         'cover': [cover],
-        'document_type': [document_type, Validators.required],
+        'type': [document_type, Validators.required],
         'price': [price, Validators.required],
         'is_reference': [is_reference],
         'is_bestseller': [is_bestseller],
@@ -128,7 +128,7 @@ export class AddComponent implements OnInit {
     this.document.year = this.year.nativeElement.value;
     this.document.description = this.description.nativeElement.value;
     this.document.cover = this.cover.nativeElement.value;
-    this.document.document_type = this.document_type.nativeElement.value;
+    this.document.type = this.document_type.nativeElement.value;
     this.document.price = this.price.nativeElement.value;
     this.document.copies_available = 0;
     this.document.tags = [];
