@@ -122,7 +122,7 @@ export class DocumentService {
       'year': Number(d.year),
       'description': d.description,
       'cover': d.cover,
-      'type': Number(d.document_type),
+      'type': Number(d.type),
       'price': Number(d.price),
       'is_reference': d.is_reference,
       'is_bestseller': d.is_bestseller,
