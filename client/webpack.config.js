@@ -525,7 +525,7 @@ module.exports = {
     new CriticalPlugin({
       src: 'index.html',
       inline: true,
-      //extract: true,
+      extract: true,
       minify: true,
       dest: 'index.html'
     })
