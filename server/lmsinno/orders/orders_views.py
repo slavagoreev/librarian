@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from ..tg_bot.engine import send_message
 from .orders_serializers import OrderSerializer, OrderDetailSerializer
 from ..permissions import LibrariantPermission
 from ..models import Order, User, Document, Copy
@@ -267,6 +268,13 @@ class Booking(APIView):
             )
 
             order.attach_copy()
+
+            if not order.copy:
+                msg = "Dear " + order.user.first_name + ",\n\nWhen the document " + \
+                      order.document.title + " will be available for checkout " \
+                                            "you will be notified."
+
+                send_message(order.user.telegram_id, msg)
 
         except IndexError:
 
