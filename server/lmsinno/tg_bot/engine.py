@@ -1,16 +1,14 @@
-# TODO Telegram bot for Librarian
-import requests as rq
-from ..const import BOT_KEY
+from ..const import BOT_KEY, HTTP_SESSION
 
 
 def send_message(user, msg):
     link = 'https://api.telegram.org/bot'+BOT_KEY+'/sendMessage?chat_id=' + str(user) + '&text=' + msg
-    rq.get(link)
+    HTTP_SESSION.get(link)
 
 
 def get_update():
     url = 'https://api.telegram.org/bot'+BOT_KEY+'/getUpdates'
-    response = rq.get(url)
+    response = HTTP_SESSION.get(url)
     if response.json()['ok']:
         return response.json()['result']
     return None

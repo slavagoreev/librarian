@@ -1,3 +1,5 @@
+import requests
+
 # API Return statuses
 HTTP_200_OK = 'HTTP_200_OK'
 HTTP_404_NOT_FOUND = 'HTTP_404_NOT_FOUND'
@@ -35,3 +37,6 @@ OVERDUE_CONST = 100
 
 # Telegram Bot Token
 BOT_KEY = '566111170:AAG1yAUuZEbQQbhHovQTiqzuzzVrwjj8ALg'
+
+# HTTPS Connection
+HTTP_SESSION = requests.Session()
