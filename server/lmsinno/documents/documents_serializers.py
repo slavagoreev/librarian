@@ -41,7 +41,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_copies_available(obj):
-        return len(Copy.objects.filter(document=obj).filter(status=const.NOT_ORDERED_STATUS))
+        return Copy.objects.filter(document=obj).filter(status=const.NOT_ORDERED_STATUS).count()
 
 
 class DocumentResponseSerializer(serializers.ModelSerializer):
@@ -71,11 +71,11 @@ class DocumentResponseSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_copies_available(obj):
-        return len(Copy.objects.filter(document=obj).filter(status=const.NOT_ORDERED_STATUS))
+        return Copy.objects.filter(document=obj).filter(status=const.NOT_ORDERED_STATUS).count()
 
     @staticmethod
     def get_copies_all(obj):
-        return len(Copy.objects.filter(document=obj))
+        return Copy.objects.filter(document=obj).count()
 
     @staticmethod
     def get_authors(obj):
