@@ -28,11 +28,10 @@ export class DocumentInfoComponent implements OnInit {
     private documentService: DocumentService,
     private router: Router,
   ) {
-    this.tg_id = -1;
     this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
       this.tg_id = res.telegram_id;
     });
-    if (this.tg_id < 1) {
+    if (this.tg_id === 0) {
       this.authService.telegramRegister().subscribe(res => {});
     }
   }
