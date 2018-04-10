@@ -36,13 +36,13 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
 
   getDocuments(cb = () => {}) {
-    console.error('should load', this.options);
+    // console.error('should load', this.options);
     this.subscription = this.documentService.searchDocuments(this.options)
       .subscribe(data => this.processData(data))
   }
 
   private processData = (data) => {
-    console.error("proceed");
+    // console.error("proceed");
     if (this.options.offset == 0)
       this.documents = data;
     else
