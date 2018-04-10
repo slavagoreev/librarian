@@ -47,9 +47,11 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.documentService.getDocuments().subscribe(res => {
-      this.documents$ = Observable.of(res);
-    });
+    if (this.isAuthenticated) {
+      this.documentService.getDocuments().subscribe(res => {
+        this.documents$ = Observable.of(res);
+      });
+    }
   }
   setSearchState(state: boolean) {
     this.searchOpen = state;

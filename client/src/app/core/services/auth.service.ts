@@ -56,7 +56,7 @@ export class AuthService {
       'users/login/', data
     ).map((res: Response) => {
       data = res.json();
-      console.log (data);
+      // console.log (data);
       if (data.token) {
         // Setting token after login
         this.setLocalData(data);

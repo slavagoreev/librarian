@@ -21,7 +21,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    pathMatch: 'full', redirectTo: 'auth/login'
+    pathMatch: 'full', redirectTo: 'documents'
   },
   { path: '**', component: NotFoundComponent }
 ];

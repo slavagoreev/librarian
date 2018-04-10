@@ -3,7 +3,7 @@
     <img src="/assets/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
     Librarian
   </a>
-  <div id="morphsearch" class="morphsearch" [class.open]="searchOpen">
+  <div *ngIf="isAuthenticated" id="morphsearch" class="morphsearch" [class.open]="searchOpen">
     <form class="morphsearch-form">
       <input class="morphsearch-input" (focus)="setSearchState(true)" type="search" placeholder="Search..."/>
       <button class="morphsearch-submit" type="submit">Search</button>
