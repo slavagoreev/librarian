@@ -198,7 +198,9 @@ class MyOrders(APIView):
             my_order = Order.objects.get(order_id=order_id)
 
             if my_order.user != User.get_instance(request=request):
-                raise KeyError
+                result['data'] = "sorry, you can renew only your document"
+                result['status'] = const.HTTP_400_BAD_REQUEST
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             if not my_order.is_renewable():
                 result['data'] = 'sorry, you can not renew this document'
@@ -214,10 +216,6 @@ class MyOrders(APIView):
         except Order.DoesNotExist:
             result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
-        except KeyError:
-            result['data'] = "sorry, you can renew only your document"
-            result['status'] = const.HTTP_400_BAD_REQUEST
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Booking(APIView):

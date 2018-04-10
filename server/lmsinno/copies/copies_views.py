@@ -32,7 +32,7 @@ class CopyDetail(APIView):
             Order.queue_validation()
 
             document = Document.objects.get(pk=copy.document_id)
-            document.copies_available = len(Copy.objects.filter(document=document).filter(status=const.NOT_ORDERED_STATUS))
+            document.copies_available = Copy.objects.filter(document=document).filter(status=const.NOT_ORDERED_STATUS).count()
             document.save()
 
             result['status'] = const.HTTP_200_OK

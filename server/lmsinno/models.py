@@ -54,7 +54,7 @@ class Document(models.Model):
         copy.status = const.ORDERED_STATUS
         copy.save()
 
-        self.copies_available = len(Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS))
+        self.copies_available = Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS).count()
         self.save()
 
         return copy
@@ -71,13 +71,13 @@ class Document(models.Model):
             return
         if copy.document != self:
             return
-        if copy.status == const.NOT_ORDERED_STATUS:
+        if copy.status != const.ORDERED_STATUS:
             return
 
         copy.status = const.NOT_ORDERED_STATUS
         copy.save()
 
-        self.copies_available = len(Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS))
+        self.copies_available = Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS).count()
         self.save()
 
         Order.queue_validation()
@@ -356,33 +356,9 @@ class Order(models.Model):
             return
 
         self.date_accepted = datetime.date.today()
-        delta = datetime.timedelta(days=1)
+        order_time_delta = self.get_time_delta()
 
-        # books are checked out for three weeks
-        if self.user.role == const.BASIC_USER_ROLE:
-            delta = datetime.timedelta(weeks=3)
-
-        # current best sellers, in which case the limit is two weeks
-        if self.copy.document.is_bestseller:
-            delta = datetime.timedelta(weeks=2)
-
-        # checked out by a faculty member, in which case the limit is 4 weeks
-        if self.user.role == (const.LIBRARIAN_ROLE or
-                              const.VISITING_PROFESSOR_ROLE or
-                              const.TEACHER_ASSISTANT_ROLE or
-                              const.INSTRUCTOR_ROLE or
-                              const.PROFESSOR_ROLE):
-            delta = datetime.timedelta(weeks=4)
-
-        # AV materials and journals may be checked out for two weeks.
-        if self.copy.document.type == (const.JOURNAL_TYPE or const.AV_TYPE):
-            delta = datetime.timedelta(weeks=2)
-
-        # Visiting Professor - limit is 1 week (regardless the type of the document)
-        if self.user.role == const.VISITING_PROFESSOR_ROLE:
-            delta = datetime.timedelta(weeks=1)
-
-        self.date_return = datetime.date.today() + delta
+        self.date_return = datetime.date.today() + order_time_delta
 
         self.status = const.BOOKED_STATUS
         self.save()
@@ -448,7 +424,7 @@ class Order(models.Model):
             overdue_days = (datetime.date.today() - self.date_return).days
             overdue_sum = min(overdue_days * 100, self.copy.document.price)
 
-        # if order closed immediately copies number must no change
+        # if order closed immediately copy number must no change
         if self.status != const.IN_QUEUE_STATUS:
             self.date_return = datetime.date.today()
 
