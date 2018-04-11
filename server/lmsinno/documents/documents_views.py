@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from .documents_serializers import DocumentSerializer, DocumentResponseSerializer
 from ..models import Copy, Document, Tag, TagOfDocument, Author, DocumentOfAuthor
-from ..permissions import DocumentPermission
+from ..permissions import LibrarianPermission
 from .. import const
 
 import re
@@ -15,7 +15,7 @@ class DocumentDetailByDocumentID(APIView):
     Class to get one particular document by id
     """
 
-    permission_classes = (DocumentPermission,)
+    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request, document_id):
@@ -48,7 +48,7 @@ class DocumentsByCriteria(APIView):
     Class to work with document using some criteria
     """
 
-    permission_classes = (DocumentPermission,)
+    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request):
@@ -225,7 +225,7 @@ class DocumentsByCriteria(APIView):
 
 
 class DocumentDetailByCopyID(APIView):
-    permission_classes = (DocumentPermission,)
+    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request, copy_id):
@@ -252,7 +252,7 @@ class DocumentDetailByCopyID(APIView):
 
 
 class Bestsellers(APIView):
-    permission_classes = (DocumentPermission,)
+    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request):

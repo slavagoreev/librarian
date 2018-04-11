@@ -5,11 +5,11 @@ from rest_framework import status
 from .copies_serializers import CopySerializer, CopyDetailSerializer
 from .. import const
 from ..models import Copy, Document, Order
-from ..permissions import LibrariantPermission
+from ..permissions import LibrarianPermission
 
 
 class CopyDetail(APIView):
-    permission_classes = (LibrariantPermission,)
+    permission_classes = (LibrarianPermission,)
     """
     Class handle with copies
     """
@@ -87,7 +87,9 @@ class CopyDetail(APIView):
             copies = Copy.objects.filter(document=document).filter(status=const.NOT_ORDERED_STATUS)
 
             if not copies:
-                raise FileNotFoundError
+                result['data'] = 'no copy to delete'
+                result['status'] = const.HTTP_404_NOT_FOUND
+                return Response(result, status=status.HTTP_404_NOT_FOUND)
 
             copy = copies.first()
             copy.delete()
@@ -95,10 +97,6 @@ class CopyDetail(APIView):
             document.save()
 
         except Document.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
-            return Response(result, status=status.HTTP_404_NOT_FOUND)
-        except FileNotFoundError:
-            result['data'] = 'no copy to delete'
             result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
