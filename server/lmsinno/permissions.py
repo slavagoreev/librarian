@@ -8,6 +8,7 @@ from .models import User
 from . import const
 
 
+# TODO new type of permissions
 class DocumentPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
