@@ -64,14 +64,7 @@
   }
 }
 
-@media (min-width: 411px) {
-  .sign-up .side-image {
-    background-image: url(/assets/images/login@2x.jpg);
-  }
-}
-
-
-@media (max-width: 410px) {
+@media (max-width: 450px) {
   .col-md-6:nth-child(even) {
     padding-left: 10px;
   }
@@ -80,5 +73,11 @@
   }
   .sign-up .side-image {
     background-image: url(/assets/images/Login@Small.jpg);
+  }
+}
+
+@media (min-width: 451px) {
+  .sign-up .side-image {
+    background-image: url(/assets/images/login@2x.jpg);
   }
 }
