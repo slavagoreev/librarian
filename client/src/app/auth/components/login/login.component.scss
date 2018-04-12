@@ -69,3 +69,20 @@
     height: 380px !important;
   }
 }
+
+@media (max-width: 410px) {
+  .side-image-block {
+    height: 200px !important;
+  }
+  .side-image img {
+    background-image: url(/assets/images/login@Small.jpg);
+  }
+
+  .sign-in {
+    margin-top: 0 !important;
+  }
+
+  .sign-in {
+    height: 380px !important;
+  }
+}

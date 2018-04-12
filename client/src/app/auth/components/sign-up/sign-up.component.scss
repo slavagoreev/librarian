@@ -67,3 +67,16 @@
     padding-right: 10px;
   }
 }
+
+
+@media (max-width: 767px) {
+  .col-md-6:nth-child(even) {
+    padding-left: 10px;
+  }
+  .col-md-6:nth-child(odd) {
+    padding-right: 10px;
+  }
+  .side-image img {
+    background-image: url(/assets/images/login@Small.jpg);
+  }
+}
