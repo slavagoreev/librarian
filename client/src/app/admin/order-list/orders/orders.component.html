@@ -12,7 +12,7 @@
           <th width="100px">Status</th>
           <th width="130px">Accepted</th> <!-- 70% -->
           <th width="130px">Return</th>
-          <th width="130px">Overdue sum</th>
+          <th width="80px">Overdue</th>
         </tr>
         </thead>
         <tbody id="searchResults">
@@ -35,19 +35,32 @@
               <button class="btn btn-link" (click)="extendOrder(order.order_id)">Extend</button>
             </div>
           </td>
-          <td>
-            {{statusStr(order.status)}}
+          <td class="content-center">
+            <div *ngIf="order.status != 3; else closedStatus">
+              {{statusStr(order.status)}}
+            </div>
+            <ng-template #closedStatus>
+              <div class="closed">
+                {{statusStr(order.status)}}
+              </div>
+            </ng-template>
           </td>
           <!-- 4..6 -->
-          <td>
+          <td class="date content-center">
             {{order.date_accepted}}
           </td>
-          <td>
+          <td class="date content-center">
             {{order.date_return}}
           </td>
-          <td>
-            <span *ngIf="order.overdue_sum > 0; else overdueZero">{{order.overdue_sum}}<b>₽</b></span>
-            <ng-template #overdueZero>-</ng-template>
+          <td class="content-center">
+            <span *ngIf="order.overdue_sum > 0; else overdueZero" style="color: red;">
+              {{order.overdue_sum}}<b>₽</b>
+            </span>
+            <ng-template #overdueZero>
+              <div class="overdue-zero">
+                -
+              </div>
+            </ng-template>
           </td>
         </tr>
         </tbody>
