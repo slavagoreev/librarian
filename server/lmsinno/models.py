@@ -89,7 +89,10 @@ class User(AbstractUser):
                          (const.TEACHER_ASSISTANT_ROLE, 'Teacher Assistant'),
                          (const.VISITING_PROFESSOR_ROLE, 'Visiting Professor'),
                          (const.PROFESSOR_ROLE, 'Professor'),
-                         (const.LIBRARIAN_ROLE, 'Librarian')]
+                         (const.LIBRARIAN_BASE_ROLE, 'Librarian Base'),
+                         (const.LIBRARIAN1_ROLE, 'Librarian 1'),
+                         (const.LIBRARIAN2_ROLE, 'Librarian 2'),
+                         (const.LIBRARIAN3_ROLE, 'Librarian 3')]
 
     role = models.IntegerField(default=const.BASIC_USER_ROLE, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
@@ -375,7 +378,10 @@ class Order(models.Model):
             delta = datetime.timedelta(weeks=2)
 
         # checked out by a faculty member, in which case the limit is 4 weeks
-        if self.user.role == (const.LIBRARIAN_ROLE or
+        if self.user.role == (const.LIBRARIAN_BASE_ROLE or
+                              const.LIBRARIAN1_ROLE or
+                              const.LIBRARIAN2_ROLE or
+                              const.LIBRARIAN3_ROLE or
                               const.VISITING_PROFESSOR_ROLE or
                               const.TEACHER_ASSISTANT_ROLE or
                               const.INSTRUCTOR_ROLE or

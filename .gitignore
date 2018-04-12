@@ -35,3 +35,4 @@ server/lmsinno/orders/__pycache__/
 server/lmsinno/tags/__pycache__/
 server/lmsinno/users/__pycache__/
 /client/package-lock.json
+sample.py

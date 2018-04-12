@@ -13,17 +13,18 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .users_serializers import UserResponseDataSerializer, UserDetailSerializer
-from ..permissions import LibrariantPermission, UserDetailPermission, UserPermission
+from ..permissions import LibrarianPermission, UserPermission
 from ..models import User
 from .. import const
 
 from ..tg_bot.engine import get_update
 
+
 class Users(APIView):
     """
        Class to get list of all Users
     """
-    permission_classes = (LibrariantPermission,)
+    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request):
@@ -50,7 +51,7 @@ class UserDetail(APIView):
     """
         Class to get one User by id
     """
-    permission_classes = (UserDetailPermission,)
+    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request, user_id):
@@ -101,7 +102,7 @@ class UserDetail(APIView):
             # We return 'accepted' in case that 'hacker' who try to change state
             # Might try several times before he totally burn in tears about our security :)
             # NOTE: User.get_instance(request).role - the instance of requester
-            if User.get_instance(request).role != const.LIBRARIAN_ROLE:
+            if User.get_instance(request).role != const.LIBRARIAN_BASE_ROLE:
                 return Response(result, status=status.HTTP_202_ACCEPTED)
             # If pass, then save all
             serializer.save()
@@ -230,7 +231,7 @@ class MyDetail(APIView):
 
             if res == res2:
                 user = User.objects.get(pk=data[1])
-                user.role = const.LIBRARIAN_ROLE
+                user.role = const.LIBRARIAN_BASE_ROLE
                 user.save()
 
         except Exception:

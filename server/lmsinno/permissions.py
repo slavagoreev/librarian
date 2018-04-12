@@ -8,7 +8,8 @@ from .models import User
 from . import const
 
 
-class DocumentPermission(permissions.BasePermission):
+# TODO new type of permissions
+class LibrarianPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         user = User.get_instance(request)
@@ -16,14 +17,62 @@ class DocumentPermission(permissions.BasePermission):
         if not user:
             return False
 
-        if request.method == 'GET':
+        if request.method == 'GET' and user.role == (const.LIBRARIAN_BASE_ROLE or
+                                                     const.LIBRARIAN1_ROLE or
+                                                     const.LIBRARIAN2_ROLE or
+                                                     const.LIBRARIAN3_ROLE):
             result = True
-        elif request.method == 'POST' and user.role == const.LIBRARIAN_ROLE:
+
+        elif request.method == 'POST' and user.role == (const.LIBRARIAN_BASE_ROLE or
+                                                        const.LIBRARIAN2_ROLE or
+                                                        const.LIBRARIAN3_ROLE):
             result = True
-        elif request.method == 'DELETE' and user.role == const.LIBRARIAN_ROLE:
+
+        elif request.method == 'DELETE' and user.role == (const.LIBRARIAN_BASE_ROLE or
+                                                          const.LIBRARIAN3_ROLE):
             result = True
-        elif request.method == 'PATCH' and user.role == const.LIBRARIAN_ROLE:
+
+        elif request.method == 'PATCH' and user.role == (const.LIBRARIAN_BASE_ROLE or
+                                                         const.LIBRARIAN1_ROLE or
+                                                         const.LIBRARIAN2_ROLE or
+                                                         const.LIBRARIAN3_ROLE):
             result = True
+
+        else:
+
+            result = False
+
+        return result
+
+
+class UserPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        user = User.get_instance(request)
+
+        if not user:
+            return False
+
+        if request.method == 'GET' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1])
+                                        or user.role == const.LIBRARIAN_BASE_ROLE):
+            result = True
+        elif request.method == 'POST' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1])
+                                           or user.role == const.LIBRARIAN_BASE_ROLE):
+            result = True
+        elif request.method == 'DELETE' and user.role == const.LIBRARIAN_BASE_ROLE:
+            result = True
+        elif request.method == 'PATCH':
+            if user.role == const.LIBRARIAN_BASE_ROLE:
+                result = True
+            elif user.pk == int(request.META['PATH_INFO'].split('/')[-1]):
+                result = True
+                try:
+                    request.data['role']
+                    result = False
+                except MultiValueDictKeyError:
+                    pass
+            else:
+                result = False
         else:
             result = False
 
@@ -40,87 +89,10 @@ class AuthenticatedUserPermission(permissions.BasePermission):
 
         if request.method == 'GET':
             result = True
-        elif request.method == 'POST' and user.role == const.LIBRARIAN_ROLE:
+        elif request.method == 'POST' and user.role == const.LIBRARIAN_BASE_ROLE:
             result = True
-        elif request.method == 'PATCH' and user.role == const.LIBRARIAN_ROLE:
+        elif request.method == 'PATCH' and user.role == const.LIBRARIAN_BASE_ROLE:
             result = True
-        else:
-            result = False
-
-        return result
-
-
-class UserPermission(permissions.BasePermission):
-
-    def has_permission(self, request, view):
-        user = User.get_instance(request)
-
-        if not user:
-            return False
-
-        if request.method == 'GET':
-            result = True
-        elif request.method == 'POST':
-            result = True
-        elif request.method == 'PATCH':
-            result = True
-        else:
-            result = False
-
-        return result
-
-
-class LibrariantPermission(permissions.BasePermission):
-
-    def has_permission(self, request, view):
-
-        user = User.get_instance(request)
-
-        if not user:
-            return False
-
-        if request.method == 'GET' and user.role == const.LIBRARIAN_ROLE:
-            result = True
-        elif request.method == 'POST' and user.role == const.LIBRARIAN_ROLE:
-            result = True
-        elif request.method == 'DELETE' and user.role == const.LIBRARIAN_ROLE:
-            result = True
-        elif request.method == 'PATCH' and user.role == const.LIBRARIAN_ROLE:
-            result = True
-        else:
-            result = False
-
-        return result
-
-
-class UserDetailPermission(permissions.BasePermission):
-
-    def has_permission(self, request, view):
-        user = User.get_instance(request)
-
-        if not user:
-            return False
-
-        if request.method == 'GET' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1])
-                                        or user.role == const.LIBRARIAN_ROLE):
-            result = True
-        elif request.method == 'POST' and (user.pk == int(request.META['PATH_INFO'].split('/')[-1])
-                                           or user.role == const.LIBRARIAN_ROLE):
-            result = True
-        elif request.method == 'DELETE' and user.role == const.LIBRARIAN_ROLE:
-            result = True
-        elif request.method == 'PATCH':
-            if user.role == const.LIBRARIAN_ROLE:
-                result = True
-            elif user.pk == int(request.META['PATH_INFO'].split('/')[-1]):
-                result = True
-                try:
-                    request.data['role']
-                    result = False
-                except MultiValueDictKeyError:
-                    pass
-            else:
-                result = False
         else:
             result = False
 

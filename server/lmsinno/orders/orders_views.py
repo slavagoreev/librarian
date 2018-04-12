@@ -4,7 +4,7 @@ from rest_framework import status
 
 from ..tg_bot.engine import send_message
 from .orders_serializers import OrderSerializer, OrderDetailSerializer
-from ..permissions import LibrariantPermission
+from ..permissions import LibrarianPermission
 from ..models import Order, User, Document, Copy
 from .. import const
 
@@ -15,7 +15,7 @@ import time
 
 
 class Orders(APIView):
-    permission_classes = (LibrariantPermission,)
+    permission_classes = (LibrarianPermission,)
     """
         Class to get all orders
     """
@@ -38,7 +38,7 @@ class Orders(APIView):
 
 
 class OrdersQueue(APIView):
-    permission_classes = (LibrariantPermission,)
+    permission_classes = (LibrarianPermission,)
     """
         Class to get orders in queue order
     """
@@ -82,7 +82,7 @@ class OrdersQueue(APIView):
 
 
 class OrderDetail(APIView):
-    permission_classes = (LibrariantPermission,)
+    permission_classes = (LibrarianPermission,)
     """
         Class to react with orders
     """
