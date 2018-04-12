@@ -67,12 +67,6 @@
   }
 }
 
-@media (min-width: 411px) {
-  .sign-in .side-image-block .side-image {
-    background-image: url(/assets/images/login@2x.jpg);
-  }
-}
-
 @media (max-width: 410px) {
   .side-image-block {
     height: 200px !important;
@@ -87,5 +81,11 @@
 
   .sign-in {
     height: 380px !important;
+  }
+}
+
+@media (min-width: 411px) {
+  .sign-in .side-image-block .side-image {
+    background-image: url(/assets/images/login@2x.jpg);
   }
 }
