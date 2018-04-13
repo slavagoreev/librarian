@@ -57,7 +57,9 @@
                 <option value="220" [selected]="user.role === 220">Teacher Assistant</option>
                 <option value="230" [selected]="user.role === 230">Visiting Professor</option>
                 <option value="240" [selected]="user.role === 240">Professor</option>
-                <option value="300" [selected]="user.role === 300">Librarian</option>
+                <option value="310" [selected]="user.role === 310">Librarian 1</option>
+                <option value="320" [selected]="user.role === 320">Librarian 2</option>
+                <option value="330" [selected]="user.role === 330">Librarian 3</option>
               </select>
               <div class="invalid-feedback">
                 {{userEditInfoForm.get('username')?.errors?.msg || 'Enter valid username!'}}
