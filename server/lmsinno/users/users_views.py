@@ -92,13 +92,7 @@ class UserDetail(APIView):
         serializer = UserDetailSerializer(user, data=request.data, partial=True)
 
         if serializer.is_valid():
-            # First, need to check whether the user try to change his role
-            # We return 'accepted' in case that 'hacker' who try to change state
-            # Might try several times before he totally burn in tears about our security :)
-            # NOTE: User.get_instance(request).role - the instance of requester
-            if User.get_instance(request).role != const.LIBRARIAN_BASE_ROLE:
-                return Response(result, status=status.HTTP_202_ACCEPTED)
-            # If pass, then save all
+
             serializer.save()
             return Response(result, status=status.HTTP_202_ACCEPTED)
 
