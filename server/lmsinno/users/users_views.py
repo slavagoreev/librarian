@@ -96,7 +96,10 @@ class UserDetail(APIView):
             # We return 'accepted' in case that 'hacker' who try to change state
             # Might try several times before he totally burn in tears about our security :)
             # NOTE: User.get_instance(request).role - the instance of requester
-            if User.get_instance(request).role != const.LIBRARIAN_BASE_ROLE:
+            if User.get_instance(request).role not in [const.LIBRARIAN_BASE_ROLE,
+                                                       const.LIBRARIAN1_ROLE,
+                                                       const.LIBRARIAN2_ROLE,
+                                                       const.LIBRARIAN3_ROLE]:
                 return Response(result, status=status.HTTP_202_ACCEPTED)
             # If pass, then save all
             serializer.save()
