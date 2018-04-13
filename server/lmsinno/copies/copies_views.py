@@ -83,16 +83,9 @@ class CopyDetail(APIView):
 
         try:
             document = Document.objects.get(document_id=copy_id)
-            copies = Copy.objects.filter(document=document).filter(status=const.NOT_ORDERED_STATUS)
-
-            if not copies:
+            if not document.delete_copy():
                 result['data'] = 'no copy to delete'
                 return Response(result, status=status.HTTP_404_NOT_FOUND)
-
-            copy = copies.first()
-            copy.delete()
-            document.copies_available -= 1
-            document.save()
 
         except Document.DoesNotExist:
             return Response(result, status=status.HTTP_404_NOT_FOUND)
