@@ -74,10 +74,8 @@ class OrdersQueue(APIView):
             Order.outstanding_request(document)
 
         except Document.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -99,7 +97,6 @@ class OrderDetail(APIView):
 
             return Response(result, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
@@ -129,12 +126,10 @@ class OrderDetail(APIView):
 
                 if document.copies_available == 0 and not order.copy:
                     result['data'] = 'no copy available'
-                    result['status'] = const.HTTP_404_NOT_FOUND
                     return Response(result, status=status.HTTP_404_NOT_FOUND)
 
                 order.accept_booking()
 
-                result['status'] = const.HTTP_200_OK
                 return Response(result, status=status.HTTP_200_OK)
 
             elif new_status == const.CLOSED_STATUS and old_status != const.CLOSED_STATUS:
@@ -148,16 +143,13 @@ class OrderDetail(APIView):
 
                 # if status nor 1 or 3 than it is incorrect request
                 result['data'] = 'no such option'
-                result['status'] = const.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         except Order.DoesNotExist:
             result['data'] = 'order dose not exist'
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
             result['data'] = 'incorrect data was provided'
-            result['status'] = const.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -181,7 +173,6 @@ class MyOrders(APIView):
         orders = OrderDetailSerializer(Order.objects.filter(user=user), many=True)
 
         result['data'] = orders.data
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -208,7 +199,6 @@ class Booking(APIView):
             user = User.get_instance(request=request)
             if not user.telegram_id:
                 result['data'] = 'no telegram id was provided'
-                result['status'] = const.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             document = Document.objects.get(pk=document_id)
@@ -218,12 +208,10 @@ class Booking(APIView):
                 if order.document.document_id == document.document_id and (order.status == const.IN_QUEUE_STATUS or
                                                                            order.status == const.BOOKED_STATUS or
                                                                            order.status == const.OVERDUE_STATUS):
-                    result['status'] = const.HTTP_400_BAD_REQUEST
                     result['data'] = {'details': 'you already booked this document'}
                     return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             if document.is_reference:
-                result['status'] = const.HTTP_400_BAD_REQUEST
                 result['data'] = {'details': 'reference document cannot be checked out'}
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
@@ -243,17 +231,14 @@ class Booking(APIView):
 
         except IndexError:
 
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         except Document.DoesNotExist or User.DoesNotExist:
 
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         order_serializer = OrderSerializer(order)
         result['data'] = order_serializer.data
-        result['status'] = const.HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
 

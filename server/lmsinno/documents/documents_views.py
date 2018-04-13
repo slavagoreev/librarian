@@ -31,11 +31,9 @@ class DocumentDetailByDocumentID(APIView):
         try:
             document = Document.objects.get(pk=document_id)
         except Document.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = DocumentResponseSerializer(document)
-        result['status'] = const.HTTP_200_OK
         result['data'] = serializer.data
 
         return Response(result, status=status.HTTP_200_OK)
@@ -93,10 +91,8 @@ class DocumentsByCriteria(APIView):
         result['data'] = serializer.data
 
         if serializer.data:
-            result['status'] = const.HTTP_200_OK
             return Response(result, status=status.HTTP_200_OK)
 
-        result['status'] = const.HTTP_404_NOT_FOUND
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
@@ -136,7 +132,7 @@ class DocumentsByCriteria(APIView):
                     author_obj = Author.objects.create(name=author)
                 DocumentOfAuthor.objects.create(document_id=doc_obj.document_id, author_id=author_obj.author_id)
 
-            return Response({'status': const.HTTP_202_ACCEPTED, 'data': {'document_id': doc_obj.document_id}},
+            return Response({'data': {'document_id': doc_obj.document_id}},
                             status=status.HTTP_202_ACCEPTED)
         print(doc_serializer.is_valid())
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -158,12 +154,12 @@ class DocumentsByCriteria(APIView):
             try:
                 document = Document.objects.get(pk=document_id)
             except Document.DoesNotExist:
-                return Response({'status': const.HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'data': {}}, status=status.HTTP_404_NOT_FOUND)
             serializer = DocumentSerializer(document)
             document.delete()
-            return Response({'status': const.HTTP_200_OK, 'data': serializer.data})
+            return Response({'data': serializer.data})
         else:
-            return Response({'status': const.HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
     @permission_1
@@ -185,7 +181,6 @@ class DocumentsByCriteria(APIView):
             try:
                 document = Document.objects.get(pk=document_id)
             except Document.DoesNotExist:
-                result['status'] = const.HTTP_404_NOT_FOUND
                 return Response(result, status=status.HTTP_404_NOT_FOUND)
 
             document_serializer = DocumentSerializer(document, data=request.data, partial=True)
@@ -214,11 +209,9 @@ class DocumentsByCriteria(APIView):
                         tag_obj = Tag.objects.create(name=tag)
                     TagOfDocument.objects.create(document_id=document.document_id, tag_id=tag_obj.tag_id)
 
-            result['status'] = const.HTTP_202_ACCEPTED
             result['data'] = document_serializer.data
             return Response(result, status=status.HTTP_202_ACCEPTED)
 
-        result['status'] = const.HTTP_400_BAD_REQUEST
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -239,10 +232,8 @@ class DocumentDetailByCopyID(APIView):
         try:
             copy = Copy.objects.get(pk=copy_id)
         except Copy.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = const.HTTP_200_OK
         result['data'] = DocumentResponseSerializer(Document.objects.get(pk=copy.document_id)).data
 
         return Response(result, status=status.HTTP_200_OK)
@@ -262,10 +253,8 @@ class Bestsellers(APIView):
 
         bestsellers = Document.objects.filter(is_bestseller=True)
         if not bestsellers:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = const.HTTP_200_OK
         result['data'] = DocumentResponseSerializer(bestsellers, many=True).data
 
         return Response(result, status=status.HTTP_200_OK)
