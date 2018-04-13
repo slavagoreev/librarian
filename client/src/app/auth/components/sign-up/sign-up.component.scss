@@ -23,7 +23,7 @@
     height: 100%;
     float: left;
     opacity: 0.7;
-    background-image: url(/assets/images/login@2x.jpg);
+    // background-image: url(/assets/images/login@2x.jpg);
 
     background-repeat: no-repeat;
     background-position: center;
@@ -49,10 +49,6 @@
   .side-image-block {
     height: 200px !important;
   }
-  .side-image img {
-    background-image: url(/assets/images/login@2x.jpg);
-  }
-
   .sign-up {
     margin-top: 0 !important;
   }
@@ -65,5 +61,23 @@
   }
   .col-md-6:nth-child(odd) {
     padding-right: 10px;
+  }
+}
+
+@media (max-width: 450px) {
+  .col-md-6:nth-child(even) {
+    padding-left: 10px;
+  }
+  .col-md-6:nth-child(odd) {
+    padding-right: 10px;
+  }
+  .sign-up .side-image {
+    background-image: url(/assets/images/Login@Small.jpg);
+  }
+}
+
+@media (min-width: 451px) {
+  .sign-up .side-image {
+    background-image: url(/assets/images/login@2x.jpg);
   }
 }
