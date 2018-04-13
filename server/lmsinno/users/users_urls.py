@@ -13,8 +13,6 @@ urlpatterns = [
     url(r'^social/', include('social_django.urls', namespace='social')),  # <- Here
 
     url(r'^registration/$', users_views.Registration.as_view()),
-    url(r'^registration/account-confirm-email/(?P<key>[-:\w]+)/$', users_views.ConfirmEmail.as_view(),
-        name='account_confirm_email'),
     url(r'^registration/', include('rest_auth.registration.urls')),
 
     url(r'^profile/(?P<user_id>[-:\w]+)/$', users_views.MyDetail.as_view()),

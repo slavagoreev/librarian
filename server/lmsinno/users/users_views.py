@@ -1,7 +1,4 @@
 import datetime
-import requests
-
-from allauth.account.models import EmailAddress, EmailConfirmation, EmailConfirmationHMAC
 
 try:
     from rest_auth.registration.views import RegisterView, VerifyEmailView
@@ -12,8 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+from ..permissions import permission_0, permission_2, permission_3, permission_1
 from .users_serializers import UserResponseDataSerializer, UserDetailSerializer
-from ..permissions import LibrarianPermission, UserPermission
+from ..permissions import permission_0
 from ..models import User
 from .. import const
 
@@ -24,9 +22,9 @@ class Users(APIView):
     """
        Class to get list of all Users
     """
-    permission_classes = (LibrarianPermission,)
 
     @staticmethod
+    @permission_1
     def get(request):
         """
             GET request to get list of all Users
@@ -51,9 +49,9 @@ class UserDetail(APIView):
     """
         Class to get one User by id
     """
-    permission_classes = (LibrarianPermission,)
 
     @staticmethod
+    @permission_0
     def get(request, user_id):
         """
             GET request to get one particular user
@@ -77,6 +75,7 @@ class UserDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
+    @permission_1
     def patch(request, user_id):
         """
             PATCH request to update users
@@ -115,6 +114,7 @@ class UserDetail(APIView):
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
+    @permission_3
     def delete(request, user_id):
         """
         DELETE request: delete one particular user by ID
@@ -138,12 +138,12 @@ class UserDetail(APIView):
 
 class MyDetail(APIView):
     """
-        Class to get one User by id
+        Class to get one User info
     """
-    permission_classes = (UserPermission,)
 
     @staticmethod
-    def get(request, user_id):
+    @permission_0
+    def get(request):
         """
             GET request to get one particular user
             :param request:
@@ -154,7 +154,7 @@ class MyDetail(APIView):
         result = {'status': '', 'data': {}}
 
         try:
-            user = User.objects.get(pk=user_id)
+            user = User.get_instance(request)
         except User.DoesNotExist:
             result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
@@ -262,14 +262,3 @@ class Registration(RegisterView):
 
         return RegisterView.create(self, request, *args, **kwargs)
 
-
-class ConfirmEmail(APIView):
-    @staticmethod
-    def get(request, key):
-        user = User.objects.first()
-
-        view = VerifyEmailView()
-        view.post(request=request)
-
-        result = {'status': '', 'data': {}}
-        return Response(result, status=status.HTTP_200_OK)

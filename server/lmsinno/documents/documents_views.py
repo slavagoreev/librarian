@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from .documents_serializers import DocumentSerializer, DocumentResponseSerializer
 from ..models import Copy, Document, Tag, TagOfDocument, Author, DocumentOfAuthor
-from ..permissions import LibrarianPermission
+from ..permissions import permission_0, permission_2, permission_3, permission_1
 from .. import const
 
 import re
@@ -14,8 +14,6 @@ class DocumentDetailByDocumentID(APIView):
     """
     Class to get one particular document by id
     """
-
-    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request, document_id):
@@ -47,8 +45,6 @@ class DocumentsByCriteria(APIView):
     """
     Class to work with document using some criteria
     """
-
-    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request):
@@ -104,6 +100,7 @@ class DocumentsByCriteria(APIView):
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
+    @permission_2
     def post(request):
         """
         POST request: add one particular document
@@ -145,8 +142,8 @@ class DocumentsByCriteria(APIView):
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
+    @permission_3
     def delete(request):
-        # TODO AUTHORIZATION
         """
         DELETE request: delete one particular document by ID
         ---
@@ -169,6 +166,7 @@ class DocumentsByCriteria(APIView):
             return Response({'status': const.HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
+    @permission_1
     def patch(request):
         """
         PATCH one particular document by ID
@@ -225,7 +223,6 @@ class DocumentsByCriteria(APIView):
 
 
 class DocumentDetailByCopyID(APIView):
-    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request, copy_id):
@@ -252,7 +249,6 @@ class DocumentDetailByCopyID(APIView):
 
 
 class Bestsellers(APIView):
-    permission_classes = (LibrarianPermission,)
 
     @staticmethod
     def get(request):

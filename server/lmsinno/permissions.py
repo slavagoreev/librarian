@@ -1,78 +1,60 @@
-from django.utils.datastructures import MultiValueDictKeyError
-
-from rest_framework import permissions
+from rest_framework.response import Response
+from rest_framework import status
 
 from .models import User
 
 from . import const
 
 
-class LibrarianPermission(permissions.BasePermission):
-
-    def has_permission(self, request, view):
+def permission_0(fn):
+    def wrapper(request, *args, **kwargs):
         user = User.get_instance(request)
+        print('wrapper 0')
+        if user.role not in [const.LIBRARIAN_BASE_ROLE,
+                             const.LIBRARIAN1_ROLE,
+                             const.LIBRARIAN2_ROLE,
+                             const.LIBRARIAN3_ROLE]:
+            pass
 
-        if not user:
-            return False
+        return fn(request, *args, **kwargs)
 
-        if request.method == 'GET' and user.role == (const.LIBRARIAN_BASE_ROLE or
-                                                     const.LIBRARIAN1_ROLE or
-                                                     const.LIBRARIAN2_ROLE or
-                                                     const.LIBRARIAN3_ROLE):
-            result = True
-
-        elif request.method == 'PATCH' and user.role == (const.LIBRARIAN_BASE_ROLE or
-                                                         const.LIBRARIAN1_ROLE or
-                                                         const.LIBRARIAN2_ROLE or
-                                                         const.LIBRARIAN3_ROLE):
-
-            result = True
-
-        elif request.method == 'POST' and user.role == (const.LIBRARIAN_BASE_ROLE or
-                                                        const.LIBRARIAN2_ROLE or
-                                                        const.LIBRARIAN3_ROLE):
-            result = True
-
-        elif request.method == 'DELETE' and user.role == (const.LIBRARIAN_BASE_ROLE or
-                                                          const.LIBRARIAN3_ROLE):
-            result = True
-
-        else:
-
-            result = False
-
-        return result
+    return wrapper
 
 
-class UserPermission(permissions.BasePermission):
-
-    def has_permission(self, request, view):
+def permission_1(fn):
+    def wrapper(request, *args, **kwargs):
         user = User.get_instance(request)
+        print('wrapper 1')
+        if user.role not in [const.LIBRARIAN_BASE_ROLE,
+                             const.LIBRARIAN1_ROLE,
+                             const.LIBRARIAN2_ROLE,
+                             const.LIBRARIAN3_ROLE]:
+            return Response(False, status=status.HTTP_403_FORBIDDEN)
+        return fn(request, *args, **kwargs)
+    return wrapper
 
-        flag = user.pk == int(request.META['PATH_INFO'].split('/')[-1])
 
-        if not user:
-            return False
+def permission_2(fn):
+    def wrapper(request, *args, **kwargs):
+        user = User.get_instance(request)
+        print('wrapper 2')
+        if user.role not in [const.LIBRARIAN_BASE_ROLE,
+                             const.LIBRARIAN2_ROLE,
+                             const.LIBRARIAN3_ROLE]:
+            return Response(False, status=status.HTTP_403_FORBIDDEN)
+        return fn(request, *args, **kwargs)
+    return wrapper
 
-        if request.method == 'GET' and (flag or user.role == const.LIBRARIAN_BASE_ROLE):
-            result = True
-        elif request.method == 'POST' and (flag or user.role == const.LIBRARIAN_BASE_ROLE):
-            result = True
-        elif request.method == 'DELETE' and user.role == const.LIBRARIAN_BASE_ROLE:
-            result = True
-        elif request.method == 'PATCH':
-            if user.role == const.LIBRARIAN_BASE_ROLE:
-                result = True
-            elif flag:
-                result = True
-                try:
-                    request.data['role']
-                    result = False
-                except MultiValueDictKeyError:
-                    pass
-            else:
-                result = False
-        else:
-            result = False
 
-        return result
+def permission_3(fn):
+    def wrapper(request, *args, **kwargs):
+        user = User.get_instance(request)
+        print('wrapper 3')
+        if user.role not in [const.LIBRARIAN_BASE_ROLE,
+                             const.LIBRARIAN3_ROLE]:
+            return Response(False, status=status.HTTP_403_FORBIDDEN)
+        return fn(request, *args, **kwargs)
+    return wrapper
+
+
+

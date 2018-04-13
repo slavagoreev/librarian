@@ -1,13 +1,12 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
 
-from ..tg_bot.engine import send_message
+from ..permissions import permission_0, permission_2, permission_3, permission_1
 from .orders_serializers import OrderSerializer, OrderDetailSerializer
-from ..permissions import LibrarianPermission
-from ..models import Order, User, Document, Copy
+from ..tg_bot.engine import send_message
+from ..models import Order, User, Document
 from .. import const
-
 
 from threading import Thread
 import datetime
@@ -15,12 +14,12 @@ import time
 
 
 class Orders(APIView):
-    permission_classes = (LibrarianPermission,)
     """
         Class to get all orders
     """
 
     @staticmethod
+    @permission_1
     def get(request):
         """
         Return set of all orders
@@ -38,12 +37,12 @@ class Orders(APIView):
 
 
 class OrdersQueue(APIView):
-    permission_classes = (LibrarianPermission,)
     """
         Class to get orders in queue order
     """
 
     @staticmethod
+    @permission_1
     def get(request):
         """
         Return set of orders in queue
@@ -60,6 +59,7 @@ class OrdersQueue(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
+    @permission_2
     def delete(request, document_id):
         """
         Outstanding request for the document
@@ -82,12 +82,12 @@ class OrdersQueue(APIView):
 
 
 class OrderDetail(APIView):
-    permission_classes = (LibrarianPermission,)
     """
         Class to react with orders
     """
 
     @staticmethod
+    @permission_1
     def get(request, order_id):
 
         result = {'status': '', 'data': {}}
@@ -103,6 +103,7 @@ class OrderDetail(APIView):
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
+    @permission_1
     def patch(request, order_id):
         """
         Check out one order for document
@@ -182,40 +183,6 @@ class MyOrders(APIView):
         result['data'] = orders.data
         result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
-
-    @staticmethod
-    def patch(request, order_id):
-        """
-        Extended copy for 1 week
-        :param request:
-        :param order_id
-        :return: HTTP_200_OK and JSON
-        """
-        result = {'status': '', 'data': {}}
-
-        try:
-
-            my_order = Order.objects.get(order_id=order_id)
-
-            if my_order.user != User.get_instance(request=request):
-                result['data'] = "sorry, you can renew only your document"
-                result['status'] = const.HTTP_400_BAD_REQUEST
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
-
-            if not my_order.is_renewable():
-                result['data'] = 'sorry, you can not renew this document'
-                result['status'] = const.HTTP_400_BAD_REQUEST
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
-
-            # TODO renew item
-
-            my_order.renew()
-
-            result['status'] = const.HTTP_200_OK
-            return Response(result, status=status.HTTP_200_OK)
-        except Order.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
-            return Response(result, status=status.HTTP_404_NOT_FOUND)
 
 
 class Booking(APIView):
