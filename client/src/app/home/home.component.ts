@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userService: UserService
   ) {
-    this.store.select(getUserRole).subscribe(res => this.permission = res == 2);
+    this.store.select(getUserRole).subscribe(res => this.permission = (res == 310 || res == 320 || res == 330));
     this.loading$ = this.http.loading;
     this.innerWidth = window.innerWidth;
     this.scrollCallback = this.getDocuments.bind(this);

@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit {
       }
     });
     this.store.select(getUserRole).subscribe((role) => {
-      this.isAdmin = (role === 300);
+      this.isAdmin = (role === 310 || role === 320 || role === 330);
     });
   }
 
