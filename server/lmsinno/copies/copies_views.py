@@ -30,12 +30,10 @@ class CopyDetail(APIView):
         try:
             copy = Copy.objects.get(pk=copy_id)
         except Copy.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = CopyDetailSerializer(copy)
 
-        result['status'] = const.HTTP_200_OK
         result['data'] = serializer.data
 
         return Response(result, status=status.HTTP_200_OK)
@@ -62,12 +60,10 @@ class CopyDetail(APIView):
             document.copies_available = Copy.objects.filter(document=document).filter(status=const.NOT_ORDERED_STATUS).count()
             document.save()
 
-            result['status'] = const.HTTP_200_OK
             result['data'] = CopyDetailSerializer(Copy.objects.get(pk=copy.pk)).data
 
             return Response(result, status=status.HTTP_200_OK)
 
-        result['status'] = const.HTTP_400_BAD_REQUEST
         result['data'] = serializer.errors
 
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
@@ -87,21 +83,11 @@ class CopyDetail(APIView):
 
         try:
             document = Document.objects.get(document_id=copy_id)
-            copies = Copy.objects.filter(document=document).filter(status=const.NOT_ORDERED_STATUS)
-
-            if not copies:
+            if not document.delete_copy():
                 result['data'] = 'no copy to delete'
-                result['status'] = const.HTTP_404_NOT_FOUND
                 return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-            copy = copies.first()
-            copy.delete()
-            document.copies_available -= 1
-            document.save()
-
         except Document.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)

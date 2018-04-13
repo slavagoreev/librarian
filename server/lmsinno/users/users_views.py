@@ -35,12 +35,10 @@ class Users(APIView):
         result = {'status': '', 'data': {}}
 
         if not User.objects.all():
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserResponseDataSerializer(User.objects.all(), many=True)
         result['data'] = serializer.data
-        result['status'] = const.HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
 
@@ -66,12 +64,10 @@ class UserDetail(APIView):
             user = User.objects.get(pk=user_id)
             # print(EmailAddress.objects.get(user=user).verified)
         except User.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserDetailSerializer(user)
         result['data'] = serializer.data
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
@@ -91,7 +87,6 @@ class UserDetail(APIView):
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserDetailSerializer(user, data=request.data, partial=True)
@@ -105,10 +100,8 @@ class UserDetail(APIView):
                 return Response(result, status=status.HTTP_202_ACCEPTED)
             # If pass, then save all
             serializer.save()
-            result['status'] = const.HTTP_202_ACCEPTED
             return Response(result, status=status.HTTP_202_ACCEPTED)
 
-        result['status'] = const.HTTP_400_BAD_REQUEST
         result['data'] = serializer.errors
 
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
@@ -128,12 +121,12 @@ class UserDetail(APIView):
             try:
                 user = User.objects.get(pk=user_id)
             except User.DoesNotExist:
-                return Response({'status': const.HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'data': {}}, status=status.HTTP_404_NOT_FOUND)
             serializer = UserResponseDataSerializer(user)
             user.delete()
-            return Response({'status': const.HTTP_200_OK, 'data': serializer.data})
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({'status': const.HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MyDetail(APIView):
@@ -142,7 +135,6 @@ class MyDetail(APIView):
     """
 
     @staticmethod
-    @permission_0
     def get(request):
         """
             GET request to get one particular user
@@ -156,12 +148,10 @@ class MyDetail(APIView):
         try:
             user = User.get_instance(request)
         except User.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserDetailSerializer(user)
         result['data'] = serializer.data
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
@@ -189,17 +179,13 @@ class MyDetail(APIView):
 
             if not result['data']:
                 result['data'] = 'no telegram id was provided'
-                result['status'] = const.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         except User.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except ValueError:
-            result['status'] = const.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
@@ -237,7 +223,6 @@ class MyDetail(APIView):
         except Exception:
             pass
 
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -256,7 +241,6 @@ class Registration(RegisterView):
         if not serializer.is_valid():
 
             result['data'] = serializer.errors
-            result['status'] = const.HTTP_400_BAD_REQUEST
 
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 

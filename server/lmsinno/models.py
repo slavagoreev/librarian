@@ -82,6 +82,18 @@ class Document(models.Model):
 
         Order.queue_validation()
 
+    def delete_copy(self):
+        copies = Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS)
+
+        if not copies:
+            return False
+
+        copy = copies.first()
+        copy.delete()
+        self.copies_available -= 1
+        self.save()
+        return True
+
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = [(const.BASIC_USER_ROLE, 'Basic user'),
