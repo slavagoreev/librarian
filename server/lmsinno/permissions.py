@@ -10,10 +10,14 @@ def permission_0(fn):
     def wrapper(request, *args, **kwargs):
         user = User.get_instance(request)
         print('wrapper 0')
+        print(request.data)
         if user.role not in [const.LIBRARIAN_BASE_ROLE,
                              const.LIBRARIAN1_ROLE,
                              const.LIBRARIAN2_ROLE,
                              const.LIBRARIAN3_ROLE]:
+            if 'role' in request.data and request.data['role'] != user.role:
+                return Response(False, status=status.HTTP_403_FORBIDDEN)
+
             if 'user_id' in kwargs and int(kwargs['user_id']) != user.pk:
                 return Response(False, status=status.HTTP_403_FORBIDDEN)
 
