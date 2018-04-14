@@ -71,7 +71,7 @@ class UserDetail(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
-    @permission_0
+    @permission_1
     def patch(request, user_id):
         """
             PATCH request to update users
