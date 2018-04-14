@@ -14,10 +14,10 @@ def permission_0(fn):
                              const.LIBRARIAN1_ROLE,
                              const.LIBRARIAN2_ROLE,
                              const.LIBRARIAN3_ROLE]:
-            pass
+            if 'user_id' in kwargs and int(kwargs['user_id']) != user.pk:
+                return Response(False, status=status.HTTP_403_FORBIDDEN)
 
         return fn(request, *args, **kwargs)
-
     return wrapper
 
 

@@ -123,7 +123,7 @@ class UserDetail(APIView):
             return Response({'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MyDetail(APIView):
+class Profile(APIView):
     """
         Class to get one User info
     """
