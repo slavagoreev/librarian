@@ -2,15 +2,19 @@
 	"name": "Librarian",
 	"short_name": "librarian",
 	"icons": [
-		{
-			"src": "assets/logo.png",
-			"sizes": "192x192",
-			"type": "image\/png"
-		}
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
 	],
-	"theme_color": "#F44336",
-  "background_color": "#ffffff",
+	"theme_color": "#8cf3ff",
+  "background_color": "#8cf3ff",
 	"display": "standalone",
-	"orientation": "portrait",
-	"start_url": "./?utm_source=web_app_manifest"
+	"orientation": "portrait"
 }
