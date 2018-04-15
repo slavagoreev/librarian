@@ -47,7 +47,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.isAuthenticated) {
+    if (this.isAuthenticated && !this.documents$) {
       this.documentService.getDocuments().subscribe(res => {
         this.documents$ = Observable.of(res);
       });
