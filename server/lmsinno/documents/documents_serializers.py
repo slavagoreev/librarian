@@ -8,11 +8,20 @@ from ..copies import copies_serializers
 
 
 class ShortDocumentSerializer(serializers.ModelSerializer):
+    authors = serializers.SerializerMethodField()
+
     class Meta:
         model = Document
         fields = ('document_id',
                   'title',
+                  'authors',
                   'cover')
+
+        @staticmethod
+        def get_authors(obj):
+            document_of_authors = Author.objects.filter(documentofauthor__document_id=obj.document_id)
+            serializer = AuthorSerializer(document_of_authors, many=True)
+            return serializer.data
 
 
 class DocumentSerializer(serializers.ModelSerializer):
