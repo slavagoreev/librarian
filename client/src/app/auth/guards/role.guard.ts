@@ -30,7 +30,7 @@ export class RoleGuard implements CanActivate {
         const expectedRole = route.data.expectedRole;
         const token = this.userSerice.getToken();
         // console.warn (expectedRole, token, decode(token));
-        if (!this.isAuthenticated || !token || decode(token).role >= expectedRole) {
+        if (!this.isAuthenticated || !token || decode(token).role < expectedRole) {
           this.router.navigate(
             ['/auth/login'],
             { queryParams: { returnUrl: state.url }}
