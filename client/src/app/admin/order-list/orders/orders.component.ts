@@ -4,6 +4,7 @@ import { Observable } from "rxjs/Observable";
 import { Order } from "../../../shared/models/orders.model";
 import { Subscription } from "rxjs/Subscription";
 import { DocumentService } from "../../../core/services/document.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-orders',
@@ -16,6 +17,7 @@ export class OrdersComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private router: Router
   ) {
   }
 
@@ -30,11 +32,14 @@ export class OrdersComponent implements OnInit {
     );
   }
   statusStr(status: number) {
-    if (status == 0) return 'Requested';
-    if (status == 1) return 'Booked';
-    if (status == 2) return 'Overdue';
-    if (status == 3) return 'Closed';
-    if (status == 4) return 'Extended';
+    if (status === 0) return 'Requested';
+    if (status === 1) return 'Booked';
+    if (status === 2) return 'Overdue';
+    if (status === 3) return 'Closed';
+    if (status === 4) return 'Extended';
+  }
+  goToDocument(document_id: number) {
+    this.router.navigate(['/documents', document_id.toString()]);
   }
 
   extendOrder(id: number) {
