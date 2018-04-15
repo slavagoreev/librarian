@@ -69,10 +69,12 @@ nav {
 .morphsearch {
   width: 200px;
   min-height: 40px;
+  height: 100%;
   background: $background;
   position: absolute;
   overflow: scroll;
   z-index: 10000;
+  //
   top: 15px;
   left: 70px;
   -webkit-transform-origin: 100% 0;
