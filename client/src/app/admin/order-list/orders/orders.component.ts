@@ -42,6 +42,12 @@ export class OrdersComponent implements OnInit {
     this.router.navigate(['/documents', document_id.toString()]);
   }
 
+  formatTitle(title: string) {
+    if (title.length > 49) {
+      title = title.substr(0, 48) + "...";
+    }
+    return title;
+  }
   extendOrder(id: number) {
     this.userService.setStatusForMyOrder(id, 4).subscribe(res => {
       this.userService.getOrders().subscribe(data => {

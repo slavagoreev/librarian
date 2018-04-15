@@ -53,6 +53,13 @@ export class OrderListComponent implements OnInit {
     this.router.navigate(['/librarian', 'user', user_id.toString()]);
   }
 
+  formatTitle(title: string) {
+    if (title.length > 49) {
+      title = title.substr(0, 48) + "...";
+    }
+    return title;
+  }
+
   /*
     <option value="100" [selected]="user.role === 100">Patron</option>
     <option value="210" [selected]="user.role === 210">Instructor</option>
