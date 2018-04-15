@@ -23,9 +23,7 @@
             </div>
           </td>
           <td>
-            <a (click)="goToDocument(order.document.document_id)">
-              <span class="document-title">{{order.document.title}}</span>
-            </a>
+            <span class="document-title" (click)="goToDocument(order.document.document_id)">{{order.document.title}}</span>
           </td>
           <td>
             <div *ngIf="order.status == 1 && !order.document.is_bestseller && order.is_extendable">

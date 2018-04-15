@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../core/services/user.service";
 import {Observable} from "rxjs/Observable";
 import {Order} from "../../shared/models/orders.model";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -16,7 +17,8 @@ export class OrderListComponent implements OnInit {
   orders$: Observable<Order[]>;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
   }
 
@@ -41,6 +43,14 @@ export class OrderListComponent implements OnInit {
     if (status == 2) return 'Overdue';
     if (status == 3) return 'Closed';
     if (status == 4) return 'Extended';
+  }
+
+  goToDocument(document_id: number) {
+    this.router.navigate(['/documents', document_id.toString()]);
+  }
+
+  goToUser(user_id: number) {
+    this.router.navigate(['/librarian', 'user', user_id.toString()]);
   }
 
   /*

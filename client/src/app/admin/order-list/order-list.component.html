@@ -25,10 +25,8 @@
             </div>
           </td>
           <td>
-            <a href="/documents/{{order.document.document_id}}">
-              <span class="document-title">{{order.document.title}}</span>
-            </a>
-            <span class="document-type">Booked by <a class="user" href="/librarian/user/{{order.user.id}}">{{order.user.first_name}} {{order.user.last_name}} <div *ngIf="!isOrders">({{getRole(order.user.role)}})</div></a></span>
+            <span class="document-title" (click)="goToDocument(order.document.document_id)">{{order.document.title}}</span>
+            <span class="document-type">Booked by <a class="user" (click)="goToUser(order.user.id)">{{order.user.first_name}} {{order.user.last_name}} <div *ngIf="!isOrders">({{getRole(order.user.role)}})</div></a></span>
           </td>
           <td class="status-select content-center">
             <div ngbDropdown class="ngb-dropdown" *ngIf="!(order.status == 3); else closedOrder">
