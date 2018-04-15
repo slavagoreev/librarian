@@ -233,14 +233,17 @@ class Booking(APIView):
 
         finally:
             if order:
-                order.attach_copy()
+                def f():
+                    order.attach_copy()
+                    if not order.copy:
+                        msg = "Dear " + order.user.first_name + ",\n\nWhen the document " + \
+                              order.document.title + " will be available for checkout " \
+                                                    "you will be notified."
 
-                if not order.copy:
-                    msg = "Dear " + order.user.first_name + ",\n\nWhen the document " + \
-                          order.document.title + " will be available for checkout " \
-                                                "you will be notified."
+                        send_message(order.user.telegram_id, msg)
+                    print('sended')
 
-                    send_message(order.user.telegram_id, msg)
+                Thread(target=f).start()
 
 
 class MyThread(Thread):
