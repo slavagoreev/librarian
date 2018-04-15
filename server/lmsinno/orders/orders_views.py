@@ -136,7 +136,6 @@ class OrderDetail(APIView):
 
                 overdue_sum = order.close()
                 result['data'] = {'overdue_sum': overdue_sum}
-                result['status'] = const.HTTP_200_OK
                 return Response(result, status=status.HTTP_200_OK)
 
             else:
@@ -220,14 +219,9 @@ class Booking(APIView):
                 user=user
             )
 
-            order.attach_copy()
-
-            if not order.copy:
-                msg = "Dear " + order.user.first_name + ",\n\nWhen the document " + \
-                      order.document.title + " will be available for checkout " \
-                                            "you will be notified."
-
-                send_message(order.user.telegram_id, msg)
+            order_serializer = OrderSerializer(order)
+            result['data'] = order_serializer.data
+            return Response(result, status=status.HTTP_200_OK)
 
         except IndexError:
 
@@ -237,10 +231,16 @@ class Booking(APIView):
 
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        order_serializer = OrderSerializer(order)
-        result['data'] = order_serializer.data
+        finally:
+            if order:
+                order.attach_copy()
 
-        return Response(result, status=status.HTTP_200_OK)
+                if not order.copy:
+                    msg = "Dear " + order.user.first_name + ",\n\nWhen the document " + \
+                          order.document.title + " will be available for checkout " \
+                                                "you will be notified."
+
+                    send_message(order.user.telegram_id, msg)
 
 
 class MyThread(Thread):
