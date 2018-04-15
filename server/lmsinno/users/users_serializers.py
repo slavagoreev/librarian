@@ -144,3 +144,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
     def get_orders(obj):
         orders = OrderSerializer(Order.objects.filter(user=obj), many=True)
         return orders.data
+
+
+class ShortUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id',
+                  'first_name',
+                  'last_name',)

@@ -7,6 +7,14 @@ from ..authors.authors_serializers import AuthorSerializer
 from ..copies import copies_serializers
 
 
+class ShortDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = ('document_id',
+                  'title',
+                  'cover')
+
+
 class DocumentSerializer(serializers.ModelSerializer):
     authors = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
