@@ -151,4 +151,5 @@ class ShortUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id',
                   'first_name',
-                  'last_name',)
+                  'last_name',
+                  'telegram_id')
