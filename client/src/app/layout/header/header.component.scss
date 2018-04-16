@@ -259,7 +259,7 @@ input[type="search"] { /* reset normalize */
   margin-top: 4.5em;
   width: 100%;
   height: 0;
-  overflow: scroll;
+  overflow: hidden;
   padding: 0 10.5%;
   font-size: 18pt;
   // background: #f1f1f1;
@@ -276,7 +276,7 @@ input[type="search"] { /* reset normalize */
 .navbar.open .morphsearch .morphsearch-content {
   opacity: 1;
   height: auto;
-  overflow: scroll; /* this breaks the transition of the children in FF: https://bugzilla.mozilla.org/show_bug.cgi?id=625289 */
+  overflow: visible; /* this breaks the transition of the children in FF: https://bugzilla.mozilla.org/show_bug.cgi?id=625289 */
   pointer-events: auto;
   -webkit-transition: opacity 0.3s 0.5s;
   transition: opacity 0.3s 0.5s;

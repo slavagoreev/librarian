@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  API_ENDPOINT: 'https://trainno.ru/api/',
+  API_ENDPOINT: 'https://librarian.site/api/',
   AppName: 'Librarian'
 };
