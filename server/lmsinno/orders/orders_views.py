@@ -37,7 +37,7 @@ class Orders(APIView):
 
         start = int(offset if offset else DEFAULT_OFFSET)
         finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
-        orders = OrderDetailSerializer(Order.objects.exclude(copy=None)[start:finish], many=True)
+        orders = OrderDetailSerializer(Order.objects.exclude(copy=None)[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders.data
 
@@ -65,7 +65,7 @@ class OrdersQueue(APIView):
 
         start = int(offset if offset else DEFAULT_OFFSET)
         finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
-        orders_in_queue = OrderDetailSerializer(Order.get_queue()[start:finish], many=True)
+        orders_in_queue = OrderDetailSerializer(Order.get_queue()[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders_in_queue.data
 
@@ -187,7 +187,7 @@ class MyOrders(APIView):
 
         start = int(offset if offset else DEFAULT_OFFSET)
         finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
-        orders = OrderDetailSerializer(Order.objects.filter(user=user)[start:finish], many=True)
+        orders = OrderDetailSerializer(Order.objects.filter(user=user)[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders.data
         return Response(result, status=status.HTTP_200_OK)
