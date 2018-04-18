@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, views
 
 from .models import User
 
@@ -67,4 +67,21 @@ def permission_3(fn):
     return wrapper
 
 
+def custom_exception_handler(exc, context):
+    # Call REST framework's default exception handler first,
+    # to get the standard error response.
+    response = views.exception_handler(exc, context)
 
+    data = {'status': '',
+             'data': {}}
+
+    # Now add the HTTP status code to the response.
+
+    if response is not None:
+        if response.status_code == 401:
+             data['status'] = 'HTTP_401_UNAUTHORIZED'
+        elif response.status_code == 403:
+            data['status'] = 'HTTP_403_FORBIDDEN'
+        response.data = data
+
+    return response
