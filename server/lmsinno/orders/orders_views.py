@@ -12,6 +12,9 @@ from threading import Thread
 import datetime
 import time
 
+DEFAULT_SIZE = 15
+DEFAULT_OFFSET = 0
+
 
 class Orders(APIView):
     """
@@ -27,9 +30,14 @@ class Orders(APIView):
         :return: HTTP_200_OK and JSON
         """
 
+        size = request.GET.get('size', None)
+        offset = request.GET.get('offset', None)
+
         result = {'status': '', 'data': {}}
 
-        orders = OrderDetailSerializer(Order.objects.exclude(copy=None), many=True)
+        start = int(offset if offset else DEFAULT_OFFSET)
+        finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
+        orders = OrderDetailSerializer(Order.objects.exclude(copy=None), many=True)[start:finish]
 
         result['data'] = orders.data
 
@@ -50,9 +58,14 @@ class OrdersQueue(APIView):
         :return: HTTP_200_OK and JSON
         """
 
+        size = request.GET.get('size', None)
+        offset = request.GET.get('offset', None)
+
         result = {'status': '', 'data': {}}
 
-        orders_in_queue = OrderDetailSerializer(Order.get_queue(), many=True)
+        start = int(offset if offset else DEFAULT_OFFSET)
+        finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
+        orders_in_queue = OrderDetailSerializer(Order.get_queue(), many=True)[start:finish]
 
         result['data'] = orders_in_queue.data
 
@@ -165,11 +178,16 @@ class MyOrders(APIView):
         :return: HTTP_200_OK and JSON
         """
 
+        size = request.GET.get('size', None)
+        offset = request.GET.get('offset', None)
+
         result = {'status': '', 'data': {}}
 
         user = User.get_instance(request=request)
 
-        orders = OrderDetailSerializer(Order.objects.filter(user=user), many=True)
+        start = int(offset if offset else DEFAULT_OFFSET)
+        finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
+        orders = OrderDetailSerializer(Order.objects.filter(user=user), many=True)[start:finish]
 
         result['data'] = orders.data
         return Response(result, status=status.HTTP_200_OK)
