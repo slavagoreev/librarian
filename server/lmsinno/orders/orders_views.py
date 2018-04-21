@@ -35,8 +35,9 @@ class Orders(APIView):
 
         result = {'status': '', 'data': {}}
 
-        start = int(offset if offset else DEFAULT_OFFSET)
-        finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
+        start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
+        finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(
+            size if size and size > 0 else DEFAULT_SIZE)
         orders = OrderDetailSerializer(Order.objects.exclude(copy=None)[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders.data
@@ -63,8 +64,9 @@ class OrdersQueue(APIView):
 
         result = {'status': '', 'data': {}}
 
-        start = int(offset if offset else DEFAULT_OFFSET)
-        finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
+        start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
+        finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(
+            size if size and size > 0 else DEFAULT_SIZE)
         orders_in_queue = OrderDetailSerializer(Order.get_queue()[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders_in_queue.data
@@ -171,6 +173,7 @@ class MyOrders(APIView):
     """
 
     @staticmethod
+    @permission_0
     def get(request):
         """
         Return set of all orders of one particular user
@@ -185,8 +188,8 @@ class MyOrders(APIView):
 
         user = User.get_instance(request=request)
 
-        start = int(offset if offset else DEFAULT_OFFSET)
-        finish = int(offset if offset else DEFAULT_OFFSET) + int(size if size else DEFAULT_SIZE)
+        start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
+        finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(size if size and size > 0 else DEFAULT_SIZE)
         orders = OrderDetailSerializer(Order.objects.filter(user=user)[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders.data
