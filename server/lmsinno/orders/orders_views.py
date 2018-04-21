@@ -34,10 +34,13 @@ class Orders(APIView):
         offset = request.GET.get('offset', None)
 
         result = {'status': '', 'data': {}}
-
-        start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
-        finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(
-            size if size and size > 0 else DEFAULT_SIZE)
+        try:
+            start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
+            finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(
+                size if size and size > 0 else DEFAULT_SIZE)
+        except Exception:
+            start = DEFAULT_OFFSET
+            finish = DEFAULT_OFFSET + DEFAULT_SIZE
         orders = OrderDetailSerializer(Order.objects.exclude(copy=None)[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders.data
@@ -64,9 +67,13 @@ class OrdersQueue(APIView):
 
         result = {'status': '', 'data': {}}
 
-        start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
-        finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(
-            size if size and size > 0 else DEFAULT_SIZE)
+        try:
+            start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
+            finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(
+                size if size and size > 0 else DEFAULT_SIZE)
+        except Exception:
+            start = DEFAULT_OFFSET
+            finish = DEFAULT_OFFSET + DEFAULT_SIZE
         orders_in_queue = OrderDetailSerializer(Order.get_queue()[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders_in_queue.data
@@ -188,8 +195,13 @@ class MyOrders(APIView):
 
         user = User.get_instance(request=request)
 
-        start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
-        finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(size if size and size > 0 else DEFAULT_SIZE)
+        try:
+            start = int(offset if offset and offset > 0 else DEFAULT_OFFSET)
+            finish = int(offset if offset and offset > 0 else DEFAULT_OFFSET) + int(
+                size if size and size > 0 else DEFAULT_SIZE)
+        except Exception:
+            start = DEFAULT_OFFSET
+            finish = DEFAULT_OFFSET + DEFAULT_SIZE
         orders = OrderDetailSerializer(Order.objects.filter(user=user)[::-1][start:finish][::-1], many=True)
 
         result['data'] = orders.data
