@@ -180,7 +180,7 @@ class OrderDetail(APIView):
                       'method_type': 5,
                       'params': {'order_id': order_id},
                       'response_status': status.HTTP_200_OK,
-                      'description': orders_log_msg.patch_order_by_id}
+                      'description': orders_log_msg.patch_order_by_id_accept}
 
         try:
 
@@ -210,6 +210,7 @@ class OrderDetail(APIView):
                 overdue_sum = order.close()
                 result['data'] = {'overdue_sum': overdue_sum}
 
+                log_record['description'] = orders_log_msg.patch_order_by_id_close
                 make_log_record(**log_record)
                 return Response(result, status=status.HTTP_200_OK)
 
