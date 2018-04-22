@@ -492,4 +492,29 @@ class TagOfDocument(models.Model):
         return '{0}: {1}'.format(self.document, self.tag)
 
 
+class LogRecord(models.Model):
+    METHOD_TYPE_CHOICE = [(const.GET, 'GET'),
+                          (const.PUT, 'PUT'),
+                          (const.DELETE, 'DELETE'),
+                          (const.POST, 'POST'),
+                          (const.UPDATE, 'UPDATE'),
+                          (const.PATCH, 'PATCH')]
 
+    LOG_MSG_TYPE_CHOICE = [(const.INFO, 'INFO'),
+                           (const.WARNING, 'WARNING'),
+                           (const.ERROR, 'ERROR')]
+
+    record_id = models.AutoField(primary_key=True)
+    time = models.DateField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    method_type = models.IntegerField(choices=METHOD_TYPE_CHOICE, default=0)
+    log_msg_type = models.IntegerField(choices=LOG_MSG_TYPE_CHOICE, default=0)
+    description = models.TextField(blank=True)
+    params = models.TextField(blank=True)
+    response_status = models.CharField(max_length=32, default='No response')
+
+    def __str__(self):
+        return '{0}   {1}: {2} - {3}'.format(self.time,
+                                             self.user,
+                                             self.LOG_MSG_TYPE_CHOICE[self.log_msg_type][1],
+                                             self.METHOD_TYPE_CHOICE[self.method_type][1])

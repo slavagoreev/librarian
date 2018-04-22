@@ -36,3 +36,16 @@ BOT_KEY = '566111170:AAG1yAUuZEbQQbhHovQTiqzuzzVrwjj8ALg'
 
 # HTTPS Connection
 HTTP_SESSION = requests.Session()
+
+# HTTP Method Type
+GET = 0
+PUT = 1
+DELETE = 2
+POST = 3
+UPDATE = 4
+PATCH = 5
+
+# Log message type
+INFO = 0
+WARNING = 1
+ERROR = 2
