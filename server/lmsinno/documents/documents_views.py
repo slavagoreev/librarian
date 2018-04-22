@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 
-from . import documents_log_msg_descriptions
+from . import documents_log_msg
 from .documents_serializers import DocumentSerializer, DocumentResponseSerializer
 from ..models import Copy, Document, Tag, TagOfDocument, Author, DocumentOfAuthor, User
 from ..permissions import permission_0, permission_2, permission_3, permission_1
@@ -35,7 +35,7 @@ class DocumentDetailByDocumentID(APIView):
                       'method_type': 0,
                       'params': {'document_id': document_id},
                       'response_status': status.HTTP_200_OK,
-                      'description': documents_log_msg_descriptions.get_doc_by_id}
+                      'description': documents_log_msg.get_doc_by_id}
 
         try:
             document = Document.objects.get(pk=document_id)
@@ -74,7 +74,7 @@ class DocumentsByCriteria(APIView):
                       'method_type': 0,
                       'params': request.GET,
                       'response_status': status.HTTP_200_OK,
-                      'description': documents_log_msg_descriptions.get_doc_by_criteria}
+                      'description': documents_log_msg.get_doc_by_criteria}
 
         result = {'status': '', 'data': {}}
         data_query_set = Document.objects
@@ -135,7 +135,7 @@ class DocumentsByCriteria(APIView):
                       'method_type': 3,
                       'params': request.POST,
                       'response_status': status.HTTP_200_OK,
-                      'description': documents_log_msg_descriptions.post_doc}
+                      'description': documents_log_msg.post_doc}
 
         # TODO change from POST to DATA
         tags_list = request.POST.get('tags', None)
@@ -189,7 +189,7 @@ class DocumentsByCriteria(APIView):
                       'method_type': 2,
                       'params': request.POST,
                       'response_status': status.HTTP_200_OK,
-                      'description': documents_log_msg_descriptions.delete_doc_by_id}
+                      'description': documents_log_msg.delete_doc_by_id}
 
         if document_id:
             try:
@@ -226,7 +226,7 @@ class DocumentsByCriteria(APIView):
                       'method_type': 5,
                       'params': request.data,
                       'response_status': status.HTTP_200_OK,
-                      'description': documents_log_msg_descriptions.patch_doc_by_id}
+                      'description': documents_log_msg.patch_doc_by_id}
 
         result = {'status': '', 'data': {}}
 
@@ -297,7 +297,7 @@ class DocumentDetailByCopyID(APIView):
                       'method_type': 0,
                       'params': {'copy_id': copy_id},
                       'response_status': status.HTTP_200_OK,
-                      'description': documents_log_msg_descriptions.get_doc_by_copy_id}
+                      'description': documents_log_msg.get_doc_by_copy_id}
 
         try:
             copy = Copy.objects.get(pk=copy_id)
@@ -330,7 +330,7 @@ class Bestsellers(APIView):
                       'method_type': 0,
                       'params': request.GET,
                       'response_status': status.HTTP_200_OK,
-                      'description': documents_log_msg_descriptions.get_bestsellers}
+                      'description': documents_log_msg.get_bestsellers}
 
         bestsellers = Document.objects.filter(is_bestseller=True)
         if not bestsellers:
