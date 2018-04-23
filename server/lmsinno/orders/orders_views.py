@@ -378,7 +378,6 @@ class Booking(APIView):
                                                     "you will be notified."
 
                         send_message(order.user.telegram_id, msg)
-                    print('sended')
 
                 Thread(target=f).start()
 

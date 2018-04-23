@@ -311,7 +311,11 @@ class Order(models.Model):
         orders = orders.exclude(status=const.CLOSED_STATUS)
         for order in orders:
             if order.status == const.IN_QUEUE_STATUS:
-                order.close()
+                if order.copy:
+                    order.copy.status = const.NOT_ORDERED_STATUS
+                    order.copy.save()
+                order.status = const.CLOSED_STATUS
+                order.save()
                 msg = 'Sorry, but the document ' + order.document.title + \
                       ' that you requested will not be available for checkout.' \
                       '\n' \
@@ -325,6 +329,8 @@ class Order(models.Model):
                       '\n' \
                       'You may be able to book the document soon.'
             send_message(order.user.telegram_id, msg)
+        document.copies_available = Copy.objects.filter(document=document).filter(
+                    status=const.NOT_ORDERED_STATUS).count()
 
     def attach_copy(self):
         """
@@ -514,7 +520,8 @@ class LogRecord(models.Model):
     response_status = models.CharField(max_length=32, default='No response')
 
     def __str__(self):
-        return '{0}   {1}: {2} - {3}'.format(self.time,
-                                             self.user,
-                                             self.LOG_MSG_TYPE_CHOICE[self.log_msg_type][1],
-                                             self.METHOD_TYPE_CHOICE[self.method_type][1])
+        return '{0}   {1}: {2} - {3}: {4}'.format(self.time,
+                                                  self.user,
+                                                  self.LOG_MSG_TYPE_CHOICE[self.log_msg_type][1],
+                                                  self.METHOD_TYPE_CHOICE[self.method_type][1],
+                                                  self.description)
