@@ -12,6 +12,8 @@ settings.py# IDEs and editors
 /server/tests.py
 /server/log.txt
 /server/lmsinno/__pycache__/*
+/server/lmsinno/logging/__pycache__/*
+/server/lmsinno/tg_bot/__pycache__/*
 /server/lmsinno/migrations/__pycache__/*
 /server/.idea/
 /server/settings.py
