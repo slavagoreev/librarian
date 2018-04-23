@@ -13,7 +13,9 @@ export class UserRolePipe implements PipeTransform {
       case 220: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-success">Teacher Assistant</span>`);
       case 230: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-success">Visiting Professor</span>`);
       case 240: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-success">Professor</span>`);
-      case 300: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-warning">Librarian</span>`);
+      case 310: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-warning">Librarian 1</span>`);
+      case 320: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-warning">Librarian 2</span>`);
+      case 330: return this.sanitizer.bypassSecurityTrustHtml(`<span class="badge badge-warning">Librarian 3</span>`);
     }
   }
 }
@@ -30,7 +32,9 @@ export class PlainUserRolePipe implements PipeTransform {
       case 220: return "Teacher Assistant";
       case 230: return "Visiting Professor";
       case 240: return "Professor";
-      case 300: return "Librarian";
+      case 310: return "Librarian 1";
+      case 320: return "Librarian 2";
+      case 330: return "Librarian 3";
     }
   }
 }

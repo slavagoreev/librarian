@@ -1,0 +1,7 @@
+get_doc_by_criteria = 'GET documents by criteria'
+get_doc_by_id = 'GET document by ID'
+post_doc = 'POST(Adding) document'
+delete_doc_by_id = 'DELETE document by ID'
+patch_doc_by_id = 'PATCH document by ID'
+get_doc_by_copy_id = 'GET document by Copy ID'
+get_bestsellers = 'GET bestsellers'

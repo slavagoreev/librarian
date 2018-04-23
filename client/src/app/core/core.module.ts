@@ -17,15 +17,17 @@ export function httpInterceptor(
   return new HttpService(backend, defaultOptions);
 }
 
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
+
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: () => {
-          return localStorage.getItem('token');
-        },
+        tokenGetter: tokenGetter,
         whitelistedDomains: [environment.API_ENDPOINT]
       }
     })

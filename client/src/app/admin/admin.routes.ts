@@ -4,7 +4,7 @@ import { DocumentListComponent } from './document-list/document-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserDetailsComponent } from './user-list/user-details/user-details.component';
 import { UserEditComponent } from './user-list/user-edit/user-edit.component';
-import { OrderListComponent } from "./order-list/order-list.component";
+import { OrderListComponent } from './order-list/order-list.component';
 import {AddComponent} from './document-list/add/add.component';
 
 export const AdminRoutes = [
@@ -12,7 +12,7 @@ export const AdminRoutes = [
     path: 'librarian',
     canActivate: [ RoleGuard ],
     data: {
-      expectedRole: 300
+      expectedRole: 310,
     },
     children: [
       {

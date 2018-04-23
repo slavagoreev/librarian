@@ -174,6 +174,27 @@ export class UserService {
       });
   }
 
+  outstandingRequest(documentId): Observable<Order> {
+    return this.http.delete(`orders/queue/${documentId}` + '/')
+      .map(res => {
+        const _res = res.json();
+        if (_res.data) {
+          return _res.data
+        } else {
+          this.http.loading.next({
+            loading: true,
+            error: {
+              title: 'Outstanding request error',
+              message: 'Could not set outstanding request on document',
+              delay: 20000
+            }
+          });
+          return null;
+        }
+      });
+  }
+
+
   setStatusForOrder(order_id: number, status: number): Observable<Order> {
     // options.body.set('status', status.toString());
     return this.http.patch(`orders/${order_id}`, {'status': status})

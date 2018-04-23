@@ -75,23 +75,28 @@
   .table-responsive {
     background: #fff;
     padding: 40px;
-    /*
-    thead {
-      height: 0;
-      overflow: hidden;
+
+    .content-center {
+      font-size: 14px;
+      text-align: center;
     }
-    thead th {
-      padding: 0 !important;
-      border: 0 !important;
+    .closed {
+      color: #a0a0a0;
+    }
+    .overdue-zero {
+      color: #a0a0a0;
+    }
+
+    th {
+      text-align: center;
     }
     tr {
       border-bottom: 1px solid #dee2e6;
     }
     td {
       border: none;
-      vertical-align: middle;
+      vertical-align: center;
     }
-    */
   }
 
 

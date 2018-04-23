@@ -54,7 +54,7 @@ class Document(models.Model):
         copy.status = const.ORDERED_STATUS
         copy.save()
 
-        self.copies_available = len(Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS))
+        self.copies_available = Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS).count()
         self.save()
 
         return copy
@@ -71,16 +71,28 @@ class Document(models.Model):
             return
         if copy.document != self:
             return
-        if copy.status == const.NOT_ORDERED_STATUS:
+        if copy.status != const.ORDERED_STATUS:
             return
 
         copy.status = const.NOT_ORDERED_STATUS
         copy.save()
 
-        self.copies_available = len(Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS))
+        self.copies_available = Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS).count()
         self.save()
 
         Order.queue_validation()
+
+    def delete_copy(self):
+        copies = Copy.objects.filter(document=self).filter(status=const.NOT_ORDERED_STATUS)
+
+        if not copies:
+            return False
+
+        copy = copies.first()
+        copy.delete()
+        self.copies_available -= 1
+        self.save()
+        return True
 
 
 class User(AbstractUser):
@@ -89,7 +101,10 @@ class User(AbstractUser):
                          (const.TEACHER_ASSISTANT_ROLE, 'Teacher Assistant'),
                          (const.VISITING_PROFESSOR_ROLE, 'Visiting Professor'),
                          (const.PROFESSOR_ROLE, 'Professor'),
-                         (const.LIBRARIAN_ROLE, 'Librarian')]
+                         (const.LIBRARIAN_BASE_ROLE, 'Librarian Base'),
+                         (const.LIBRARIAN1_ROLE, 'Librarian 1'),
+                         (const.LIBRARIAN2_ROLE, 'Librarian 2'),
+                         (const.LIBRARIAN3_ROLE, 'Librarian 3')]
 
     role = models.IntegerField(default=const.BASIC_USER_ROLE, choices=USER_TYPE_CHOICES)
     address = models.CharField(max_length=100, default='innopolis')
@@ -228,11 +243,12 @@ class Order(models.Model):
             if order.date_return:
                 if order.date_return < datetime.date.today():
                     order.status = const.OVERDUE_STATUS
-                    order.save()
+
                     msg = 'Sorry, but you must return the document ' + order.document.title + \
                           'as soon as possible and pay overdue compensation'
 
                     send_message(order.user.telegram_id, msg)
+                    order.save()
 
         Order.queue_validation()
 
@@ -251,7 +267,7 @@ class Order(models.Model):
             if (now - order.date_attach) > datetime.timedelta(hours=24):
                 order.close()
                 msg = 'Sorry, but you did not checkout the document ' + order.document.title + \
-                      'in time, so this order was closed.'
+                      ' in time, so this order was closed.'
 
                 send_message(order.user.telegram_id, msg)
 
@@ -292,15 +308,29 @@ class Order(models.Model):
         :return: None
         """
         orders = Order.objects.filter(document=document)
-        orders = orders.filter(status=const.IN_QUEUE_STATUS)
+        orders = orders.exclude(status=const.CLOSED_STATUS)
         for order in orders:
-            order.close()
-            msg = 'Sorry, but the document ' + order.document.title + \
-                  ' that you requested will not be available for checkout.' \
-                  '\n' \
-                  '\n' \
-                  'You may be able to book the document soon.'
+            if order.status == const.IN_QUEUE_STATUS:
+                if order.copy:
+                    order.copy.status = const.NOT_ORDERED_STATUS
+                    order.copy.save()
+                order.status = const.CLOSED_STATUS
+                order.save()
+                msg = 'Sorry, but the document ' + order.document.title + \
+                      ' that you requested will not be available for checkout.' \
+                      '\n' \
+                      '\n' \
+                      'You may be able to book the document soon.'
+
+            else:
+                msg = "Dear " + order.user.first_name + ",\n\nThe document " + \
+                      order.copy.document.title + " must be returned to the library as soon as possible."\
+                      '\n' \
+                      '\n' \
+                      'You may be able to book the document soon.'
             send_message(order.user.telegram_id, msg)
+        document.copies_available = Copy.objects.filter(document=document).filter(
+                    status=const.NOT_ORDERED_STATUS).count()
 
     def attach_copy(self):
         """
@@ -316,7 +346,7 @@ class Order(models.Model):
         copy = self.document.take_copy()
 
         if copy:
-            self.date_attach = datetime.datetime.today()
+            self.date_attach = datetime.datetime.now(datetime.timezone.utc)
             self.copy = copy
             self.save()
 
@@ -325,6 +355,14 @@ class Order(models.Model):
                   self.copy.document.title + " is now available to checkout."
 
             send_message(self.user.telegram_id, msg)
+
+            next_orders = Order.get_queue().filter(document=self.document)
+            for index, order in enumerate(reversed(next_orders)):
+                msg = "Dear " + order.user.first_name + ",\n\nThe document " + \
+                      self.document.title + " will be available to you after " \
+                      + str(index+1) + " persons in queue."
+
+                send_message(order.user.telegram_id, msg)
 
     def accept_booking(self):
         """
@@ -339,6 +377,14 @@ class Order(models.Model):
             return
 
         self.date_accepted = datetime.date.today()
+        order_time_delta = self.get_time_delta()
+
+        self.date_return = datetime.date.today() + order_time_delta
+
+        self.status = const.BOOKED_STATUS
+        self.save()
+
+    def get_time_delta(self):
         delta = datetime.timedelta(days=1)
 
         # books are checked out for three weeks
@@ -350,7 +396,10 @@ class Order(models.Model):
             delta = datetime.timedelta(weeks=2)
 
         # checked out by a faculty member, in which case the limit is 4 weeks
-        if self.user.role == (const.LIBRARIAN_ROLE or
+        if self.user.role == (const.LIBRARIAN_BASE_ROLE or
+                              const.LIBRARIAN1_ROLE or
+                              const.LIBRARIAN2_ROLE or
+                              const.LIBRARIAN3_ROLE or
                               const.VISITING_PROFESSOR_ROLE or
                               const.TEACHER_ASSISTANT_ROLE or
                               const.INSTRUCTOR_ROLE or
@@ -365,10 +414,7 @@ class Order(models.Model):
         if self.user.role == const.VISITING_PROFESSOR_ROLE:
             delta = datetime.timedelta(weeks=1)
 
-        self.date_return = datetime.date.today() + delta
-
-        self.status = const.BOOKED_STATUS
-        self.save()
+        return delta
 
     def renew(self):
         """
@@ -402,7 +448,7 @@ class Order(models.Model):
             overdue_days = (datetime.date.today() - self.date_return).days
             overdue_sum = min(overdue_days * 100, self.copy.document.price)
 
-        # if order closed immediately copies number must no change
+        # if order closed immediately copy number must no change
         if self.status != const.IN_QUEUE_STATUS:
             self.date_return = datetime.date.today()
 
@@ -452,4 +498,30 @@ class TagOfDocument(models.Model):
         return '{0}: {1}'.format(self.document, self.tag)
 
 
+class LogRecord(models.Model):
+    METHOD_TYPE_CHOICE = [(const.GET, 'GET'),
+                          (const.PUT, 'PUT'),
+                          (const.DELETE, 'DELETE'),
+                          (const.POST, 'POST'),
+                          (const.UPDATE, 'UPDATE'),
+                          (const.PATCH, 'PATCH')]
 
+    LOG_MSG_TYPE_CHOICE = [(const.INFO, 'INFO'),
+                           (const.WARNING, 'WARNING'),
+                           (const.ERROR, 'ERROR')]
+
+    record_id = models.AutoField(primary_key=True)
+    time = models.DateField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    method_type = models.IntegerField(choices=METHOD_TYPE_CHOICE, default=0)
+    log_msg_type = models.IntegerField(choices=LOG_MSG_TYPE_CHOICE, default=0)
+    description = models.TextField(blank=True)
+    params = models.TextField(blank=True)
+    response_status = models.CharField(max_length=32, default='No response')
+
+    def __str__(self):
+        return '{0}   {1}: {2} - {3}: {4}'.format(self.time,
+                                                  self.user,
+                                                  self.LOG_MSG_TYPE_CHOICE[self.log_msg_type][1],
+                                                  self.METHOD_TYPE_CHOICE[self.method_type][1],
+                                                  self.description)

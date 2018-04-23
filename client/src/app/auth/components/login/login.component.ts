@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   signInForm: FormGroup;
   title = environment.AppName;
   loginSubs: Subscription;
-  returnUrl: string;
 
   constructor(
     private fb: FormBuilder,
@@ -42,7 +41,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
     // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   onSubmit() {
@@ -89,7 +87,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   redirectIfUserLoggedIn() {
     this.store.select(getAuthStatus).subscribe(
       data => {
-        if (data === true) { this.router.navigate([this.returnUrl]);}
+        if (data === true) { this.router.navigate(['/documents']);}
       }
     );
   }

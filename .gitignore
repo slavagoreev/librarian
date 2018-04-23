@@ -12,6 +12,8 @@ settings.py# IDEs and editors
 /server/tests.py
 /server/log.txt
 /server/lmsinno/__pycache__/*
+/server/lmsinno/logging/__pycache__/*
+/server/lmsinno/tg_bot/__pycache__/*
 /server/lmsinno/migrations/__pycache__/*
 /server/.idea/
 /server/settings.py
@@ -26,7 +28,7 @@ new.txt
 # System Files
 .DS_Store
 Thumbs.db
-/client
+# /client
 server/lmsinno/api_documentation/__pycache__/
 server/lmsinno/authors/__pycache__/
 server/lmsinno/copies/__pycache__/
@@ -35,3 +37,4 @@ server/lmsinno/orders/__pycache__/
 server/lmsinno/tags/__pycache__/
 server/lmsinno/users/__pycache__/
 /client/package-lock.json
+sample.py

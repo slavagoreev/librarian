@@ -34,7 +34,7 @@ export class AddComponent implements OnInit {
   @ViewChild('addCover')
   cover: ElementRef;
   @ViewChild('addDocumentType')
-  document_type: ElementRef;
+  type: ElementRef;
   @ViewChild('addPrice')
   price: ElementRef;
   @ViewChild('addReference')
@@ -71,7 +71,7 @@ export class AddComponent implements OnInit {
     const authors = '',
       publisher = '', is_reference = 0, is_bestseller = 0,
       price = '', year = '', cover = '',
-      description = '', document_type = 0,
+      description = '', type = 0,
       title = '';
     this.userEditInfoForm = this.fb.group({
         'title': [title, Validators.required],
@@ -80,7 +80,7 @@ export class AddComponent implements OnInit {
         'year': [year, Validators.required],
         'description': [description],
         'cover': [cover],
-        'document_type': [document_type, Validators.required],
+        'type': [type, Validators.required],
         'price': [price, Validators.required],
         'is_reference': [is_reference],
         'is_bestseller': [is_bestseller],
@@ -128,7 +128,7 @@ export class AddComponent implements OnInit {
     this.document.year = this.year.nativeElement.value;
     this.document.description = this.description.nativeElement.value;
     this.document.cover = this.cover.nativeElement.value;
-    this.document.document_type = this.document_type.nativeElement.value;
+    this.document.type = this.type.nativeElement.value;
     this.document.price = this.price.nativeElement.value;
     this.document.copies_available = 0;
     this.document.tags = [];

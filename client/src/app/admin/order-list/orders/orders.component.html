@@ -12,7 +12,7 @@
           <th width="100px">Status</th>
           <th width="130px">Accepted</th> <!-- 70% -->
           <th width="130px">Return</th>
-          <th width="130px">Overdue sum</th>
+          <th width="80px">Overdue</th>
         </tr>
         </thead>
         <tbody id="searchResults">
@@ -23,31 +23,39 @@
             </div>
           </td>
           <td>
-            <a href="/documents/{{order.document.document_id}}">
-            <span class="document-title">{{order.document.title}}</span>
-            <span class="document-type">{{order.document.type | documentType}}
-                  {{order.document.authors.length ? 'by ' + order.document.authors[0].name : ''}}
-            </span>
-            </a>
+            <span class="document-title" (click)="goToDocument(order.document.document_id)">{{formatTitle(order.document.title)}}</span>
           </td>
           <td>
             <div *ngIf="order.status == 1 && !order.document.is_bestseller && order.is_extendable">
               <button class="btn btn-link" (click)="extendOrder(order.order_id)">Extend</button>
             </div>
           </td>
-          <td>
-            {{statusStr(order.status)}}
+          <td class="content-center">
+            <div *ngIf="order.status != 3; else closedStatus">
+              {{statusStr(order.status)}}
+            </div>
+            <ng-template #closedStatus>
+              <div class="closed">
+                {{statusStr(order.status)}}
+              </div>
+            </ng-template>
           </td>
           <!-- 4..6 -->
-          <td>
+          <td class="date content-center">
             {{order.date_accepted}}
           </td>
-          <td>
+          <td class="date content-center">
             {{order.date_return}}
           </td>
-          <td>
-            <span *ngIf="order.overdue_sum > 0; else overdueZero">{{order.overdue_sum}}<b>₽</b></span>
-            <ng-template #overdueZero>-</ng-template>
+          <td class="content-center">
+            <span *ngIf="order.overdue_sum > 0; else overdueZero" style="color: red;">
+              {{order.overdue_sum}}<b>₽</b>
+            </span>
+            <ng-template #overdueZero>
+              <div class="overdue-zero">
+                -
+              </div>
+            </ng-template>
           </td>
         </tr>
         </tbody>

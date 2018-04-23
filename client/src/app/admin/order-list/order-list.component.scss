@@ -1,4 +1,4 @@
-.document-list {
+.order-list {
   margin: 50px 0;
 
   a.user {
@@ -28,7 +28,6 @@
     outline: none;
     position: relative;
 
-
     &:after {
       top: 8px;
       right: 10px;
@@ -55,10 +54,6 @@
       float: right;
     }
   }
-  .dropdown-menu {
-    right: 22px !important;
-    top: 32px !important;
-  }
   #documentSearch {
     padding-right: 165px;
   }
@@ -76,25 +71,38 @@
   }
 
   .table-responsive {
+    .dropdown-menu {
+      right: 9px !important;
+      top: 26px !important;
+    }
+    #orderStatus:active {
+      color: black;
+    }
+    .content-center {
+      font-size: 14px;
+      text-align: center;
+    }
+    .status-select .closed {
+      color: #a0a0a0;
+    }
+    .overdue-zero {
+      color: #a0a0a0;
+    }
+
     background: #fff;
     padding: 40px;
-    /*
-    thead {
-      height: 0;
-      overflow: hidden;
-    }
-    thead th {
-      padding: 0 !important;
-      border: 0 !important;
+
+    th {
+      text-align: center;
     }
     tr {
       border-bottom: 1px solid #dee2e6;
     }
     td {
       border: none;
-      vertical-align: middle;
+      vertical-align: center;
     }
-    */
+
   }
 
 
@@ -155,7 +163,7 @@
     width: 100px;
     height: 20px;
     padding: 0px;
-    padding-right: 27px;
+    padding-right: 7px;
     //margin-left: 15px;
     margin-top: 8px;
     //border-right: 1px solid #dee2e6;

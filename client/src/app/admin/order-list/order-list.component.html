@@ -1,5 +1,5 @@
 <main class="body">
-  <div class="document-list col-lg-10 col-12 px-0 row mx-auto">
+  <div class="order-list col-lg-10 col-12 px-0 row mx-auto">
     <app-navbar></app-navbar>
     <div class="table-responsive">
       <p *ngIf="isOrders; else preorderHead" class="text-muted italic mb-0">Order list:</p>
@@ -10,11 +10,11 @@
         <thead>
         <tr>
           <th width="5%"></th>
-          <th></th> <!-- 40% -->
-          <th class="text-center" width="100px">Status</th>
+          <th width="35%"></th> <!-- 40% -->
+          <th width="130px">Status</th>
           <th width="130px">Accepted</th> <!-- 70% -->
           <th width="130px">Return</th>
-          <th width="130px">Overdue sum</th>
+          <th width="80px">Overdue</th>
         </tr>
         </thead>
         <tbody id="searchResults">
@@ -25,35 +25,41 @@
             </div>
           </td>
           <td>
-            <a href="/documents/{{order.document.document_id}}">
-              <span class="document-title">{{order.document.title}}</span>
-            </a>
-            <span class="document-type">Booked by <a class="user" href="/librarian/user/{{order.user.id}}">{{order.user.first_name}} {{order.user.last_name}} <div *ngIf="!isOrders">({{getRole(order.user.role)}})</div></a></span>
+            <span class="document-title" (click)="goToDocument(order.document.document_id)">{{formatTitle(order.document.title)}}</span>
+            <span class="document-type">Booked by <a class="user" (click)="goToUser(order.user.id)">{{order.user.first_name}} {{order.user.last_name}} <div *ngIf="!isOrders">({{getRole(order.user.role)}})</div></a></span>
           </td>
-          <td>
-            <div ngbDropdown *ngIf="!(order.status == 3); else closedOrder">
+          <td class="status-select content-center">
+            <div ngbDropdown class="ngb-dropdown" *ngIf="!(order.status == 3); else closedOrder">
               <button id="orderStatus" ngbDropdownToggle>
                 <span>{{ statusStr(order.status) }}</span>
               </button>
               <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="orderStatus">
-                <button class="dropdown-item" *ngIf="isOrders" (click)="selectStatus(order.order_id, 1)">Accept</button>
+                <button class="dropdown-item" *ngIf="isOrders && order.status === 0" (click)="selectStatus(order.order_id, 1)">Accept</button>
                 <button class="dropdown-item" (click)="selectStatus(order.order_id, 3)">Close</button>
               </div>
             </div>
             <ng-template #closedOrder>
-              <span>{{ statusStr(order.status) }}</span>
+              <div class="closed">
+                {{ statusStr(order.status) }}
+              </div>
             </ng-template>
           </td>
           <!-- 4..6 -->
-          <td>
+          <td class="date content-center">
             {{order.date_accepted}}
           </td>
-          <td>
+          <td class="date content-center">
             {{order.date_return}}
           </td>
-          <td>
-            <span *ngIf="order.overdue_sum > 0; else overdueZero">{{order.overdue_sum}}<b>₽</b></span>
-            <ng-template #overdueZero>-</ng-template>
+          <td class="content-center">
+            <span *ngIf="order.overdue_sum > 0; else overdueZero" style="color: red;">
+              {{order.overdue_sum}}<b>₽</b>
+            </span>
+            <ng-template #overdueZero>
+              <div class="overdue-zero">
+                -
+              </div>
+            </ng-template>
           </td>
         </tr>
         </tbody>

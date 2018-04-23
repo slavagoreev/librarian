@@ -28,14 +28,10 @@ export class DocumentInfoComponent implements OnInit {
     private documentService: DocumentService,
     private router: Router,
   ) {
-    this.tg_id = -1;
     this.userService.getUserData(this.authService.getUserData().id).subscribe(res => {
       this.tg_id = res.telegram_id;
     });
-    if (this.tg_id < 1) {
-      // window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
-      //   "telegramAuthWindow", "width=550,height=450");
-      // this.sleep(6000);
+    if (this.tg_id === 0) {
       this.authService.telegramRegister().subscribe(res => {});
     }
   }
@@ -43,6 +39,14 @@ export class DocumentInfoComponent implements OnInit {
   bookDocument(documentId: number) {
     this.userService.bookTheDocument(documentId).subscribe(() => {
       this.router.navigate(['/user', 'orders']);
+    });
+  }
+
+  outstandingRequest(documentId: number) {
+    this.userService.outstandingRequest(documentId).subscribe(() => {
+      this.documentService.getDocument(this.document.document_id).subscribe(data => {
+        this.document = data;
+      });
     });
   }
 
@@ -65,8 +69,8 @@ export class DocumentInfoComponent implements OnInit {
   }
 
   openTg() {
-    window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
-      "telegramAuthWindow", "width=550,height=450");
+    window.open("https://oauth.telegram.org/auth?bot_id=566111170&origin=https%3A%2F%2Flibrarian.site&request_access=write",
+      "", "width=550,height=450");
   }
 
   deleteCopy(id: number) {

@@ -27,7 +27,7 @@
 
 <main class="body">
   <div class="documents">
-    <div class="container-fluid px-lg-1 pr-lg-5">
+    <div *ngIf="(loading$ | async)?.loading === false || !!(loading$ | async)?.error; else loading" class="container-fluid px-lg-1 pr-lg-5">
       <div class="row">
         <aside class="col-12 col-lg-3">
 
@@ -42,7 +42,9 @@
           </app-document-list>
         </div>
       </div>
-      <app-loader [hidden]="(loading$ | async)?.loading === false || !!(loading$ | async)?.error"></app-loader>
     </div>
+    <ng-template #loading>
+      <app-loader></app-loader>
+    </ng-template>
   </div>
 </main>

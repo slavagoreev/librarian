@@ -75,6 +75,8 @@
                       (click)="bookDocument(document.document_id)" *ngIf="document.copies_available > 0 && !document.is_reference && tg_id > 0; else noCopies">
                   Book it!<span class="badge badge-warning">{{document.copies_available}} left</span>
               </button>
+              <button type="button" class="btn btn-light mt-3" *ngIf="permission"
+                      (click)="outstandingRequest(document.document_id)">Set outstanding request</button>
               <ng-template #noCopies>
                 <button type="button" class="btn btn-primary mt-3" *ngIf="!document.is_reference > 0 && tg_id > 0; else referenceBook"
                         (click)="bookDocument(document.document_id)">Pre-order document</button>

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DocumentActions } from '../../document/reducers/document.actions';
 import { AppState } from '../../interfaces';
 import { Store } from '@ngrx/store';
+import {Document} from "../../shared/models/documents.model";
 
 @Component({
   selector: 'app-bestseller-item',

@@ -2,10 +2,11 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 
+from . import documents_log_msg
 from .documents_serializers import DocumentSerializer, DocumentResponseSerializer
-from ..models import Copy, Document, Tag, TagOfDocument, Author, DocumentOfAuthor
-from ..permissions import DocumentPermission
-from .. import const
+from ..models import Copy, Document, Tag, TagOfDocument, Author, DocumentOfAuthor, User
+from ..permissions import permission_0, permission_2, permission_3, permission_1
+from ..logging.engine import make_log_record
 
 import re
 
@@ -15,10 +16,9 @@ class DocumentDetailByDocumentID(APIView):
     Class to get one particular document by id
     """
 
-    permission_classes = (DocumentPermission,)
-
     @staticmethod
     def get(request, document_id):
+
         """
         GET request to get one particular document
         ---
@@ -30,16 +30,25 @@ class DocumentDetailByDocumentID(APIView):
 
         result = {'status': '', 'data': {}}
 
+        log_record = {'user': User.get_instance(request).id,
+                      'log_msg_type': 0,
+                      'method_type': 0,
+                      'params': {'document_id': document_id},
+                      'response_status': status.HTTP_200_OK,
+                      'description': documents_log_msg.get_doc_by_id}
+
         try:
             document = Document.objects.get(pk=document_id)
         except Document.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
+            log_record['response_status'] = status.HTTP_404_NOT_FOUND
+            log_record['log_msg_type'] = 2
+            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = DocumentResponseSerializer(document)
-        result['status'] = const.HTTP_200_OK
         result['data'] = serializer.data
 
+        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -47,8 +56,6 @@ class DocumentsByCriteria(APIView):
     """
     Class to work with document using some criteria
     """
-
-    permission_classes = (DocumentPermission,)
 
     @staticmethod
     def get(request):
@@ -61,6 +68,13 @@ class DocumentsByCriteria(APIView):
         """
         DEFAULT_SIZE = 50
         DEFAULT_OFFSET = 0
+
+        log_record = {'user': User.get_instance(request).id,
+                      'log_msg_type': 0,
+                      'method_type': 0,
+                      'params': request.GET,
+                      'response_status': status.HTTP_200_OK,
+                      'description': documents_log_msg.get_doc_by_criteria}
 
         result = {'status': '', 'data': {}}
         data_query_set = Document.objects
@@ -97,13 +111,16 @@ class DocumentsByCriteria(APIView):
         result['data'] = serializer.data
 
         if serializer.data:
-            result['status'] = const.HTTP_200_OK
+            make_log_record(**log_record)
             return Response(result, status=status.HTTP_200_OK)
 
-        result['status'] = const.HTTP_404_NOT_FOUND
+        log_record['response_status'] = status.HTTP_404_NOT_FOUND
+        log_record['log_msg_type'] = 2
+        make_log_record(**log_record)
         return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
+    @permission_2
     def post(request):
         """
         POST request: add one particular document
@@ -112,6 +129,13 @@ class DocumentsByCriteria(APIView):
             :return: HTTP_202_ACCEPTED: if document was added successful
                      HTTP_400_BAD_REQUEST and JSON-errors: if wrong format of input data
         """
+
+        log_record = {'user': User.get_instance(request).id,
+                      'log_msg_type': 0,
+                      'method_type': 3,
+                      'params': request.POST,
+                      'response_status': status.HTTP_200_OK,
+                      'description': documents_log_msg.post_doc}
 
         # TODO change from POST to DATA
         tags_list = request.POST.get('tags', None)
@@ -138,15 +162,18 @@ class DocumentsByCriteria(APIView):
                 if not author_obj:
                     author_obj = Author.objects.create(name=author)
                 DocumentOfAuthor.objects.create(document_id=doc_obj.document_id, author_id=author_obj.author_id)
-
-            return Response({'status': const.HTTP_202_ACCEPTED, 'data': {'document_id': doc_obj.document_id}},
+            make_log_record(**log_record)
+            return Response({'data': {'document_id': doc_obj.document_id}},
                             status=status.HTTP_202_ACCEPTED)
-        print(doc_serializer.is_valid())
+
+        log_record['log_msg_type'] = 2
+        log_record['response_status'] = status.HTTP_400_BAD_REQUEST
+        make_log_record(**log_record)
         return Response(doc_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
+    @permission_3
     def delete(request):
-        # TODO AUTHORIZATION
         """
         DELETE request: delete one particular document by ID
         ---
@@ -157,18 +184,33 @@ class DocumentsByCriteria(APIView):
         """
         document_id = request.query_params.get('id')
 
+        log_record = {'user': User.get_instance(request).id,
+                      'log_msg_type': 0,
+                      'method_type': 2,
+                      'params': request.POST,
+                      'response_status': status.HTTP_200_OK,
+                      'description': documents_log_msg.delete_doc_by_id}
+
         if document_id:
             try:
                 document = Document.objects.get(pk=document_id)
             except Document.DoesNotExist:
-                return Response({'status': const.HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
+                log_record['log_msg_type'] = 2
+                log_record['response_status'] = status.HTTP_404_NOT_FOUND
+                make_log_record(**log_record)
+                return Response({'data': {}}, status=status.HTTP_404_NOT_FOUND)
             serializer = DocumentSerializer(document)
             document.delete()
-            return Response({'status': const.HTTP_200_OK, 'data': serializer.data})
+            make_log_record(**log_record)
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({'status': const.HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
+            log_record['log_msg_type'] = 2
+            log_record['response_status'] = status.HTTP_400_BAD_REQUEST
+            make_log_record(**log_record)
+            return Response({'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
+    @permission_1
     def patch(request):
         """
         PATCH one particular document by ID
@@ -179,6 +221,13 @@ class DocumentsByCriteria(APIView):
                      HTTP_400_BAD_REQUEST: if format of input data is wrong
         """
 
+        log_record = {'user': User.get_instance(request).id,
+                      'log_msg_type': 0,
+                      'method_type': 5,
+                      'params': request.data,
+                      'response_status': status.HTTP_200_OK,
+                      'description': documents_log_msg.patch_doc_by_id}
+
         result = {'status': '', 'data': {}}
 
         document_id = request.data.get('id', None)
@@ -187,7 +236,9 @@ class DocumentsByCriteria(APIView):
             try:
                 document = Document.objects.get(pk=document_id)
             except Document.DoesNotExist:
-                result['status'] = const.HTTP_404_NOT_FOUND
+                log_record['log_msg_type'] = 2
+                log_record['response_status'] = status.HTTP_404_BAD_REQUEST
+                make_log_record(**log_record)
                 return Response(result, status=status.HTTP_404_NOT_FOUND)
 
             document_serializer = DocumentSerializer(document, data=request.data, partial=True)
@@ -216,16 +267,18 @@ class DocumentsByCriteria(APIView):
                         tag_obj = Tag.objects.create(name=tag)
                     TagOfDocument.objects.create(document_id=document.document_id, tag_id=tag_obj.tag_id)
 
-            result['status'] = const.HTTP_202_ACCEPTED
             result['data'] = document_serializer.data
+
+            make_log_record(**log_record)
             return Response(result, status=status.HTTP_202_ACCEPTED)
 
-        result['status'] = const.HTTP_400_BAD_REQUEST
+        log_record['log_msg_type'] = 2
+        log_record['response_status'] = status.HTTP_400_BAD_REQUEST
+        make_log_record(**log_record)
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DocumentDetailByCopyID(APIView):
-    permission_classes = (DocumentPermission,)
 
     @staticmethod
     def get(request, copy_id):
@@ -239,20 +292,28 @@ class DocumentDetailByCopyID(APIView):
         """
         result = {'status': '', 'data': {}}
 
+        log_record = {'user': User.get_instance(request).id,
+                      'log_msg_type': 0,
+                      'method_type': 0,
+                      'params': {'copy_id': copy_id},
+                      'response_status': status.HTTP_200_OK,
+                      'description': documents_log_msg.get_doc_by_copy_id}
+
         try:
             copy = Copy.objects.get(pk=copy_id)
         except Copy.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
+            log_record['log_msg_type'] = 2
+            log_record['response_status'] = status.HTTP_404_NOT_FOUND
+            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = const.HTTP_200_OK
         result['data'] = DocumentResponseSerializer(Document.objects.get(pk=copy.document_id)).data
 
+        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)
 
 
 class Bestsellers(APIView):
-    permission_classes = (DocumentPermission,)
 
     @staticmethod
     def get(request):
@@ -264,12 +325,21 @@ class Bestsellers(APIView):
         """
         result = {'status': '', 'data': {}}
 
+        log_record = {'user': User.get_instance(request).id,
+                      'log_msg_type': 0,
+                      'method_type': 0,
+                      'params': request.GET,
+                      'response_status': status.HTTP_200_OK,
+                      'description': documents_log_msg.get_bestsellers}
+
         bestsellers = Document.objects.filter(is_bestseller=True)
         if not bestsellers:
-            result['status'] = const.HTTP_404_NOT_FOUND
+            log_record['log_msg_type'] = 2
+            log_record['response_status'] = status.HTTP_404_NOT_FOUND
+            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        result['status'] = const.HTTP_200_OK
         result['data'] = DocumentResponseSerializer(bestsellers, many=True).data
 
+        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)

@@ -9,8 +9,12 @@ import { Observable } from 'rxjs/Observable';
 import { AuthActions } from "../../auth/actions/auth.actions";
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../shared/models/users.model';
-import {DocumentService} from '../../core/services/document.service';
-import {Document as Doc} from '../../shared/models/documents.model';
+import { DocumentService } from '../../core/services/document.service';
+import { Document as Doc } from '../../shared/models/documents.model';
+import { getDocuments } from "../../document/reducers/document.selectors";
+import { DocumentActions } from "../../document/reducers/document.actions";
+import { Subject } from "rxjs/Subject";
+
 //import { Http } from '@angular/http';
 
 @Component({
@@ -25,6 +29,8 @@ export class HeaderComponent implements OnInit {
   user$: User;
   documents$: Observable<Doc[]>;
   isAdmin: boolean;
+  results: Doc[];
+  searchTerm$ = new Subject<string>();
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -32,6 +38,7 @@ export class HeaderComponent implements OnInit {
     private authActions: AuthActions,
     private authService: AuthService,
     private store: Store<AppState>,
+    private actions: DocumentActions,
     private documentService: DocumentService
   ) {
     this.store.dispatch(this.authActions.authorize());
@@ -42,15 +49,17 @@ export class HeaderComponent implements OnInit {
       }
     });
     this.store.select(getUserRole).subscribe((role) => {
-      this.isAdmin = (role === 300);
+      this.isAdmin = (role === 310 || role === 320 || role === 330);
     });
   }
 
   ngOnInit() {
-    this.documentService.getDocuments().subscribe(res => {
-      this.documents$ = Observable.of(res);
-    });
+    this.documentService.search(this.searchTerm$)
+      .subscribe(results => {
+        this.results = results;
+      });
   }
+
   setSearchState(state: boolean) {
     this.searchOpen = state;
   }

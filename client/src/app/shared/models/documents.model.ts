@@ -8,7 +8,7 @@ export class Document {
   description?: string = "";
   publisher?: string = "";
   year: number = 2018;
-  document_type: number;
+  type: number;
   price: number;
   is_reference: boolean;
   copies_available: number;

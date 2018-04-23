@@ -8,6 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { getAuthStatus } from '../../reducers/selectors';
 import { Subscription } from 'rxjs/Subscription';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {LoginComponent} from "../login/login.component";
 
 @Component({
   selector: 'app-sign-up',
@@ -15,6 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent implements OnInit, OnDestroy {
+  innerHeight: number;
   signUpForm: FormGroup;
   formSubmit = false;
   title = environment.AppName;
@@ -41,8 +43,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
     this.formSubmit = true;
     if (this.signUpForm.valid) {
       // console.log (this.signUpForm);
-      window.open("https://oauth.telegram.org/auth?bot_id=560114968&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
-        "telegramAuthWindow", "width=550,height=450");
+      window.open("https://oauth.telegram.org/auth?bot_id=566111170&origin=https%3A%2F%2Flibrarian.site&request_access=write",
+        "smd", "width=550,height=450");
       this.registerSubs = this.authService.register(values).subscribe(data => {
         const errors = data;
         // console.log (data);

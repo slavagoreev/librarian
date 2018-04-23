@@ -26,7 +26,6 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     overdue_sum = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
     document = serializers.SerializerMethodField()
-    is_renewable = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -37,8 +36,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
                   'date_accepted',
                   'date_return',
                   'status',
-                  'overdue_sum',
-                  'is_renewable')
+                  'overdue_sum')
 
     @staticmethod
     def get_overdue_sum(obj):
@@ -51,12 +49,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_user(obj):
-        return users_serializers.UserResponseDataSerializer(User.objects.get(pk=obj.user.pk)).data
+        return users_serializers.ShortUserSerializer(User.objects.get(pk=obj.user.pk)).data
 
     @staticmethod
     def get_document(obj):
-        return documents_serializers.DocumentSerializer(obj.document).data
+        return documents_serializers.ShortDocumentSerializer(obj.document).data
 
-    @staticmethod
-    def get_is_renewable(obj):
-        return obj.is_renewable()

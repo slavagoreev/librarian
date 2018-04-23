@@ -36,7 +36,7 @@ export class AuthService {
     private actions: AuthActions,
     private store: Store<AppState>,
     private jwtHelper: JwtHelperService,
-    private router : Router,
+    private router: Router,
     private notifications: NotificationService,
     private userService: UserService
   ) {
@@ -56,7 +56,7 @@ export class AuthService {
       'users/login/', data
     ).map((res: Response) => {
       data = res.json();
-      console.log (data);
+      // console.log (data);
       if (data.token) {
         // Setting token after login
         this.setLocalData(data);
@@ -78,7 +78,7 @@ export class AuthService {
 
   telegramRegister(): Observable<any> {
     return this.http.post('users/telegram/', {}).map(data => {
-      console.log(data);
+      // console.log(data);
       return data.json();
     });
   }

@@ -1,7 +1,4 @@
 import datetime
-import requests
-
-from allauth.account.models import EmailAddress, EmailConfirmation, EmailConfirmationHMAC
 
 try:
     from rest_auth.registration.views import RegisterView, VerifyEmailView
@@ -12,20 +9,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+from ..permissions import permission_0, permission_2, permission_3, permission_1
 from .users_serializers import UserResponseDataSerializer, UserDetailSerializer
-from ..permissions import LibrariantPermission, UserDetailPermission, UserPermission
+from ..permissions import permission_0
 from ..models import User
 from .. import const
 
 from ..tg_bot.engine import get_update
 
+
 class Users(APIView):
     """
        Class to get list of all Users
     """
-    permission_classes = (LibrariantPermission,)
 
     @staticmethod
+    @permission_1
     def get(request):
         """
             GET request to get list of all Users
@@ -36,12 +35,10 @@ class Users(APIView):
         result = {'status': '', 'data': {}}
 
         if not User.objects.all():
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserResponseDataSerializer(User.objects.all(), many=True)
         result['data'] = serializer.data
-        result['status'] = const.HTTP_200_OK
 
         return Response(result, status=status.HTTP_200_OK)
 
@@ -50,9 +47,9 @@ class UserDetail(APIView):
     """
         Class to get one User by id
     """
-    permission_classes = (UserDetailPermission,)
 
     @staticmethod
+    @permission_0
     def get(request, user_id):
         """
             GET request to get one particular user
@@ -67,15 +64,14 @@ class UserDetail(APIView):
             user = User.objects.get(pk=user_id)
             # print(EmailAddress.objects.get(user=user).verified)
         except User.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserDetailSerializer(user)
         result['data'] = serializer.data
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
+    @permission_0
     def patch(request, user_id):
         """
             PATCH request to update users
@@ -91,29 +87,21 @@ class UserDetail(APIView):
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserDetailSerializer(user, data=request.data, partial=True)
 
         if serializer.is_valid():
-            # First, need to check whether the user try to change his role
-            # We return 'accepted' in case that 'hacker' who try to change state
-            # Might try several times before he totally burn in tears about our security :)
-            # NOTE: User.get_instance(request).role - the instance of requester
-            if User.get_instance(request).role != const.LIBRARIAN_ROLE:
-                return Response(result, status=status.HTTP_202_ACCEPTED)
-            # If pass, then save all
+
             serializer.save()
-            result['status'] = const.HTTP_202_ACCEPTED
             return Response(result, status=status.HTTP_202_ACCEPTED)
 
-        result['status'] = const.HTTP_400_BAD_REQUEST
         result['data'] = serializer.errors
 
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
+    @permission_3
     def delete(request, user_id):
         """
         DELETE request: delete one particular user by ID
@@ -127,22 +115,21 @@ class UserDetail(APIView):
             try:
                 user = User.objects.get(pk=user_id)
             except User.DoesNotExist:
-                return Response({'status': const.HTTP_404_NOT_FOUND, 'data': {}}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'data': {}}, status=status.HTTP_404_NOT_FOUND)
             serializer = UserResponseDataSerializer(user)
             user.delete()
-            return Response({'status': const.HTTP_200_OK, 'data': serializer.data})
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({'status': const.HTTP_400_BAD_REQUEST, 'data': {}}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'data': {}}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MyDetail(APIView):
+class Profile(APIView):
     """
-        Class to get one User by id
+        Class to get one User info
     """
-    permission_classes = (UserPermission,)
 
     @staticmethod
-    def get(request, user_id):
+    def get(request):
         """
             GET request to get one particular user
             :param request:
@@ -153,14 +140,12 @@ class MyDetail(APIView):
         result = {'status': '', 'data': {}}
 
         try:
-            user = User.objects.get(pk=user_id)
+            user = User.get_instance(request)
         except User.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserDetailSerializer(user)
         result['data'] = serializer.data
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
@@ -175,28 +160,26 @@ class MyDetail(APIView):
         try:
             user = User.get_instance(request)
             # TODO normalino
-            for event in reversed(get_update()):
-                if 'connected_website' in event['message']:
-                    username = event['message']['from']['username']
-                    telegram_id = event['message']['from']['id']
-                    if username == user.username:
-                        user.set_telegram_id(telegram_id)
-                        result['data'] = user.telegram_id
-                        break
+            updates = get_update()
+            if updates:
+                for event in reversed(updates):
+                    if 'connected_website' in event['message']:
+                        username = event['message']['from']['username']
+                        telegram_id = event['message']['from']['id']
+                        if username == user.username:
+                            user.set_telegram_id(telegram_id)
+                            result['data'] = user.telegram_id
+                            break
 
             if not result['data']:
                 result['data'] = 'no telegram id was provided'
-                result['status'] = const.HTTP_400_BAD_REQUEST
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         except User.DoesNotExist:
-            result['status'] = const.HTTP_404_NOT_FOUND
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except ValueError:
-            result['status'] = const.HTTP_400_BAD_REQUEST
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
@@ -228,13 +211,12 @@ class MyDetail(APIView):
 
             if res == res2:
                 user = User.objects.get(pk=data[1])
-                user.role = const.LIBRARIAN_ROLE
+                user.role = const.LIBRARIAN_BASE_ROLE
                 user.save()
 
         except Exception:
             pass
 
-        result['status'] = const.HTTP_200_OK
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -253,20 +235,8 @@ class Registration(RegisterView):
         if not serializer.is_valid():
 
             result['data'] = serializer.errors
-            result['status'] = const.HTTP_400_BAD_REQUEST
 
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         return RegisterView.create(self, request, *args, **kwargs)
 
-
-class ConfirmEmail(APIView):
-    @staticmethod
-    def get(request, key):
-        user = User.objects.first()
-
-        view = VerifyEmailView()
-        view.post(request=request)
-
-        result = {'status': '', 'data': {}}
-        return Response(result, status=status.HTTP_200_OK)

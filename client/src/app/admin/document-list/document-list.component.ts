@@ -36,13 +36,13 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
 
   getDocuments(cb = () => {}) {
-    console.error('should load', this.options);
+    // console.error('should load', this.options);
     this.subscription = this.documentService.searchDocuments(this.options)
       .subscribe(data => this.processData(data))
   }
 
   private processData = (data) => {
-    console.error("proceed");
+    // console.error("proceed");
     if (this.options.offset == 0)
       this.documents = data;
     else
@@ -57,7 +57,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
 
   openModal(content, document: Document) {
     this.modalService.open(content).result.then((result: string) => {
-      if (result == 'Confirm') {
+      if (result === 'Confirm') {
         console.log('Should be deleted', document);
       }
     });
@@ -65,17 +65,17 @@ export class DocumentListComponent implements OnInit, OnDestroy {
 
   search() {
     const value = this.input.nativeElement.value;
-    console.error(this.input.nativeElement.value);
+    // console.error(this.input.nativeElement.value);
     this.options = {
       size: 30,
       offset: 0,
     };
-    if (this.type == 'year')
+    if (this.type === 'year')
       this.options[this.type] = parseInt(value);
     else
       this.options[this.type] = value;
     this.currentPage = 0;
-    this.getDocuments()
+    this.getDocuments();
   }
 
   selectType(type: string) {
