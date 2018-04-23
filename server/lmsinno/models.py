@@ -311,7 +311,11 @@ class Order(models.Model):
         orders = orders.exclude(status=const.CLOSED_STATUS)
         for order in orders:
             if order.status == const.IN_QUEUE_STATUS:
-                order.close()
+                if order.copy:
+                    order.copy.status = const.NOT_ORDERED_STATUS
+                    order.copy.save()
+                order.status = const.CLOSED_STATUS
+                order.save()
                 msg = 'Sorry, but the document ' + order.document.title + \
                       ' that you requested will not be available for checkout.' \
                       '\n' \
@@ -325,6 +329,8 @@ class Order(models.Model):
                       '\n' \
                       'You may be able to book the document soon.'
             send_message(order.user.telegram_id, msg)
+        document.copies_available = Copy.objects.filter(document=document).filter(
+                    status=const.NOT_ORDERED_STATUS).count()
 
     def attach_copy(self):
         """
