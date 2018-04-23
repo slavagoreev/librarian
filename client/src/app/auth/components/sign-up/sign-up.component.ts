@@ -43,7 +43,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     this.formSubmit = true;
     if (this.signUpForm.valid) {
       // console.log (this.signUpForm);
-      window.open("https://oauth.telegram.org/auth?bot_id=566111170&origin=https%3A%2F%2Ftrainno.ru&request_access=write",
+      window.open("https://oauth.telegram.org/auth?bot_id=566111170&origin=https%3A%2F%2Flibrarian.site&request_access=write",
         "telegramAuthWindow", "width=550,height=450");
       this.registerSubs = this.authService.register(values).subscribe(data => {
         const errors = data;
