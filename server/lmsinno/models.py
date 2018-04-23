@@ -520,7 +520,8 @@ class LogRecord(models.Model):
     response_status = models.CharField(max_length=32, default='No response')
 
     def __str__(self):
-        return '{0}   {1}: {2} - {3}'.format(self.time,
-                                             self.user,
-                                             self.LOG_MSG_TYPE_CHOICE[self.log_msg_type][1],
-                                             self.METHOD_TYPE_CHOICE[self.method_type][1])
+        return '{0}   {1}: {2} - {3}: {4}'.format(self.time,
+                                                  self.user,
+                                                  self.LOG_MSG_TYPE_CHOICE[self.log_msg_type][1],
+                                                  self.METHOD_TYPE_CHOICE[self.method_type][1],
+                                                  self.description)
