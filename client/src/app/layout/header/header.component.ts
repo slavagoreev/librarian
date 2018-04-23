@@ -54,9 +54,6 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  ifSearch() {
     this.documentService.search(this.searchTerm$)
       .subscribe(results => {
         this.results = results;

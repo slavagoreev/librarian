@@ -6,7 +6,7 @@
   <div *ngIf="isAuthenticated" id="morphsearch" class="morphsearch" [class.open]="searchOpen">
     <form class="morphsearch-form">
       <input class="morphsearch-input" (keyup)="searchTerm$.next($event.target.value)"
-             (focus)="setSearchState(true); ifSearch()" type="search" placeholder="Search..."/>
+             (focus)="setSearchState(true)" type="search" placeholder="Search..."/>
       <button class="morphsearch-submit" type="submit">Search</button>
     </form>
     <div class="morphsearch-content">
