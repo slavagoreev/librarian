@@ -140,8 +140,7 @@ export class DocumentService {
   search(terms: Observable<string>) {
     return terms.debounceTime(433)
       .distinctUntilChanged()
-      .switchMap(term => this.searchDocuments({title: term}))
-      .do(res => console.log(res));
+      .switchMap(term => this.searchDocuments({title: term}));
   }
 
   searchDocuments(
