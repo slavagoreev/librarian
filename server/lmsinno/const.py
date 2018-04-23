@@ -44,6 +44,7 @@ DELETE = 2
 POST = 3
 UPDATE = 4
 PATCH = 5
+CREATE = 6
 
 # Log message type
 INFO = 0

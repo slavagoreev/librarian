@@ -504,7 +504,8 @@ class LogRecord(models.Model):
                           (const.DELETE, 'DELETE'),
                           (const.POST, 'POST'),
                           (const.UPDATE, 'UPDATE'),
-                          (const.PATCH, 'PATCH')]
+                          (const.PATCH, 'PATCH'),
+                          (const.CREATE, 'CREATE')]
 
     LOG_MSG_TYPE_CHOICE = [(const.INFO, 'INFO'),
                            (const.WARNING, 'WARNING'),

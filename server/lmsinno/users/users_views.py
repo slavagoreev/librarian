@@ -9,10 +9,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+from . import users_log_msg
 from ..permissions import permission_0, permission_2, permission_3, permission_1
 from .users_serializers import UserResponseDataSerializer, UserDetailSerializer
 from ..permissions import permission_0
 from ..models import User
+from ..logging.engine import make_log_record
 from .. import const
 
 from ..tg_bot.engine import get_update
@@ -139,6 +141,7 @@ class Profile(APIView):
         """
         result = {'status': '', 'data': {}}
 
+
         try:
             user = User.get_instance(request)
         except User.DoesNotExist:
@@ -231,12 +234,23 @@ class Registration(RegisterView):
         """
         result = {'status': '', 'data': {}}
 
+        log_record = {'user': 1,
+                      'log_msg_type': 0,
+                      'method_type': 6,
+                      'params': request.data,
+                      'response_status': status.HTTP_200_OK,
+                      'description': users_log_msg.create_user.format(request.data.get('username', None))}
+
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
 
             result['data'] = serializer.errors
 
+            log_record['log_msg_type'] = 2
+            log_record['response_status'] = status.HTTP_400_BAD_REQUEST
+            make_log_record(**log_record)
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
+        make_log_record(**log_record)
         return RegisterView.create(self, request, *args, **kwargs)
 
