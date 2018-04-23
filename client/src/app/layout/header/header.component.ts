@@ -51,19 +51,13 @@ export class HeaderComponent implements OnInit {
     this.store.select(getUserRole).subscribe((role) => {
       this.isAdmin = (role === 310 || role === 320 || role === 330);
     });
+  }
+
+  ngOnInit() {
     this.documentService.search(this.searchTerm$)
       .subscribe(results => {
         this.results = results;
       });
-  }
-
-  ngOnInit() {
-    if (this.isAuthenticated && !this.documents$) {
-      this.documentService.getDocuments().subscribe(res => {
-        this.documents$ = Observable.of(res);
-        this.results = res;
-      });
-    }
   }
 
   setSearchState(state: boolean) {

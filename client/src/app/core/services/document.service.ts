@@ -13,6 +13,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
+import {toInteger} from "@ng-bootstrap/ng-bootstrap/util/util";
 
 @Injectable()
 export class DocumentService {
@@ -137,7 +138,7 @@ export class DocumentService {
   }
 
   search(terms: Observable<string>) {
-    return terms.debounceTime(400)
+    return terms.debounceTime(433)
       .distinctUntilChanged()
       .switchMap(term => this.searchDocuments({title: term}));
   }
