@@ -9,6 +9,11 @@ import * as _ from "lodash";
 import { Document } from '../../shared/models/documents.model';
 import { RequestOptions, URLSearchParams } from '@angular/http';
 
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/switchMap';
+
 @Injectable()
 export class DocumentService {
 
@@ -95,7 +100,7 @@ export class DocumentService {
   }
 
   getDocuments(): Observable<Document[]> {
-    return this.http.get(`documents/?size=30&year=2018`)
+    return this.http.get(`documents/`)
       .map(res => {
         const _res = res.json();
         if (_res.data) {
@@ -129,6 +134,12 @@ export class DocumentService {
       'tags': d.tags,
       'copies_available': 0
     });
+  }
+
+  search(terms: Observable<string>) {
+    return terms.debounceTime(400)
+      .distinctUntilChanged()
+      .switchMap(term => this.searchDocuments({title: term}));
   }
 
   searchDocuments(

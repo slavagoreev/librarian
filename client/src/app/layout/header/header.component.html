@@ -5,12 +5,17 @@
   </a>
   <div *ngIf="isAuthenticated" id="morphsearch" class="morphsearch" [class.open]="searchOpen">
     <form class="morphsearch-form">
-      <input class="morphsearch-input" (focus)="setSearchState(true)" type="search" placeholder="Search..."/>
+      <input class="morphsearch-input" (keyup)="searchTerm$.next($event.target.value)"
+             (focus)="setSearchState(true)" type="search" placeholder="Search..."/>
       <button class="morphsearch-submit" type="submit">Search</button>
     </form>
     <div class="morphsearch-content">
-      <div *ngFor="let document of (documents$ | async)">
-        <div class="morphsearch-content-element">{{document.title}}</div>
+      <div *ngFor="let document of (results)">
+        <div class="morphsearch-content-element"
+             [routerLink]="'/documents/' + document.document_id.toString()"
+             (click)="setSearchState(false)">
+          {{document.title}}
+        </div>
       </div>
     </div>
     <span class="morphsearch-close" (click)="setSearchState(false)"></span>
