@@ -11,10 +11,10 @@ HTTP_METHOD_MAPPING = {'GET': 0,
                        'PATCH': 5,
                        'CREATE': 6}
 
-STATUS_CODE_MAPPING = {'200': 0,
-                       '202': 0,
-                       '404': 2,
-                       '400': 2}
+STATUS_CODE_MAPPING = {200: 0,
+                       202: 0,
+                       404: 2,
+                       400: 2}
 
 
 def make_log_record(user, log_msg_type, method_type, params, response_status,  description):
@@ -40,7 +40,7 @@ def logging(description):
             log_record = {'user': User.get_instance(request).id,
                           'log_msg_type': STATUS_CODE_MAPPING[response.status_code],
                           'method_type': HTTP_METHOD_MAPPING[request.method],
-                          'params': {'get_params': args[0],
+                          'params': {'get_params': args[1] if args else None,
                                      'body_params': request.query_params},
                           'response_status': response.status_code,
                           'description': description}
@@ -49,3 +49,4 @@ def logging(description):
 
             return response
         return wrapper
+    return decorator
