@@ -68,8 +68,7 @@ def custom_exception_handler(exc, context):
     # to get the standard error response.
     response = views.exception_handler(exc, context)
 
-    data = {'status': '',
-             'data': {}}
+    data = {'status': '', 'data': {}}
 
     # Now add the HTTP status code to the response.
 
