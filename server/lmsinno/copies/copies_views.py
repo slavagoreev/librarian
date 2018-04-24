@@ -7,7 +7,7 @@ from .copies_serializers import CopySerializer, CopyDetailSerializer
 from .. import const
 from ..permissions import permission_0, permission_2, permission_3, permission_1
 from ..models import Copy, Document, Order, User
-from ..logging.engine import make_log_record
+from ..logging.engine import logging
 
 
 class CopyDetail(APIView):
@@ -17,6 +17,7 @@ class CopyDetail(APIView):
 
     @staticmethod
     @permission_1
+    @logging(copies_log_msg.get_copy_by_id)
     def get(request, copy_id):
         """
         Get Copy bi ID
@@ -28,30 +29,20 @@ class CopyDetail(APIView):
 
         result = {'status': '', 'data': {}}
 
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 0,
-                      'params': {'copy_id': copy_id},
-                      'response_status': status.HTTP_200_OK,
-                      'description': copies_log_msg.get_copy_by_id}
-
         try:
             copy = Copy.objects.get(pk=copy_id)
         except Copy.DoesNotExist:
-            log_record['log_msg_type'] = 2
-            log_record['response_status'] = status.HTTP_404_NOT_FOUND
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         serializer = CopyDetailSerializer(copy)
 
         result['data'] = serializer.data
 
-        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
     @permission_2
+    @logging(copies_log_msg.post_copy)
     def post(request):
         """
         Add one particular copy
@@ -61,13 +52,6 @@ class CopyDetail(APIView):
         """
 
         result = {'status': '', 'data': {}}
-
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 3,
-                      'params': request.data,
-                      'response_status': status.HTTP_200_OK,
-                      'description': copies_log_msg.post_copy}
 
         serializer = CopySerializer(data=request.data)
 
@@ -81,18 +65,15 @@ class CopyDetail(APIView):
 
             result['data'] = CopyDetailSerializer(Copy.objects.get(pk=copy.pk)).data
 
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_200_OK)
 
         result['data'] = serializer.errors
 
-        log_record['log_msg_type'] = 2
-        log_record['response_status'] = status.HTTP_400_BAD_REQUEST
-        make_log_record(**log_record)
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
     @permission_3
+    @logging(copies_log_msg.delete_copy_by_id)
     def delete(request, copy_id):
         """
         Delete Copy bi ID
@@ -104,27 +85,13 @@ class CopyDetail(APIView):
 
         result = {'status': '', 'data': {}}
 
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 2,
-                      'params': {'copy_id': copy_id},
-                      'response_status': status.HTTP_200_OK,
-                      'description': copies_log_msg.delete_copy_by_id}
-
         try:
             document = Document.objects.get(document_id=copy_id)
             if not document.delete_copy():
                 result['data'] = 'no copy to delete'
-                log_record['log_msg_type'] = 2
-                log_record['response_status'] = status.HTTP_404_NOT_FOUND
-                make_log_record(**log_record)
                 return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         except Document.DoesNotExist:
-            log_record['log_msg_type'] = 2
-            log_record['response_status'] = status.HTTP_404_NOT_FOUND
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)
