@@ -44,7 +44,8 @@ def logging(description):
                                      'body_params': request.data,
                                      'others': kwargs},
                           'response_status': response.status_code,
-                          'description': description}
+                          'description': description.format(User.get_instance(request).username,
+                                                            User.get_instance(request).id)}
 
             make_log_record(**log_record)
 

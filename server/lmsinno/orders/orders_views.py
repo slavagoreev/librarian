@@ -7,7 +7,7 @@ from ..permissions import permission_0, permission_2, permission_3, permission_1
 from .orders_serializers import OrderSerializer, OrderDetailSerializer
 from ..tg_bot.engine import send_message
 from ..models import Order, User, Document
-from ..logging.engine import make_log_record
+from ..logging.engine import logging
 from .. import const
 
 from threading import Thread
@@ -25,19 +25,13 @@ class Orders(APIView):
 
     @staticmethod
     @permission_1
+    @logging(orders_log_msg.get_all_orders)
     def get(request):
         """
         Return set of all orders
         :param request:
         :return: HTTP_200_OK and JSON
         """
-
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 0,
-                      'params': request.GET,
-                      'response_status': status.HTTP_200_OK,
-                      'description': orders_log_msg.get_all_orders}
 
         size = request.GET.get('size', None)
         offset = request.GET.get('offset', None)
@@ -54,7 +48,6 @@ class Orders(APIView):
 
         result['data'] = orders.data
 
-        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -65,6 +58,7 @@ class OrdersQueue(APIView):
 
     @staticmethod
     @permission_1
+    @logging(orders_log_msg.get_all_orders_in_queue)
     def get(request):
         """
         Return set of orders in queue
@@ -74,13 +68,6 @@ class OrdersQueue(APIView):
 
         size = request.GET.get('size', None)
         offset = request.GET.get('offset', None)
-
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 0,
-                      'params': request.GET,
-                      'response_status': status.HTTP_200_OK,
-                      'description': orders_log_msg.get_all_orders_in_queue}
 
         result = {'status': '', 'data': {}}
 
@@ -95,11 +82,11 @@ class OrdersQueue(APIView):
 
         result['data'] = orders_in_queue.data
 
-        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)
 
     @staticmethod
     @permission_2
+    @logging(orders_log_msg.delete_outstanding_request)
     def delete(request, document_id):
         """
         Outstanding request for the document
@@ -108,25 +95,14 @@ class OrdersQueue(APIView):
         """
         result = {'status': '', 'data': {}}
 
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 2,
-                      'params': {'document_id': document_id},
-                      'response_status': status.HTTP_200_OK,
-                      'description': orders_log_msg.delete_outstanding_request}
-
         try:
             document = Document.objects.get(document_id=document_id)
 
             Order.outstanding_request(document)
 
         except Document.DoesNotExist:
-            log_record['response_status'] = status.HTTP_404_NOT_FOUND
-            log_record['log_msg_type'] = 2
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
-        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -137,32 +113,23 @@ class OrderDetail(APIView):
 
     @staticmethod
     @permission_1
+    @logging(orders_log_msg.get_order_by_id)
     def get(request, order_id):
 
         result = {'status': '', 'data': {}}
-
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 0,
-                      'params': {'order_id': order_id},
-                      'response_status': status.HTTP_200_OK,
-                      'description': orders_log_msg.get_order_by_id}
 
         try:
             orders = OrderDetailSerializer(Order.objects.get(order_id=order_id))
 
             result['data'] = orders.data
 
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            log_record['response_status'] = status.HTTP_404_NOT_FOUND
-            log_record['log_msg_type'] = 2
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
     @permission_1
+    @logging(orders_log_msg.patch_order_by_id)
     def patch(request, order_id):
         """
         Check out one order for document
@@ -174,14 +141,6 @@ class OrderDetail(APIView):
         """
 
         result = {'status': '', 'data': {}}
-
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 5,
-                      'params': {'order_id': order_id},
-                      'response_status': status.HTTP_200_OK,
-                      'description': orders_log_msg.patch_order_by_id_accept.format(User.get_instance(request).username,
-                                                                                          User.get_instance(request).id)}
 
         try:
 
@@ -196,14 +155,10 @@ class OrderDetail(APIView):
 
                 if document.copies_available == 0 and not order.copy:
                     result['data'] = 'no copy available'
-                    log_record['response_status'] = status.HTTP_404_NOT_FOUND
-                    log_record['log_msg_type'] = 2
-                    make_log_record(**log_record)
                     return Response(result, status=status.HTTP_404_NOT_FOUND)
 
                 order.accept_booking()
 
-                make_log_record(**log_record)
                 return Response(result, status=status.HTTP_200_OK)
 
             elif new_status == const.CLOSED_STATUS and old_status != const.CLOSED_STATUS:
@@ -211,9 +166,6 @@ class OrderDetail(APIView):
                 overdue_sum = order.close()
                 result['data'] = {'overdue_sum': overdue_sum}
 
-                log_record['description'] = orders_log_msg.patch_order_by_id_close.format(User.get_instance(request).username,
-                                                                                          User.get_instance(request).id)
-                make_log_record(**log_record)
                 return Response(result, status=status.HTTP_200_OK)
 
             else:
@@ -221,24 +173,15 @@ class OrderDetail(APIView):
                 # if status nor 1 or 3 than it is incorrect request
                 result['data'] = 'no such option'
 
-                log_record['response_status'] = status.HTTP_400_BAD_REQUEST
-                log_record['log_msg_type'] = 2
-                make_log_record(**log_record)
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         except Order.DoesNotExist:
             result['data'] = 'order dose not exist'
 
-            log_record['response_status'] = status.HTTP_404_NOT_FOUND
-            log_record['log_msg_type'] = 2
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
             result['data'] = 'incorrect data was provided'
 
-            log_record['response_status'] = status.HTTP_400_BAD_REQUEST
-            log_record['log_msg_type'] = 2
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -249,6 +192,7 @@ class MyOrders(APIView):
 
     @staticmethod
     @permission_0
+    @logging(orders_log_msg.get_all_orders_by_user)
     def get(request):
         """
         Return set of all orders of one particular user
@@ -260,13 +204,6 @@ class MyOrders(APIView):
         offset = request.GET.get('offset', None)
 
         result = {'status': '', 'data': {}}
-
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 0,
-                      'params': request.GET,
-                      'response_status': status.HTTP_200_OK,
-                      'description': orders_log_msg.get_all_orders_by_user}
 
         user = User.get_instance(request=request)
 
@@ -281,7 +218,6 @@ class MyOrders(APIView):
 
         result['data'] = orders.data
 
-        make_log_record(**log_record)
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -291,6 +227,7 @@ class Booking(APIView):
     """
 
     @staticmethod
+    @logging(orders_log_msg.get_booking)
     def get(request, document_id):
         """
         Book one particular document by ID
@@ -304,21 +241,11 @@ class Booking(APIView):
 
         result = {'status': '', 'data': {}}
 
-        log_record = {'user': User.get_instance(request).id,
-                      'log_msg_type': 0,
-                      'method_type': 0,
-                      'params': {'document_id': document_id},
-                      'response_status': status.HTTP_200_OK,
-                      'description': orders_log_msg.get_booking}
-
         try:
             user = User.get_instance(request=request)
             if not user.telegram_id:
                 result['data'] = 'no telegram id was provided'
 
-                log_record['response_status'] = status.HTTP_400_BAD_REQUEST
-                log_record['log_msg_type'] = 2
-                make_log_record(**log_record)
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             document = Document.objects.get(pk=document_id)
@@ -330,17 +257,11 @@ class Booking(APIView):
                                                                            order.status == const.OVERDUE_STATUS):
                     result['data'] = {'details': 'you already booked this document'}
 
-                    log_record['response_status'] = status.HTTP_400_BAD_REQUEST
-                    log_record['log_msg_type'] = 2
-                    make_log_record(**log_record)
                     return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             if document.is_reference:
                 result['data'] = {'details': 'reference document cannot be checked out'}
 
-                log_record['response_status'] = status.HTTP_400_BAD_REQUEST
-                log_record['log_msg_type'] = 2
-                make_log_record(**log_record)
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
             order = Order.objects.create(
@@ -351,21 +272,14 @@ class Booking(APIView):
             order_serializer = OrderSerializer(order)
             result['data'] = order_serializer.data
 
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_200_OK)
 
         except IndexError:
 
-            log_record['response_status'] = status.HTTP_404_NOT_FOUND
-            log_record['log_msg_type'] = 2
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         except Document.DoesNotExist or User.DoesNotExist:
 
-            log_record['response_status'] = status.HTTP_404_NOT_FOUND
-            log_record['log_msg_type'] = 2
-            make_log_record(**log_record)
             return Response(result, status=status.HTTP_404_NOT_FOUND)
 
         finally:
