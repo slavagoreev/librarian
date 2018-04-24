@@ -40,8 +40,9 @@ def logging(description):
             log_record = {'user': User.get_instance(request).id,
                           'log_msg_type': STATUS_CODE_MAPPING[response.status_code],
                           'method_type': HTTP_METHOD_MAPPING[request.method],
-                          'params': {'get_params': args[1] if args else None,
-                                     'body_params': request.query_params},
+                          'params': {'get_params': request.GET,
+                                     'body_params': request.data,
+                                     'others': kwargs},
                           'response_status': response.status_code,
                           'description': description}
 
