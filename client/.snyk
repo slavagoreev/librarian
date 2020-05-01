@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.12.0
+version: v1.14.1
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
@@ -8,3 +8,14 @@ patch:
         patched: '2018-07-03T04:07:09.454Z'
     - webpack-plugin-critical > critical > penthouse > apartment > lodash:
         patched: '2018-07-03T04:07:09.454Z'
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-05-01T08:04:21.073Z'
+    - webpack-plugin-critical > critical > lodash:
+        patched: '2020-05-01T08:04:21.073Z'
+    - webpack-plugin-critical > critical > filter-css > lodash:
+        patched: '2020-05-01T08:04:21.073Z'
+    - webpack-plugin-critical > critical > inline-critical > lodash:
+        patched: '2020-05-01T08:04:21.073Z'
+    - webpack-plugin-critical > critical > postcss-image-inliner > asset-resolver > lodash:
+        patched: '2020-05-01T08:04:21.073Z'
