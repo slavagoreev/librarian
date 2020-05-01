@@ -47,7 +47,7 @@
     "rxjs": "^5.4.2",
     "webpack-plugin-critical": "^1.0.0",
     "zone.js": "^0.8.14",
-    "snyk": "^1.88.0"
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@angular/cli": "^1.7.4",
