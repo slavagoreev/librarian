@@ -37,7 +37,7 @@
     "immutable": "^3.8.2",
     "jsonwebtoken": "^8.1.1",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.11",
     "moment": "^2.20.1",
     "ng2-carouselamos": "^3.2.0",
     "ngrx-store-freeze": "^0.2.1",
